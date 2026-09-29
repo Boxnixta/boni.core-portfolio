@@ -1,71 +1,61 @@
 import Link from "next/link";
 import Parallax from "@/app/components/boni/about/Parallax";
 import FolderPlayground from "@/app/components/boni/about/FolderPlayground";
-import CvCard, { type CvEntry } from "@/app/components/boni/about/CvCard";
+import Draggable from "@/app/components/boni/Draggable";
+import FancyText from "@/app/components/boni/FancyText";
+import AccordionAbout from "@/app/components/AccordionAbout";
 
-const experience: CvEntry[] = [
-    { title: "Freelance Designer", detail: "Graphic design, illustration & post-production (Aug 2019 – today)" },
-    { title: "Working Student Design", detail: "Reducse UG, Sabine Linhorst (Jul 2022 – Jul 2024)" },
-    { title: "Camera Operator", detail: "Offener Kanal Dessau (Apr 2024)" },
-    { title: "Content Creator", detail: "Miomorph Kollektiv (Aug 2019 – today)" },
-];
-
-const education: CvEntry[] = [
-    { title: "Master of Arts, Creative Technologies", detail: "Film University Babelsberg Konrad Wolf (Oct 2025 – today)" },
-    { title: "Erasmus", detail: "UAP Poznań (Feb 2022 – Jul 2022)" },
-    { title: "Bachelor of Arts, Integrated Design", detail: "Anhalt University of Applied Sciences (Sep 2019 – Feb 2025)" },
-    { title: "Deutschlandstipendium", detail: "(Nov 2020 – Jul 2021)", sub: true },
-    { title: "Merit scholarship", detail: "(Sep 2023 – Jan 2024)", sub: true },
-    { title: "Student council & faculty council", detail: "(Sep 2023 – Aug 2024)", sub: true },
-];
-
+/* eslint-disable @next/next/no-img-element */
 const About = () => (
     <div className="about-page">
-        {/* ---------- left top: name + sparkles ---------- */}
+        {/* ---------- left top: big name + sparkles ---------- */}
         <div className="about-sig">
             <Parallax speed={0.08} className="relative">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/img/about/twinklestars.png" alt="" className="about-twinkle" />
+                <Draggable className="about-twinkle">
+                    <img src="/img/about/twinklestars.png" alt="" draggable={false} />
+                </Draggable>
                 <h1 className="sr-only">Bonita von Gizycki</h1>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/img/brand/signature.webp" alt="Bonita von Gizycki (signature)" className="about-signature" />
+                <img src="/img/brand/signature.webp" alt="" className="about-signature" draggable={false} />
             </Parallax>
         </div>
 
-        {/* ---------- right column: photo cluster, intro, CV ---------- */}
+        {/* ---------- right: photo cluster, hello, intro, CV accordion ---------- */}
         <div className="about-right">
             <Parallax speed={0.25} max={500} className="about-photo-cluster">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/img/about/cd.png" alt="" className="about-cd" />
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/img/about/CDJ.png" alt="" className="about-cdj" />
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/img/about/PictureOfMe.png" alt="Portrait of Bonita" className="about-photo" />
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/img/about/sterne-illu.png" alt="" className="about-stars" />
+                <Draggable className="about-cd">
+                    <img src="/img/about/cd.png" alt="" draggable={false} />
+                </Draggable>
+                <Draggable className="about-cdj">
+                    <img src="/img/about/CDJ.png" alt="" draggable={false} />
+                </Draggable>
+                <img src="/img/about/PictureOfMe.png" alt="Portrait of Bonita" className="about-photo" draggable={false} />
+                <Draggable className="about-stars">
+                    <img src="/img/about/sterne-illu.png" alt="" draggable={false} />
+                </Draggable>
             </Parallax>
 
             <div className="hey-heading">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/img/about/hey-spray-illu.png" alt="" className="hey-spray" />
-                <h2 className="hey-title">Hellooooo</h2>
+                <img src="/img/about/hey-spray-illu.png" alt="" className="hey-spray" draggable={false} />
+                {/* many o's on purpose: the word always runs out of the screen, never wraps */}
+                <h2 className="hey-title hello-title">
+                    <FancyText text="Hellooooooooooooooo" label="Hello" />
+                </h2>
             </div>
 
             <p className="about-intro">
-                I&apos;m Bonita and I specialise in graphic design, illustration, 3D design, animation and film. My focus
-                is on developing creative, well-thought-out visual solutions – from the first idea to the final
-                execution. I&apos;m especially interested in visual storytelling, interactive media and pre- and
-                post-production. Thanks to my quick grasp and analytical thinking, I get into new concepts, programs
-                and technologies efficiently.
+                I&apos;m Bonita, a designer and creative technologist based in Potsdam. I build interactive and
+                audiovisual work where 3D, code and sound meet: real-time visuals, VR experiences, generative systems
+                and small hardware builds. My roots are in graphic design, illustration and film.
             </p>
 
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/img/about/silverheart.png" alt="" className="about-heart" />
+            <Draggable className="about-heart">
+                <img src="/img/about/silverheart.png" alt="" draggable={false} />
+            </Draggable>
 
-            <CvCard label="Experience" entries={experience} />
-            <CvCard label="Education" entries={education} />
+            {/* Vita, skills, awards: collapsed until clicked */}
+            <AccordionAbout />
 
-            <div className="flex justify-center pt-4">
+            <div className="flex justify-center pt-8">
                 <Link href="/contact" className="btn-glow">
                     Contact
                 </Link>

@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import TextImageBox from '@/app/components/TextImageBox';
 import ProjectImageGallery from '@/app/components/ProjectImageGallery';
+import FancyText from '@/app/components/boni/FancyText';
 import { projects } from '../projects';
 
 /*
@@ -21,20 +22,16 @@ const ProjectPage = async ({ params }: Props) => {
     // Find the matching project — show 404 if the slug does not exist
     const project = projects.find((p) => p.slug === slug);
     if (!project) notFound();
-    /*
-      notFound() throws a special Next.js error that renders the nearest
-      not-found.tsx (or the default 404 page). It never returns — TypeScript
-      knows project is non-null after this point.
-    */
 
-    // Component comes directly from the project object — no separate contentMap needed
     const { Component } = project;
 
     return (
         <>
-            {/* Page title */}
+            {/* Page title — same fancy letter mix as every heading */}
             <section className="relative w-full text-center">
-                <h1 className="text-center text-balance">{project.title}</h1>
+                <h1 className="text-center text-balance">
+                    <FancyText text={project.title} />
+                </h1>
             </section>
 
             <TextImageBox
@@ -43,12 +40,6 @@ const ProjectPage = async ({ params }: Props) => {
                 alt={project.introImageAlt}
             />
 
-            {/*
-              MDX body — wrapped in a prose container so Tailwind's typography
-              plugin restores heading sizes, list bullets, and paragraph spacing.
-              pt-0 removes the top padding that the global section rule adds,
-              keeping the article close to the TextImageBox above it.
-            */}
             <section className="pt-0">
                 <article className="
                     prose prose-neutral max-w-none
@@ -61,7 +52,6 @@ const ProjectPage = async ({ params }: Props) => {
                 </article>
             </section>
 
-            {/* Asymmetric four-image gallery from the galleryImages data */}
             <ProjectImageGallery images={project.galleryImages} />
         </>
     );

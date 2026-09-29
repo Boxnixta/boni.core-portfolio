@@ -3,6 +3,7 @@ import HeroSectionText from "@/app/components/HeroSectionText";
 import ProjectCard from "@/app/components/ProjectCard";
 import DeskItems from "@/app/components/boni/DeskItems";
 import HintText from "@/app/components/boni/HintText";
+import FancyText from "@/app/components/boni/FancyText";
 import { projects } from "@/app/(routes)/projects/projects";
 
 const Home = () => {
@@ -34,7 +35,9 @@ const Home = () => {
 
             {/* Teaser grid */}
             <section>
-                <h2 className="glow-blue font-pixel font-normal mb-6 sm:mb-10">Selected Work</h2>
+                <h2 className="glow-blue mb-6 sm:mb-10">
+                    <FancyText text="Selected Work" />
+                </h2>
                 <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
                     {featured.map((p) => (
                         <ProjectCard key={p.slug} project={p} />

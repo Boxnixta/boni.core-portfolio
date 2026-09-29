@@ -218,11 +218,12 @@ html:focus-within {
     }
 }
 
+
 /* =====================================================================
    boni.core design layer
-   Colors, fonts and effects from the Readymag + three.js portfolios.
-   Appended at the end of globals.css, so these rules win over the
-   tutorial defaults above when both define the same class.
+   Colors, fonts, effects and page styles from the Readymag + three.js
+   portfolios. Always kept at the END of globals.css, so these rules win
+   over the tutorial defaults above.
    ===================================================================== */
 
 /*
@@ -238,29 +239,41 @@ html:focus-within {
     --font-script: var(--font-great-vibes), cursive;
 }
 
-/* The landing section is 100vw wide — clip instead of showing a horizontal scrollbar */
+/* The landing section is 100vw wide — clip instead of a horizontal scrollbar */
 body {
     overflow-x: clip;
 }
 
+/* Coded cursor: the star replaces the native cursor.
+   The class is set by CursorCanvas only when WebGL runs (mouse devices, no "reduce motion"). */
+.custom-cursor,
+.custom-cursor * {
+    cursor: none !important;
+}
+
 @layer components {
-    /* --- Glow text, like the headlines in the old portfolio --- */
+    /* ================= global ================= */
+
+    /* Fancy headline letters (FancyText): script / pixel mix */
+    .fancy-script {
+        @apply font-script font-normal;
+        font-size: 1.15em;
+        line-height: 0;
+    }
+    .fancy-pixel {
+        @apply font-pixel font-normal;
+    }
+
     .glow-blue {
         color: #0000ff;
         text-shadow: 0 0 6px rgb(0 0 255 / 0.55);
-    }
-
-    /* --- Header --- */
-    .site-header-name {
-        @apply font-pixel font-normal text-boni-blue;
-        text-shadow: 0 0 6px rgb(0 0 255 / 0.5);
     }
 
     .main-nav-link {
         @apply transition-colors hover:text-boni-blue;
     }
 
-    /* --- Buttons: pink outline with glow ("Nächstes Projekt" style) --- */
+    /* Buttons: pink outline with glow */
     .btn,
     .btn-glow {
         @apply inline-flex items-center gap-2 rounded-md border-2 border-boni-pink bg-white
@@ -278,15 +291,36 @@ body {
         @apply text-base px-6 py-2;
     }
 
-    /* --- Landing desk --- */
+    /* Signature bottom left — sits above the footer */
+    .signature {
+        @apply fixed bottom-20 left-4 z-40 hidden w-24 md:block lg:w-28;
+    }
+    .signature img {
+        @apply h-auto w-full;
+    }
+    .signature:hover img {
+        animation: wiggle 0.5s ease-in-out infinite;
+    }
+
+    /* Anything wrapped in <Draggable> */
+    .draggable {
+        @apply cursor-grab touch-none select-none;
+    }
+    .draggable img {
+        @apply pointer-events-none block w-full;
+    }
+    .draggable.is-dragging {
+        @apply z-50 cursor-grabbing;
+    }
+
+    /* ================= landing ================= */
     .landing-desk {
         /* Break out of the centered max-width container to full screen width */
         @apply relative left-1/2 w-screen -translate-x-1/2 overflow-hidden bg-white p-0;
-        height: calc(100svh - 3.5rem); /* full screen minus the sticky header */
+        height: calc(100svh - 3.5rem);
         min-height: 520px;
     }
     .landing-intro {
-        /* above the desk objects, white halo keeps it readable when objects slide behind */
         @apply pointer-events-none absolute inset-0 z-20 flex flex-col items-center justify-center text-center;
         text-shadow: 0 0 6px #fff, 0 0 12px #fff, 0 0 18px #fff;
     }
@@ -301,7 +335,6 @@ body {
     }
     .desk-item img {
         @apply block w-full;
-        /* soft colored shadow, replaces the blurred duplicate image of the old version */
         filter: drop-shadow(-6px 8px 8px rgb(0 0 0 / 0.18));
     }
     .hint-text {
@@ -310,15 +343,196 @@ body {
         filter: drop-shadow(0 0 2.5px #0000ff);
     }
 
-    /* --- Signature bottom left --- */
-    .signature {
-        @apply fixed bottom-4 left-4 z-40 hidden w-24 md:block lg:w-28;
+    /* ================= big heading with "hey!" spray ================= */
+    .hey-heading {
+        @apply relative mt-10 mb-4 lg:mt-16;
     }
-    .signature img {
-        @apply w-full h-auto;
+    .hey-spray {
+        /* top left, above the word */
+        @apply absolute z-0 -left-[4%] -top-[75%] w-[55%] max-w-[380px] select-none;
+        transform-origin: 50% 80%;
     }
-    .signature:hover img {
-        animation: wiggle 0.5s ease-in-out infinite;
+    .hey-spray:hover {
+        animation: hey-wiggle 0.6s ease-in-out infinite;
+    }
+    .hey-title {
+        /* pointer-events-none: the "hey!" underneath stays hoverable */
+        @apply pointer-events-none relative z-10 font-extrabold leading-none text-neutral-900;
+        font-size: clamp(3rem, 8vw, 7.5rem);
+        letter-spacing: 0.03em;
+    }
+    /* never wraps: the o's always run out of the screen (body clips them) */
+    .hello-title {
+        @apply whitespace-nowrap;
+    }
+
+    /* ================= about ================= */
+    .about-page {
+        @apply grid grid-cols-1 gap-x-12 gap-y-10 py-6 lg:grid-cols-2 lg:py-10;
+    }
+    /* Desktop: name top-left, folder game bottom-left, rest on the right.
+       Phones: name → photo / intro / CV → folder game */
+    .about-sig,
+    .about-right,
+    .about-play {
+        @apply relative flex min-w-0 flex-col;
+    }
+    .about-right {
+        @apply lg:col-start-2 lg:row-span-2 lg:row-start-1;
+    }
+    .about-play {
+        @apply lg:col-start-1 lg:row-start-2;
+    }
+    .about-signature {
+        /* pulled to the left edge of the screen */
+        @apply relative -ml-4 w-[95%] max-w-[600px] -rotate-6 select-none sm:-ml-8 lg:-ml-12;
+    }
+    .about-twinkle {
+        @apply absolute -top-2 left-[10%] z-10 w-16 sm:w-20;
+    }
+    .about-twinkle img {
+        animation: twinkle 4s ease-in-out infinite;
+    }
+
+    .about-photo-cluster {
+        @apply relative h-[280px] w-full max-w-[520px] sm:h-[320px];
+    }
+    .about-cd {
+        @apply absolute left-[2%] top-[4%] z-10 w-[22%];
+    }
+    .about-cd:hover img {
+        animation: cd-spin 1.2s linear infinite;
+    }
+    .about-cdj {
+        @apply absolute bottom-[2%] left-0 z-20 w-[30%] -rotate-12;
+    }
+    .about-cdj img {
+        filter: drop-shadow(0 6px 8px rgb(0 0 0 / 0.2));
+    }
+    .about-photo {
+        @apply absolute left-[30%] top-0 z-10 w-[40%] shadow-lg;
+    }
+    .about-stars {
+        @apply absolute left-[20%] top-[40%] z-30 w-[65%];
+    }
+
+    .about-intro {
+        @apply relative z-10 max-w-[52ch] font-mono text-xs leading-relaxed text-neutral-700 sm:text-sm lg:leading-relaxed;
+    }
+    .about-heart {
+        @apply mx-auto my-4 w-14 sm:w-16;
+    }
+    .about-heart img {
+        animation: float 3.5s ease-in-out infinite;
+    }
+
+    /* Accordion (Vita, Skills, Awards) */
+    .accordion-about {
+        @apply mt-2 flex w-full flex-col gap-3 p-0;
+    }
+    .accordion-entry {
+        @apply overflow-hidden rounded-xl border border-neutral-200 bg-white shadow-[0_6px_16px_rgb(0_0_0/0.12)];
+    }
+    .accordion-button {
+        @apply flex w-full cursor-pointer items-center justify-between px-5 py-3 text-left text-lg font-bold text-boni-violet transition-colors
+               hover:bg-violet-50/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-boni-violet;
+    }
+    .accordion-button.is-open {
+        text-shadow: 0 0 8px rgb(51 0 255 / 0.4);
+    }
+    .accordion-icon {
+        @apply font-pixel text-2xl leading-none;
+    }
+    .accordion-panel {
+        @apply border-t border-neutral-200 px-5 pb-6 pt-2;
+    }
+    .accordion-panel table {
+        @apply my-2;
+    }
+    .accordion-panel strong {
+        @apply text-boni-violet;
+    }
+
+    /* Folder game */
+    .folder-playground {
+        @apply relative mt-2 h-[560px] w-full touch-none select-none sm:h-[680px];
+    }
+    .basket {
+        @apply pointer-events-none absolute bottom-8 left-0 z-20 w-[80%] max-w-[460px] -rotate-6;
+    }
+    .folder {
+        @apply absolute z-30 w-[22%] max-w-[120px] cursor-grab rounded-md
+               focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-boni-blue;
+        transition: scale 0.3s ease, rotate 0.3s ease;
+        touch-action: none;
+    }
+    .folder:hover {
+        rotate: -4deg;
+        scale: 1.05;
+    }
+    .folder.is-dragging {
+        @apply z-50 cursor-grabbing;
+        scale: 1.08;
+        transition: none;
+    }
+    .folder img {
+        @apply pointer-events-none w-full;
+        filter: drop-shadow(0 4px 6px rgb(0 0 0 / 0.15));
+    }
+    /* In the basket: a bit smaller, stays ON TOP of the basket */
+    .folder.in-cart {
+        scale: 0.85;
+        rotate: -6deg;
+    }
+    .basket-counter {
+        @apply absolute bottom-0 left-0 max-w-none font-pixel text-sm text-boni-blue sm:text-base;
+    }
+
+    /* ================= contact ================= */
+    .contact-page {
+        @apply grid grid-cols-1 gap-10 py-6 lg:grid-cols-[1fr_320px] lg:py-12;
+    }
+    .contact-main {
+        @apply flex flex-col items-start lg:pl-[8%];
+    }
+    .contact-heading .hey-spray {
+        @apply -left-[25%] -top-[80%] w-[140%] max-w-[760px];
+    }
+    .contact-intro {
+        @apply relative z-10 mt-4 italic text-neutral-700;
+    }
+    .contact-details {
+        @apply relative mt-6 px-6 py-16 sm:px-16 sm:py-24;
+    }
+    .contact-details ul {
+        @apply relative z-10 flex flex-col gap-4;
+    }
+    .contact-details li {
+        @apply flex flex-wrap items-center gap-3 text-lg sm:text-2xl;
+    }
+    .contact-icon {
+        @apply h-5 w-5 text-boni-violet sm:h-6 sm:w-6;
+    }
+    .contact-label {
+        @apply font-semibold text-boni-violet;
+    }
+    .contact-link {
+        @apply transition-all hover:text-boni-violet focus-visible:text-boni-violet focus-visible:outline-none;
+    }
+    .contact-link:hover,
+    .contact-link:focus-visible {
+        text-shadow: 0 0 8px rgb(51 0 255 / 0.55);
+    }
+    .contact-flowers {
+        /* bigger than the text block, blooms on hover / focus */
+        @apply pointer-events-none absolute -inset-x-[20%] -inset-y-[25%] z-0 h-[150%] w-[140%] max-w-none scale-90 object-contain opacity-0 transition-all duration-500
+               group-hover:scale-100 group-hover:opacity-100 group-focus-within:scale-100 group-focus-within:opacity-100;
+    }
+    .contact-aside {
+        @apply mx-auto w-full max-w-[320px] lg:mt-10;
+    }
+    .burger-girl img {
+        @apply w-full select-none;
     }
 }
 
@@ -327,438 +541,24 @@ body {
     25% { transform: rotate(-2deg); }
     75% { transform: rotate(2deg); }
 }
+@keyframes hey-wiggle {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-3deg) scale(1.02); }
+    75% { transform: rotate(3deg) scale(1.02); }
+}
+@keyframes cd-spin {
+    to { transform: rotate(360deg); }
+}
+@keyframes twinkle {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.12) rotate(8deg); }
+}
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+}
 
 @media (prefers-reduced-motion: reduce) {
     .hint-text { transition: none; }
-    .signature:hover img { animation: none; }
-}
-
-/* Coded cursor: the star replaces the native cursor.
-   The class is set by CursorCanvas only when WebGL is running
-   (mouse devices, no "reduce motion"). */
-.custom-cursor,
-.custom-cursor * {
-    cursor: none !important;
-}
-
-/* =====================================================================
-   boni.core – About & Contact pages
-   ===================================================================== */
-@layer components {
-    /* ---------- shared: big heading with the purple "hey!" spray behind it ---------- */
-    .hey-heading {
-        @apply relative mt-6 mb-4 lg:mt-10;
-    }
-    .hey-spray {
-        @apply absolute z-0 w-[70%] max-w-[420px] -top-[40%] left-[12%] select-none;
-        transform-origin: 50% 80%;
-    }
-    .hey-spray:hover {
-        animation: hey-wiggle 0.6s ease-in-out infinite;
-    }
-    .hey-title {
-        /* pointer-events-none: the "hey!" underneath stays hoverable */
-        @apply pointer-events-none relative z-10 font-extrabold leading-none text-neutral-900;
-        font-size: clamp(3rem, 8vw, 7.5rem);
-        letter-spacing: 0.04em;
-    }
-
-    /* ---------- About ---------- */
-    .about-page {
-        @apply grid grid-cols-1 gap-x-12 gap-y-10 py-6 lg:grid-cols-2 lg:py-10;
-    }
-    /* Desktop: name top-left, folder game bottom-left, everything else on the right.
-       Phones: name → photo/intro/CV → folder game */
-    .about-sig,
-    .about-right,
-    .about-play {
-        @apply relative flex flex-col;
-    }
-    .about-right {
-        @apply lg:col-start-2 lg:row-span-2 lg:row-start-1;
-    }
-    .about-play {
-        @apply lg:col-start-1 lg:row-start-2;
-    }
-    .about-signature {
-        @apply relative w-[85%] max-w-[560px] -rotate-6 select-none;
-    }
-    .about-twinkle {
-        @apply absolute -top-2 left-[12%] z-10 w-16 sm:w-20;
-        animation: twinkle 4s ease-in-out infinite;
-    }
-
-    .about-photo-cluster {
-        @apply relative ml-auto h-[260px] w-full max-w-[420px] sm:h-[300px];
-    }
-    .about-cd {
-        @apply absolute left-[8%] top-[6%] z-10 w-[26%] rounded-full;
-    }
-    .about-cd:hover {
-        animation: cd-spin 1.2s linear infinite;
-    }
-    .about-cdj {
-        @apply absolute bottom-[4%] left-0 z-20 w-[36%] -rotate-12;
-        filter: drop-shadow(0 6px 8px rgb(0 0 0 / 0.2));
-    }
-    .about-photo {
-        @apply absolute right-[6%] top-0 z-10 w-[48%] shadow-lg;
-    }
-    .about-stars {
-        @apply pointer-events-none absolute right-0 top-[30%] z-30 w-[85%];
-    }
-
-    .about-intro {
-        @apply relative z-10 max-w-[60ch] font-mono text-xs leading-relaxed text-neutral-700 sm:text-sm lg:text-sm lg:leading-relaxed;
-    }
-    .about-heart {
-        @apply mx-auto my-2 w-14 sm:w-16;
-        animation: float 3.5s ease-in-out infinite;
-    }
-
-    /* CV cards */
-    .cv-card {
-        @apply mb-6 flex flex-col gap-4 rounded-xl border border-neutral-200 bg-white p-4 shadow-[0_6px_16px_rgb(0_0_0/0.18)] sm:flex-row sm:items-center sm:gap-6 sm:p-5 lg:p-5;
-    }
-    .cv-card-label {
-        @apply shrink-0 self-start rounded-lg border-2 border-boni-violet/40 bg-white px-6 py-2 text-lg font-bold text-boni-violet sm:self-center;
-        box-shadow: 0 0 12px rgb(51 0 255 / 0.45);
-    }
-    .cv-card-list {
-        @apply flex flex-col gap-1 text-xs leading-snug text-neutral-800 sm:text-sm;
-    }
-    .cv-card-list strong {
-        @apply font-semibold text-boni-violet;
-    }
-
-    /* Folder game */
-    .folder-playground {
-        @apply relative mt-2 h-[560px] w-full touch-none select-none sm:h-[680px];
-    }
-    .basket {
-        @apply pointer-events-none absolute bottom-8 left-0 z-20 w-[80%] max-w-[460px] -rotate-6;
-    }
-    .folder {
-        @apply absolute z-30 w-[22%] max-w-[120px] cursor-grab rounded-md
-               focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-boni-blue;
-        transition: left 0.45s cubic-bezier(0.22, 1, 0.36, 1), top 0.45s cubic-bezier(0.22, 1, 0.36, 1), transform 0.3s ease;
-        touch-action: none;
-    }
-    .folder:active {
-        @apply cursor-grabbing;
-    }
-    .folder:hover {
-        transform: rotate(-4deg) scale(1.05);
-    }
-    .folder img {
-        @apply pointer-events-none w-full;
-        filter: drop-shadow(0 4px 6px rgb(0 0 0 / 0.15));
-    }
-    /* In the basket: smaller and BEHIND the basket wires, so it looks like it's inside */
-    .folder.in-cart {
-        @apply z-10;
-        transform: scale(0.7) rotate(-6deg);
-    }
-    .basket-counter {
-        @apply absolute bottom-0 left-0 max-w-none font-pixel text-sm text-boni-blue sm:text-base;
-    }
-
-    /* ---------- Contact ---------- */
-    .contact-page {
-        @apply grid grid-cols-1 gap-10 py-6 lg:grid-cols-[1fr_300px] lg:py-12;
-    }
-    .contact-main {
-        @apply flex flex-col items-center;
-    }
-    .contact-heading .hey-spray {
-        @apply -left-[35%] -top-[30%] w-[80%];
-    }
-    .contact-details {
-        @apply relative mt-10 flex flex-col gap-3 px-10 py-12 sm:mt-16;
-    }
-    .contact-details p {
-        @apply relative z-10 max-w-none text-lg sm:text-2xl lg:text-3xl;
-    }
-    .contact-label {
-        @apply font-semibold text-boni-violet;
-    }
-    .contact-link {
-        @apply transition-all hover:text-boni-violet focus-visible:text-boni-violet focus-visible:outline-none;
-    }
-    .contact-link:hover,
-    .contact-link:focus-visible {
-        text-shadow: 0 0 8px rgb(51 0 255 / 0.55);
-    }
-    .contact-flowers {
-        @apply pointer-events-none absolute inset-0 z-0 h-full w-full scale-90 object-contain opacity-0 transition-all duration-500
-               group-hover:scale-100 group-hover:opacity-100 group-focus-within:scale-100 group-focus-within:opacity-100;
-    }
-
-    .contact-aside {
-        @apply mx-auto flex max-w-[300px] flex-col gap-4;
-    }
-    .burger-girl {
-        @apply relative;
-    }
-    .burger-girl img {
-        @apply w-full;
-    }
-    .burger-girl-blink {
-        @apply absolute inset-0;
-        opacity: 0;
-        animation: blink 4s steps(1) infinite;
-    }
-    .burger-girl:hover .burger-girl-blink {
-        animation: chew 0.5s steps(1) infinite;
-    }
-    .contact-text p {
-        @apply mb-3 max-w-none font-mono text-[11px] leading-relaxed text-neutral-600 sm:text-xs;
-    }
-    .contact-text strong {
-        @apply text-neutral-900;
-    }
-}
-
-@keyframes hey-wiggle {
-    0%, 100% { transform: rotate(0deg); }
-    25% { transform: rotate(-3deg) scale(1.02); }
-    75% { transform: rotate(3deg) scale(1.02); }
-}
-@keyframes cd-spin {
-    to { transform: rotate(360deg); }
-}
-@keyframes twinkle {
-    0%, 100% { transform: scale(1) rotate(0deg); }
-    50% { transform: scale(1.12) rotate(8deg); }
-}
-@keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-6px); }
-}
-/* image 2 (eyes closed) shows for a short moment every 4s */
-@keyframes blink {
-    0%, 92% { opacity: 0; }
-    93%, 97% { opacity: 1; }
-    98%, 100% { opacity: 0; }
-}
-/* on hover: switch back and forth = chewing */
-@keyframes chew {
-    0%, 49% { opacity: 0; }
-    50%, 100% { opacity: 1; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .hey-spray:hover, .about-cd:hover, .about-twinkle, .about-heart,
-    .burger-girl-blink, .burger-girl:hover .burger-girl-blink { animation: none; }
-}
-
-/* =====================================================================
-   boni.core – About & Contact pages
-   ===================================================================== */
-@layer components {
-    /* ---------- shared: big heading with the purple "hey!" spray behind it ---------- */
-    .hey-heading {
-        @apply relative mt-6 mb-4 lg:mt-10;
-    }
-    .hey-spray {
-        @apply absolute z-0 w-[70%] max-w-[420px] -top-[40%] left-[12%] select-none;
-        transform-origin: 50% 80%;
-    }
-    .hey-spray:hover {
-        animation: hey-wiggle 0.6s ease-in-out infinite;
-    }
-    .hey-title {
-        /* pointer-events-none: the "hey!" underneath stays hoverable */
-        @apply pointer-events-none relative z-10 font-extrabold leading-none text-neutral-900;
-        font-size: clamp(3rem, 8vw, 7.5rem);
-        letter-spacing: 0.04em;
-    }
-
-    /* ---------- About ---------- */
-    .about-page {
-        @apply grid grid-cols-1 gap-x-12 gap-y-10 py-6 lg:grid-cols-2 lg:py-10;
-    }
-    /* Desktop: name top-left, folder game bottom-left, everything else on the right.
-       Phones: name → photo/intro/CV → folder game */
-    .about-sig,
-    .about-right,
-    .about-play {
-        @apply relative flex flex-col;
-    }
-    .about-right {
-        @apply lg:col-start-2 lg:row-span-2 lg:row-start-1;
-    }
-    .about-play {
-        @apply lg:col-start-1 lg:row-start-2;
-    }
-    .about-signature {
-        @apply relative w-[85%] max-w-[560px] -rotate-6 select-none;
-    }
-    .about-twinkle {
-        @apply absolute -top-2 left-[12%] z-10 w-16 sm:w-20;
-        animation: twinkle 4s ease-in-out infinite;
-    }
-
-    .about-photo-cluster {
-        @apply relative ml-auto h-[260px] w-full max-w-[420px] sm:h-[300px];
-    }
-    .about-cd {
-        @apply absolute left-[8%] top-[6%] z-10 w-[26%] rounded-full;
-    }
-    .about-cd:hover {
-        animation: cd-spin 1.2s linear infinite;
-    }
-    .about-cdj {
-        @apply absolute bottom-[4%] left-0 z-20 w-[36%] -rotate-12;
-        filter: drop-shadow(0 6px 8px rgb(0 0 0 / 0.2));
-    }
-    .about-photo {
-        @apply absolute right-[6%] top-0 z-10 w-[48%] shadow-lg;
-    }
-    .about-stars {
-        @apply pointer-events-none absolute right-0 top-[30%] z-30 w-[85%];
-    }
-
-    .about-intro {
-        @apply relative z-10 max-w-[60ch] font-mono text-xs leading-relaxed text-neutral-700 sm:text-sm lg:text-sm lg:leading-relaxed;
-    }
-    .about-heart {
-        @apply mx-auto my-2 w-14 sm:w-16;
-        animation: float 3.5s ease-in-out infinite;
-    }
-
-    /* CV cards */
-    .cv-card {
-        @apply mb-6 flex flex-col gap-4 rounded-xl border border-neutral-200 bg-white p-4 shadow-[0_6px_16px_rgb(0_0_0/0.18)] sm:flex-row sm:items-center sm:gap-6 sm:p-5 lg:p-5;
-    }
-    .cv-card-label {
-        @apply shrink-0 self-start rounded-lg border-2 border-boni-violet/40 bg-white px-6 py-2 text-lg font-bold text-boni-violet sm:self-center;
-        box-shadow: 0 0 12px rgb(51 0 255 / 0.45);
-    }
-    .cv-card-list {
-        @apply flex flex-col gap-1 text-xs leading-snug text-neutral-800 sm:text-sm;
-    }
-    .cv-card-list strong {
-        @apply font-semibold text-boni-violet;
-    }
-
-    /* Folder game */
-    .folder-playground {
-        @apply relative mt-2 h-[560px] w-full touch-none select-none sm:h-[680px];
-    }
-    .basket {
-        @apply pointer-events-none absolute bottom-8 left-0 z-20 w-[80%] max-w-[460px] -rotate-6;
-    }
-    .folder {
-        @apply absolute z-30 w-[22%] max-w-[120px] cursor-grab rounded-md
-               focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-boni-blue;
-        transition: left 0.45s cubic-bezier(0.22, 1, 0.36, 1), top 0.45s cubic-bezier(0.22, 1, 0.36, 1), transform 0.3s ease;
-        touch-action: none;
-    }
-    .folder:active {
-        @apply cursor-grabbing;
-    }
-    .folder:hover {
-        transform: rotate(-4deg) scale(1.05);
-    }
-    .folder img {
-        @apply pointer-events-none w-full;
-        filter: drop-shadow(0 4px 6px rgb(0 0 0 / 0.15));
-    }
-    /* In the basket: smaller and BEHIND the basket wires, so it looks like it's inside */
-    .folder.in-cart {
-        @apply z-10;
-        transform: scale(0.7) rotate(-6deg);
-    }
-    .basket-counter {
-        @apply absolute bottom-0 left-0 max-w-none font-pixel text-sm text-boni-blue sm:text-base;
-    }
-
-    /* ---------- Contact ---------- */
-    .contact-page {
-        @apply grid grid-cols-1 gap-10 py-6 lg:grid-cols-[1fr_300px] lg:py-12;
-    }
-    .contact-main {
-        @apply flex flex-col items-center;
-    }
-    .contact-heading .hey-spray {
-        @apply -left-[35%] -top-[30%] w-[80%];
-    }
-    .contact-details {
-        @apply relative mt-10 flex flex-col gap-3 px-10 py-12 sm:mt-16;
-    }
-    .contact-details p {
-        @apply relative z-10 max-w-none text-lg sm:text-2xl lg:text-3xl;
-    }
-    .contact-label {
-        @apply font-semibold text-boni-violet;
-    }
-    .contact-link {
-        @apply transition-all hover:text-boni-violet focus-visible:text-boni-violet focus-visible:outline-none;
-    }
-    .contact-link:hover,
-    .contact-link:focus-visible {
-        text-shadow: 0 0 8px rgb(51 0 255 / 0.55);
-    }
-    .contact-flowers {
-        @apply pointer-events-none absolute inset-0 z-0 h-full w-full scale-90 object-contain opacity-0 transition-all duration-500
-               group-hover:scale-100 group-hover:opacity-100 group-focus-within:scale-100 group-focus-within:opacity-100;
-    }
-
-    .contact-aside {
-        @apply mx-auto flex max-w-[300px] flex-col gap-4;
-    }
-    .burger-girl {
-        @apply relative;
-    }
-    .burger-girl img {
-        @apply w-full;
-    }
-    .burger-girl-blink {
-        @apply absolute inset-0;
-        opacity: 0;
-        animation: blink 4s steps(1) infinite;
-    }
-    .burger-girl:hover .burger-girl-blink {
-        animation: chew 0.5s steps(1) infinite;
-    }
-    .contact-text p {
-        @apply mb-3 max-w-none font-mono text-[11px] leading-relaxed text-neutral-600 sm:text-xs;
-    }
-    .contact-text strong {
-        @apply text-neutral-900;
-    }
-}
-
-@keyframes hey-wiggle {
-    0%, 100% { transform: rotate(0deg); }
-    25% { transform: rotate(-3deg) scale(1.02); }
-    75% { transform: rotate(3deg) scale(1.02); }
-}
-@keyframes cd-spin {
-    to { transform: rotate(360deg); }
-}
-@keyframes twinkle {
-    0%, 100% { transform: scale(1) rotate(0deg); }
-    50% { transform: scale(1.12) rotate(8deg); }
-}
-@keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-6px); }
-}
-/* image 2 (eyes closed) shows for a short moment every 4s */
-@keyframes blink {
-    0%, 92% { opacity: 0; }
-    93%, 97% { opacity: 1; }
-    98%, 100% { opacity: 0; }
-}
-/* on hover: switch back and forth = chewing */
-@keyframes chew {
-    0%, 49% { opacity: 0; }
-    50%, 100% { opacity: 1; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .hey-spray:hover, .about-cd:hover, .about-twinkle, .about-heart,
-    .burger-girl-blink, .burger-girl:hover .burger-girl-blink { animation: none; }
+    .signature:hover img, .hey-spray:hover, .about-cd:hover img, .about-twinkle img, .about-heart img { animation: none; }
 }

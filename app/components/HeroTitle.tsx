@@ -1,15 +1,12 @@
-import Image from "next/image";
+import FancyText from "@/app/components/boni/FancyText";
 
-type HeroImageProps = {
-    src: string;
-    alt: string;
-    priority?: boolean;
-};
-
+// Used by HeroSectionText and the page titles — every big heading gets the fancy letter mix
 const HeroTitle = ({ text }: { text: string }) => {
     return (
         <div className="relative w-full">
-            <h1 className="text-left text-balance">{text}</h1>
+            <h1 className="text-left text-balance">
+                <FancyText text={text} />
+            </h1>
         </div>
     );
 };

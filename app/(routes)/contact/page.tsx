@@ -1,57 +1,51 @@
+import { Mail, CodeXml, MapPin } from "lucide-react";
+import FancyText from "@/app/components/boni/FancyText";
+import BurgerGirl from "@/app/components/boni/contact/BurgerGirl";
+
+/* eslint-disable @next/next/no-img-element */
 const Contact = () => (
     <div className="contact-page">
         <div className="contact-main">
             <div className="hey-heading contact-heading">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/img/about/hey-spray-illu.png" alt="" className="hey-spray" />
-                <h1 className="hey-title">Contact</h1>
+                <img src="/img/about/hey-spray-illu.png" alt="" className="hey-spray" draggable={false} />
+                <h1 className="hey-title">
+                    <FancyText text="Contact" />
+                </h1>
             </div>
+
+            <p className="contact-intro">
+                Want to work together, talk about a project or just say hi? Send me a message!
+            </p>
 
             {/* Flowers bloom around the contact details on hover / keyboard focus */}
             <div className="contact-details group">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/img/contact/Flower_illustration.png" alt="" className="contact-flowers" />
-                <p>
-                    <span className="contact-label">E-Mail</span> –{" "}
-                    <a href="mailto:bonigizy@gmail.com?subject=Hey%2C%20just%20wanted%20to%20say%20hi!" className="contact-link">
-                        bonigizy@gmail.com
-                    </a>
-                </p>
-                <p>
-                    <span className="contact-label">Phone</span> –{" "}
-                    <a href="tel:+491773019355" className="contact-link">
-                        +49 177 3019355
-                    </a>
-                </p>
+                <img src="/img/contact/Flower_illustration.png" alt="" className="contact-flowers" draggable={false} />
+                <ul>
+                    <li>
+                        <Mail className="contact-icon" aria-hidden="true" />
+                        <span className="contact-label">E-Mail</span>
+                        <a href="mailto:bonigizy@gmail.com?subject=Hey%2C%20just%20wanted%20to%20say%20hi!" className="contact-link">
+                            bonigizy@gmail.com
+                        </a>
+                    </li>
+                    <li>
+                        <CodeXml className="contact-icon" aria-hidden="true" />
+                        <span className="contact-label">GitHub</span>
+                        <a href="https://github.com/Boxnixta" target="_blank" rel="noopener noreferrer" className="contact-link">
+                            Boxnixta
+                        </a>
+                    </li>
+                    <li>
+                        <MapPin className="contact-icon" aria-hidden="true" />
+                        <span className="contact-label">Based in</span>
+                        <span>Potsdam, Germany</span>
+                    </li>
+                </ul>
             </div>
         </div>
 
         <aside className="contact-aside">
-            {/* Two stacked drawings: the second one blinks now and then, and chews on hover */}
-            <div className="burger-girl">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/img/contact/Illustration-Eating-Burger-1.png" alt="Illustration of Bonita eating a burger" />
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/img/contact/Illustration-Eating-Burger-2.png" alt="" className="burger-girl-blink" />
-            </div>
-            <div className="contact-text">
-                <p>
-                    I&apos;m Bonita – a designer focused on <strong>graphic design, illustration, 3D design, animation
-                    and film</strong>. My strength lies in developing thoughtful visual concepts that connect design and
-                    content – from the first draft to the final execution.
-                </p>
-                <p>
-                    I&apos;m especially excited about visual storytelling, interactive media and all phases of film
-                    production.
-                </p>
-                <p>
-                    Thanks to my quick grasp and analytical approach, I get into <strong>new topics, tools and
-                    technologies</strong> quickly and in a structured way.
-                </p>
-                <p>
-                    <strong><em>I look forward to hearing from you and to exciting new projects.</em></strong>
-                </p>
-            </div>
+            <BurgerGirl />
         </aside>
     </div>
 );
