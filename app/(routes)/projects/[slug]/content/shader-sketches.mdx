@@ -1,0 +1,63 @@
+import Collage from '@/app/components/boni/Collage';
+import ShaderCanvas from '@/app/components/boni/ShaderCanvas';
+import spray from '@/app/components/boni/shaders/spray';
+
+export const metadata = {
+    slug: "shader-sketches",
+    title: "Procedural Sketches",
+    category: ["Creative Coding"],
+    thumbnail: "/img/projects/shader-sketches/shader-sketches-thumb.webp",
+    thumbnailAlt: "Voronoi metaball pattern in GLSL",
+    description: "Small GLSL and Unreal studies on noise, Voronoi and metaballs. Procedural Generation and Simulation, 2026.",
+    introText: "Short coding exercises from the course Procedural Generation and Simulation: turning a visual idea into math. Move your mouse over the spray below, it runs live in your browser.",
+    introImage: "/img/projects/shader-sketches/voronoi_blobb_bild.webp",
+    introImageAlt: "Voronoi blob pattern",
+    galleryImages: [],
+};
+
+## Spray Noise (GLSL, live)
+
+A grainy red spray, like paint from a can. Your mouse works like a hand that pushes the spray away. Hash noise decides for every pixel whether a spray dot appears, the density fades from the center outwards, and a dot product makes the gap around the mouse asymmetric.
+
+<ShaderCanvas frag={spray} ratio="16 / 9" label="move your mouse over the spray" />
+
+Inspired by the photo "Sans titre" by Sébastien Fraysse (2015): the hand appears as a negative shape, exactly where no spray arrived.
+
+<Collage columns={4} items={[
+    { src: "/img/projects/shader-sketches/sebastien-fraysse.webp", alt: "Inspiration: \"Sans titre\" by Sébastien Fraysse" },
+    { src: "/img/projects/shader-sketches/4.1.webp", alt: "Result" },
+    { src: "/img/projects/shader-sketches/4.2.webp", alt: "Result" },
+    { src: "/img/projects/shader-sketches/4.3.mp4", alt: "Mouse interaction" },
+    { src: "/img/projects/shader-sketches/4.4.webp", alt: "Process" },
+    { src: "/img/projects/shader-sketches/4.6.webp", alt: "Process" },
+    { src: "/img/projects/shader-sketches/4.8.webp", alt: "Process" },
+    { src: "/img/projects/shader-sketches/4.10.webp", alt: "Process" },
+]} />
+
+## Voronoi & Metaballs (GLSL)
+
+Trying to translate a hand-drawn organic pattern into math. Four paths: metaballs only, two Voronoi blob versions, and Voronoi borders with metaballs at the crossings.
+
+<Collage columns={3} items={[
+    { src: "/img/projects/shader-sketches/HandDrawnPattern.webp", alt: "The hand-drawn pattern I started from" },
+    { src: "/img/projects/shader-sketches/voronoi_blobb.mp4", alt: "Voronoi blobs, animated" },
+    { src: "/img/projects/shader-sketches/voronoi_metaball.mp4", alt: "Voronoi and metaballs, animated" },
+    { src: "/img/projects/shader-sketches/voronoi_metaballs_bild.webp", alt: "Voronoi and metaballs" },
+    { src: "/img/projects/shader-sketches/metaballs.webp", alt: "Metaballs only" },
+    { src: "/img/projects/shader-sketches/voronoi_blobb_2.webp", alt: "Voronoi blob v2" },
+    { src: "/img/projects/shader-sketches/07.3.webp", alt: "Process" },
+    { src: "/img/projects/shader-sketches/07.7.webp", alt: "Process" },
+    { src: "/img/projects/shader-sketches/07.11.webp", alt: "Process" },
+    { src: "/img/projects/shader-sketches/07.14.webp", alt: "Process" },
+]} />
+
+## Fancy Cubes (Unreal Engine)
+
+Recursive cube spawning in Blueprints, based on the course tutorial and made my own with new particle colors, velocity, gravity, emission glow and bloom.
+
+<Collage columns={2} items={[
+    { src: "/img/projects/shader-sketches/task03.mp4", alt: "Fancy cubes, animated" },
+    { src: "/img/projects/shader-sketches/task03_img.webp", alt: "Fancy cubes" },
+]} />
+
+GLSL · Voronoi · Metaballs · Noise · Unreal Blueprints · AI was used as a coding assistant; I tuned the parameters myself.

@@ -28,11 +28,12 @@ const DeskItems = () => {
         const container = containerRef.current;
         if (!container) return;
 
-        // Mutable per-frame state lives outside React state → no re-renders at 60 fps
         // On narrow (portrait) screens the objects are spread over the full height,
         // otherwise they would all pile up in the upper middle.
         const narrow = container.clientWidth < 640;
-        const pos = ITEMS.map((it) => ({ x: it.x, y: narrow ? 8 + (it.y - 20) * 2.6 : it.y, tilt: 0 }));
+        // Mutable per-frame state lives outside React state → no re-renders at 60 fps
+        // x/y = position in %, vx/vy = velocity in % per frame
+        const pos = ITEMS.map((it) => ({ x: it.x, y: narrow ? 8 + (it.y - 20) * 2.6 : it.y, vx: 0, vy: 0, tilt: 0 }));
         itemRefs.current.forEach((el, i) => {
             if (el) el.style.top = `${pos[i].y}%`;
         });
@@ -69,6 +70,11 @@ const DeskItems = () => {
         });
         io.observe(container);
 
+        const PUSH = 0.09;     // how strongly the cursor pushes (acceleration)
+        const DAMPING = 0.9;   // 1 = slides forever, 0 = stops instantly
+        const BOUNCE = 0.65;   // how much speed survives a bounce off an edge
+        const OUTSIDE = 0.35;  // left / right / top: max. 35% of an object may leave the desk
+
         function animate() {
             if (!visible || !container) return;
             const box = container.getBoundingClientRect();
@@ -86,16 +92,30 @@ const DeskItems = () => {
                     // Closer = stronger push, away from the cursor
                     const force = (repelRadius - dist) / repelRadius;
                     const angle = Math.atan2(dy, dx);
-                    p.x -= ((Math.cos(angle) * force * 8) / box.width) * 100;
-                    p.y -= ((Math.sin(angle) * force * 8) / box.height) * 100;
+                    p.vx -= Math.cos(angle) * force * PUSH * (1400 / box.width);
+                    p.vy -= Math.sin(angle) * force * PUSH * (900 / box.height);
                     p.tilt += (force * 15 - p.tilt) * 0.2;
                 } else {
                     p.tilt *= 0.9; // ease back
                 }
 
-                // Keep at least ~1/3 of every object inside the section
-                p.x = Math.max(-(r.width * 0.4 / box.width) * 100, Math.min(100 - (r.width * 0.6 / box.width) * 100, p.x));
-                p.y = Math.max(-(r.height * 0.4 / box.height) * 100, Math.min(100 - (r.height * 0.6 / box.height) * 100, p.y));
+                p.vx *= DAMPING;
+                p.vy *= DAMPING;
+                p.x += p.vx;
+                p.y += p.vy;
+
+                // Edges: the bottom edge is solid (nothing gets cut off there),
+                // the other edges let a bit of the object stick out, like on a real desk
+                const wPct = (r.width / box.width) * 100;
+                const hPct = (r.height / box.height) * 100;
+                const minX = -wPct * OUTSIDE;
+                const maxX = 100 - wPct * (1 - OUTSIDE);
+                const minY = -hPct * OUTSIDE;
+                const maxY = 100 - hPct;
+                if (p.x < minX) { p.x = minX; p.vx = Math.abs(p.vx) * BOUNCE; }
+                if (p.x > maxX) { p.x = maxX; p.vx = -Math.abs(p.vx) * BOUNCE; }
+                if (p.y < minY) { p.y = minY; p.vy = Math.abs(p.vy) * BOUNCE; }
+                if (p.y > maxY) { p.y = maxY; p.vy = -Math.abs(p.vy) * BOUNCE; }
 
                 el.style.left = `${p.x}%`;
                 el.style.top = `${p.y}%`;
@@ -128,8 +148,11 @@ const DeskItems = () => {
                         transform: `rotate(calc(${it.rotation}deg + var(--tilt, 0deg)))`,
                     }}
                 >
+                    {/* colored shadow = blurred copy of the same image (like the old three.js site) */}
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={it.src} alt="" draggable={false} />
+                    <img src={it.src} alt="" draggable={false} className="desk-shadow" />
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={it.src} alt="" draggable={false} className="desk-img" />
                 </div>
             ))}
         </div>

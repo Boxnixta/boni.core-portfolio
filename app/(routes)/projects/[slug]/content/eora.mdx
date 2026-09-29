@@ -1,34 +1,60 @@
+import Collage from '@/app/components/boni/Collage';
+
 export const metadata = {
     slug: "eora",
     title: "Eora",
     category: ["3D & Motion"],
-    thumbnail: "/img/projects/eora/eora-thumb.jpg",
-    thumbnailAlt: "MetaHuman character Eora in chrome clothing dissolving into particles",
-    description: "A 5-second vertical cinematic in Unreal Engine 5 with a MetaHuman character dissolving into particles. PGS Final Project, 2026.",
-    introText: "Eora is an \"error girly\" breaking out of a desktop world into an empty white system, like stepping into blank paper, not with fear but with longing. The 120-frame vertical cinematic was made in Unreal Engine 5 as my final project for Procedural Generation and Simulation and submitted to the Gauntlet of Gods 3D Community Challenge by @pwnisher.",
-    introImage: "/img/projects/eora/eora-intro.jpg",
-    introImageAlt: "Final card composite of Eora as a playable champion",
+    thumbnail: "/img/projects/eora/eora-thumb.webp",
+    thumbnailAlt: "Eora in chrome clothing dissolving into particles",
+    description: "A 5-second vertical cinematic in Unreal Engine 5: a MetaHuman dissolves into particles. PGS Final Project, 2026.",
+    introText: "Eora is an \"error girly\" breaking out of a desktop world into an empty white system, stepping into blank paper not with fear but with longing. I made the 120-frame vertical cinematic in Unreal Engine 5 for Procedural Generation and Simulation and submitted it to the Gauntlet of Gods 3D Community Challenge by @pwnisher, with Eora as a playable champion card.",
+    introImage: "/img/projects/eora/boni.core-final-2.webp",
+    introImageAlt: "Final Gauntlet of Gods card with Eora",
     galleryImages: [
-        { src: "/img/projects/eora/eora-01.jpg", alt: "Grass field inspired by the Windows XP background, in engine" },
-        { src: "/img/projects/eora/eora-02.jpg", alt: "Particle close-up in the atmosphere" },
-        { src: "/img/projects/eora/eora-03.jpg", alt: "Finished chrome clothing" },
-        { src: "/img/projects/eora/eora-04.jpg", alt: "Particles spawning from masked areas of the body" },
+        { src: "/img/projects/eora/makingOff-grass-2.webp", alt: "Grass field inspired by the Windows XP background, in engine" },
+        { src: "/img/projects/eora/makingOff-atmo-enora-particle-matrix.webp", alt: "Particle matrix around Eora" },
+        { src: "/img/projects/eora/makingOff-finished-chrome-clothing.webp", alt: "Finished chrome clothing" },
+        { src: "/img/projects/eora/atmo-particle-closeup.webp", alt: "Particle close-up, final render" },
     ],
 };
 
-## Concept
+<div className="not-prose project-links">
+    <a className="btn-glow" href="https://www.instagram.com/reel/Dc8RcC-R2f9/" target="_blank" rel="noopener noreferrer">Watch with sound on Instagram</a>
+</div>
 
-The piece follows the Gauntlet of Gods card game format: Eora is designed as a playable champion card with the ability "Afflict", a damage-over-time effect that fits her digital disintegration. Format: 1080×1920, 24 fps, 120 frames.
+<Collage columns={3} items={[
+    { src: "/img/projects/eora/GoG_Submission_final.mp4", alt: "Final render" },
+    { src: "/img/projects/eora/particel-white-space.mp4", alt: "Particles in the white space" },
+    { src: "/img/projects/eora/particle-showoff-transform-space.mp4", alt: "Particle transformation" },
+]} />
 
 ## Process
 
-- **Niagara simulations:** Extended the course systems with curl noise, drag and deterministic physics for a punchy procedural burst
-- **Mesh-based spawning:** Vertex color masks on the skeletal mesh so particles leave only defined body areas, synchronized to frame 63
-- **Shading:** Custom glass and dissolve shaders that react to the simulation
-- **Rendering:** Movie Render Queue as a 4K PNG sequence, finished in DaVinci Resolve. Sound design in InShot.
+- **Niagara:** the course particle systems pushed further with curl noise, drag and deterministic physics
+- **Particles from the body:** vertex color masks on the MetaHuman, so particles only leave the face and skin, right at frame 63
+- **Shading:** custom glass and dissolve materials that react to the simulation
+- **Render:** Movie Render Queue as a 4K PNG sequence, finished in DaVinci Resolve, sound design in InShot
 
-## Challenges
+<Collage columns={3} items={[
+    { src: "/img/projects/eora/makingOff-grass-1.webp", alt: "Grass field reference" },
+    { src: "/img/projects/eora/makingOff-particle-spawn-1.mp4", alt: "Particle spawn test" },
+    { src: "/img/projects/eora/makingOff-particle-spawn-closeup-face.mp4", alt: "Particles leaving the face" },
+    { src: "/img/projects/eora/makingOff-particle-spawn-closeup-body.mp4", alt: "Particles leaving the body" },
+    { src: "/img/projects/eora/makingOff-particle-spawn-body-area-1.webp", alt: "Body mask for particle spawning" },
+    { src: "/img/projects/eora/makingOff-particle-spawn-body-area-2.webp", alt: "Body mask for particle spawning" },
+    { src: "/img/projects/eora/makingOff-particle-spawn-body-area-3.webp", alt: "Body mask for particle spawning" },
+    { src: "/img/projects/eora/character-make-off-materials-nodetree.webp", alt: "Material node tree" },
+    { src: "/img/projects/eora/different-view-mode-sowoff.mp4", alt: "Different view modes" },
+    { src: "/img/projects/eora/makingOff-allign-animation-to-body.webp", alt: "Aligning the animation to the body" },
+    { src: "/img/projects/eora/viewport-particle-closeup-makingoff-atmo.webp", alt: "Viewport" },
+    { src: "/img/projects/eora/Face-features-eyes.webp", alt: "MetaHuman face features" },
+    { src: "/img/projects/eora/MakeUp-Beard.webp", alt: "MetaHuman customization: make-up and beard" },
+    { src: "/img/projects/eora/boni.core-1.webp", alt: "Card art" },
+    { src: "/img/projects/eora/Sounddesign.mp4", alt: "Sound design" },
+]} />
 
-The render first looked different from the viewport: particles moved slower and glass refractions disappeared. Removing Game Overrides, switching Niagara to deterministic mode and resetting warm-up frames made viewport and render match. A MetaHuman Assembly bug in UE 5.7 was solved by shortening the project path and generating missing textures manually.
+## Learnings
 
-[Watch the video on Instagram](https://www.instagram.com/reel/Dc8RcC-R2f9/)
+Set Niagara to deterministic early when you sync it with Sequencer, and test-render often: Movie Render Queue settings can completely change how simulations and glass look. And beta features have real costs, a MetaHuman bug in UE 5.7 ate a lot of time.
+
+Unreal Engine 5 · Niagara · MetaHuman · Sequencer · DaVinci Resolve

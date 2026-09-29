@@ -1,35 +1,41 @@
+import Collage from '@/app/components/boni/Collage';
+
 export const metadata = {
     slug: "the-entity",
     title: "The Entity",
     category: ["XR & Interactive"],
-    thumbnail: "/img/projects/the-entity/the-entity-thumb.jpg",
-    thumbnailAlt: "A glowing spherical entity above a pink surreal landscape",
-    description: "A narrative VR experience in a surreal pink landscape, guided by light and sound. Group project with Alexandra Lindt.",
-    introText: "The Entity is a narrative-driven VR experience for Meta Quest 3, focused on exploration, atmosphere and subtle guidance through environment and sound. Players explore a surreal landscape while a mysterious interdimensional entity tries to communicate with them. By finding and reassembling puzzle shards, they restore a final connection with it.",
-    introImage: "/img/projects/the-entity/the-entity-intro.jpg",
-    introImageAlt: "The puzzle site with mirror columns and the entity floating above",
+    thumbnail: "/img/projects/the-entity/the-entity-thumb.webp",
+    thumbnailAlt: "A glowing entity above a puzzle of mirror columns in a pink landscape",
+    description: "A narrative VR experience in a surreal pink landscape, guided by light and sound. With Alexandra Lindt, 2026.",
+    introText: "The Entity is a narrative VR experience for Meta Quest 3. You explore a surreal landscape while a mysterious interdimensional entity tries to reach you. Light, movement and spatial audio guide you, not UI. Put the broken puzzle back together and the entity can finally leave this world.",
+    introImage: "/img/projects/the-entity/02_puzzle_and_entity.webp",
+    introImageAlt: "The puzzle site with mirror columns and the entity above",
     galleryImages: [
-        { src: "/img/projects/the-entity/the-entity-01.jpg", alt: "Glowing green guiding spheres leading through the terrain" },
-        { src: "/img/projects/the-entity/the-entity-02.jpg", alt: "Pink hilly terrain with shimmering white trees" },
-        { src: "/img/projects/the-entity/the-entity-03.jpg", alt: "Grabbing a puzzle shard with a ray interactor" },
-        { src: "/img/projects/the-entity/the-entity-04.jpg", alt: "The entity leaving the world through a wind tunnel" },
+        { src: "/img/projects/the-entity/00_guiding_spheres.webp", alt: "Glowing guiding spheres" },
+        { src: "/img/projects/the-entity/08_environment_grass.webp", alt: "Pink surreal terrain" },
+        { src: "/img/projects/the-entity/04_grabbing_puzzle_piece_with_ray_grab.webp", alt: "Grabbing a puzzle shard with the ray" },
+        { src: "/img/projects/the-entity/06_end_scene_entity_leaving.webp", alt: "The entity leaving through a wind tunnel" },
     ],
 };
 
-## The Entity
+<video className="not-prose w-full rounded-xl shadow-lg my-8" src="/img/projects/the-entity/the-entity-walkthrough.mp4" poster="/img/projects/the-entity/03_puzzle_and_entity.webp" controls playsInline preload="none" />
 
-The entity is an abstract, non-humanoid presence: a floating energy sphere of branching, lightning-like structures inside a translucent volume. It pulses and reacts visually as the player progresses.
+<div className="not-prose project-links">
+    <a className="btn-glow" href="https://docs.google.com/presentation/d/1LXdNGPU68z5NQPVYGeNyHZGeOa1bldxXgsVCxTjWDhU/edit?usp=sharing" target="_blank" rel="noopener noreferrer">Slides</a>
+    <a className="btn-glow" href="https://github.com/ctechfilmuniversity/workshop_ws2526_xr/tree/main/Students/TheEntity_AlexandraLindt_BonitaVonGizycki" target="_blank" rel="noopener noreferrer">Documentation</a>
+</div>
 
-## Environment & Guidance
+## World & Entity
 
-A dream-like pink terrain built with Unity's terrain system and recolored textures, combined with force-field shaders that give trees and stones a white shimmer. Instead of UI or markers, pulsing green spheres guide the player along two paths, while areas off the paths invite free exploration. A generated voice calls for help and draws the player toward the center of the world.
+A dream-like pink terrain with shimmering force-field trees and stones. Pulsing green spheres lead the way along two paths, while areas off the paths invite free exploration. The entity is an abstract energy sphere of lightning-like veins that reacts to every step of the puzzle.
 
-## Puzzle
+<Collage columns={3} items={[
+    { src: "/img/projects/the-entity/01_discovery_of_puzzle.webp", alt: "Discovering the puzzle" },
+    { src: "/img/projects/the-entity/03_puzzle_and_entity.webp", alt: "Puzzle and entity" },
+    { src: "/img/projects/the-entity/05_partly_solved_puzzle.webp", alt: "Partly solved puzzle" },
+    { src: "/img/projects/the-entity/07_environment_branch.webp", alt: "Fallen trees" },
+    { src: "/img/projects/the-entity/09_environment_tree_and_stone.webp", alt: "Trees and stones" },
+    { src: "/img/projects/the-entity/10_guiding_spheres_paths.webp", alt: "The two guiding sphere paths" },
+]} />
 
-Around a central stone structure stand mirror-like columns, one of them broken. The player collects the scattered shards with ray-based grabbing and places them on the column, where they snap into place. With the last shard, the entity ascends and leaves the world through a newly appearing wind tunnel.
-
-## Tech
-
-Unity · Meta Quest 3 · Blender · Photoshop · Ableton Live 12 · third-party assets from the Unity Asset Store and freesound.org (credited in the project documentation)
-
-Team: Alexandra Lindt & Bonita von Gizycki
+Unity · Meta Quest 3 · Blender · Photoshop · Ableton Live 12 · Team: Alexandra Lindt & Bonita von Gizycki

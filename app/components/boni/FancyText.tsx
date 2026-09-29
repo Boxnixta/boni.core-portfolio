@@ -14,6 +14,9 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react
   base font, stored in em). Whatever font a letter shows during the shuffle,
   it stays centred in its box, so the word never grows or shrinks.
 
+  Sizes are matched per font (see .fancy-slot in boni.css): a capital letter has the
+  same height in script, pixel and normal, and so does a lowercase letter.
+
   Screen readers read the plain text (sr-only); the styled letters are hidden from them.
 */
 const FONTS = ["fancy-script", "", "fancy-pixel"];
@@ -89,7 +92,7 @@ const FancyText = ({ text, label }: { text: string; label?: string }) => {
                             ref={(el) => {
                                 letterRefs.current[idx] = el;
                             }}
-                            className="fancy-slot"
+                            className={`fancy-slot ${ch !== ch.toLowerCase() ? "is-upper" : ""}`}
                             style={widths[idx] ? { width: widths[idx] } : undefined}
                         >
                             <span className={classes[idx]}>{ch}</span>

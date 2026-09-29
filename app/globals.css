@@ -222,6 +222,7 @@ html:focus-within {
 
 
 
+
 /* =====================================================================
    boni.core design layer
    Colors, fonts, effects and page styles from the Readymag + three.js
@@ -269,16 +270,27 @@ body {
         text-align: center;
         white-space: nowrap;
     }
+    .fancy-slot > span {
+        line-height: 0;
+    }
     .fancy-script {
         @apply font-script font-normal;
-        font-size: 1.3em;
-        line-height: 0;
     }
     .fancy-pixel {
         @apply font-pixel font-normal;
-        font-size: 1.12em;
-        line-height: 0;
     }
+    /*
+      Sizes measured from the real fonts, so every letter in a slot looks equally big:
+      capitals  → all as tall as the script capital (script 1.3em)
+      lowercase → all with the same x-height as the normal font
+      (cap heights: Inter .73em, Pixelify .63em, Great Vibes .82em /
+       x-heights:   Inter .54em, Pixelify .45em, Great Vibes .36em)
+    */
+    .fancy-slot.is-upper > .fancy-script { font-size: 1.3em; }
+    .fancy-slot.is-upper > .fancy-pixel  { font-size: 1.69em; }
+    .fancy-slot.is-upper > span:not(.fancy-script):not(.fancy-pixel) { font-size: 1.46em; }
+    .fancy-slot:not(.is-upper) > .fancy-script { font-size: 1.5em; }
+    .fancy-slot:not(.is-upper) > .fancy-pixel  { font-size: 1.2em; }
 
     .glow-blue {
         color: #0000ff;
@@ -354,7 +366,17 @@ body {
     }
     .desk-item img {
         @apply block w-full;
-        filter: drop-shadow(-6px 8px 8px rgb(0 0 0 / 0.18));
+    }
+    /* colored shadow: the same image, blurred, shifted and half transparent */
+    .desk-item .desk-shadow {
+        @apply absolute;
+        top: 8px;
+        left: -6px;
+        filter: blur(8px);
+        opacity: 0.5;
+    }
+    .desk-item .desk-img {
+        @apply relative;
     }
     .hint-text {
         @apply pointer-events-none absolute left-1/2 z-20 flex -translate-x-1/2 flex-col items-center;
@@ -626,6 +648,17 @@ body {
     }
     .embed-start:hover .btn-glow {
         @apply bg-boni-pink text-white;
+    }
+
+    /* live GLSL shaders */
+    .shader-figure {
+        @apply my-8;
+    }
+    .shader-canvas {
+        @apply block w-full cursor-crosshair rounded-xl bg-white shadow-[0_6px_16px_rgb(0_0_0/0.15)];
+    }
+    .shader-figure figcaption {
+        @apply mt-2 text-center font-pixel text-sm text-boni-violet;
     }
 
     .project-links {
