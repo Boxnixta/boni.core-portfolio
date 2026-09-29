@@ -1,0 +1,219 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* --- Font Variables ------------------------------------------------- */
+/*
+  --font-inter and --font-playfair are injected onto <html> by next/font/google in layout.tsx.
+  We create semantic aliases so the rest of the CSS refers to
+  --font-headers and --font-body rather than a specific font name.
+  To switch fonts later, only this block needs updating.
+*/
+:root {
+    --font-headers: var(--font-inter);
+    --font-body:    var(--font-inter);
+}
+
+/* Ensure prose content uses the same body font, not the typography plugin default */
+.prose {
+    font-family: var(--font-body);
+}
+
+html {
+  scrollbar-gutter: stable;
+}
+
+html:focus-within {
+  scroll-behavior: smooth;
+}
+
+@layer base {
+
+    /* Prevent touch-scroll gestures from interfering with the WebGL canvas */
+    canvas {
+        touch-action: none;
+    }
+
+    body {
+        font-family: var(--font-body);
+        font-weight: 300;
+        font-feature-settings: 'rlig' 1, 'calt' 1;
+        background-color: white;
+    }
+
+    h1, h2, h3 {
+        font-family: var(--font-headers);
+        font-weight: 800;
+        overflow-wrap: anywhere;
+    }
+
+    /*
+      Fluid type: font-size scales with viewport width between 1rem and 10rem.
+      clamp(min, preferred, max)
+    */
+    h1 {
+        @apply leading-none;
+        font-size: clamp(1rem, 8vw + 0.3rem, 10rem);
+    }
+
+    h2 {
+        @apply text-3xl sm:text-4xl lg:text-6xl leading-tight;
+    }
+
+    h3 {
+        @apply text-xl sm:text-2xl lg:text-4xl leading-tight;
+    }
+
+    /* Consistent vertical padding on every section, growing with screen size */
+    section {
+        @apply p-3 sm:p-6 lg:p-12;
+    }
+
+    p {
+        @apply text-base leading-relaxed text-left sm:text-lg lg:text-xl lg:leading-loose;
+        max-width: 66ch; /* ~66 characters per line — optimal reading width */
+        hyphens: auto;   /* Break long words at syllable boundaries */
+    }
+
+    /* Variant for intro/hero paragraphs — tighter leading, balanced line wrapping */
+    p.intro {
+        @apply leading-tight text-left text-balance;
+    }
+}
+
+/* --- Components Layer ---------------------------------------------- */
+@layer components {
+  /* Shared horizontal padding for header and footer */
+  .site-header,
+  .site-footer {
+    @apply px-4 py-2;
+  }
+
+  /* The site name in the header — large, bold, tight tracking */
+  .site-header-name {
+    font-family: var(
+      --font-headers
+    ); /* CSS custom property do not work with apply */
+    font-weight: 800; /* Could also be written as @apply font-extrabold */
+    @apply tracking-tight text-lg sm:text-xl lg:text-2xl;
+  }
+
+  .site-header {
+    /* sticky: stays visible at the top when the user scrolls */
+    /* backdrop-blur: frosted-glass effect when content scrolls under it */
+    @apply sticky top-0 z-50 flex items-center justify-between
+               bg-white/80 backdrop-blur;
+  }
+  .btn {
+    @apply inline-flex items-center gap-2 border px-3 py-1
+           text-sm text-gray-800
+           hover:bg-gray-50 hover:text-gray-400
+           focus-visible:outline-none focus-visible:ring-2
+           focus-visible:ring-gray-300 cursor-pointer;
+}
+
+/* Only shown below the md breakpoint */
+.btn-mobile {
+    @apply md:hidden;
+}
+
+.menu-panel {
+    @apply absolute right-0 mt-2 w-48 border bg-white shadow-lg md:hidden;
+}
+
+.menu-panel-list {
+    @apply py-1;
+}
+
+.menu-panel-link {
+    @apply block px-3 py-2 text-sm text-gray-800
+           hover:bg-gray-50 hover:text-gray-400;
+}
+
+  .site-footer {
+    @apply border-t border-gray-300 bg-white;
+  }
+
+  .site-footer p {
+    @apply text-gray-600 text-sm;
+  }
+
+  /* Footer rows: stacked on mobile, inline on sm and above */
+  .footer-content {
+    @apply flex flex-col gap-1 pl-4
+               sm:flex-row sm:justify-between sm:items-center;
+  }
+  .main-nav {
+    @apply hidden md:flex items-center gap-6;
+  }
+
+  .main-nav-link {
+    @apply text-sm font-medium text-gray-800 hover:text-gray-400;
+  }
+
+      .content-center {
+        @apply flex items-center justify-center w-full pt-3 sm:pt-6 lg:pt-10;
+    }
+
+  /* Collapsible CV sections inside vita.mdx */
+  .cv-details {
+    @apply border-b border-gray-200 py-1;
+  }
+
+  .cv-details summary {
+    @apply w-full cursor-pointer select-none py-2 text-sm font-medium
+           text-gray-700 hover:text-gray-900
+           flex justify-between items-center;
+    list-style: none;
+  }
+
+  .cv-details summary::-webkit-details-marker { display: none; }
+
+  .cv-details summary::after {
+    content: '+';
+    @apply text-lg leading-none text-gray-400 flex-shrink-0 ml-2;
+  }
+
+  .cv-details[open] summary::after {
+    content: '−';
+  }
+
+  .cv-details[open] summary {
+    @apply text-gray-900 mb-2 font-bold;
+  }
+}
+
+/* Collapse tables into stacked rows on small screens */
+@media (max-width: 768px) {
+    .about-table table,
+    .about-table thead,
+    .about-table tbody,
+    .about-table th,
+    .about-table td,
+    .about-table tr {
+        display: block;
+        width: 100%;
+    }
+
+    /* Hide the header row — column names become redundant when stacked */
+    .about-table thead { display: none; }
+
+    .about-table tr {
+        margin-bottom: 0.75rem;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.5rem;
+        padding: 0.5rem;
+        background-color: #ffffff;
+    }
+
+    .about-table td {
+        padding: 0.1rem 0;
+        line-height: 1.2;
+    }
+
+    /* First cell acts as a label — make it stand out */
+    .about-table td:first-child {
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 0.2rem;
+    }
+}

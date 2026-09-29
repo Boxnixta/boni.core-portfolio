@@ -1,0 +1,29 @@
+import Image from 'next/image';
+
+export const metadata = {
+    slug: 'project3',
+    title: 'Project 3',
+    category: ['category 1', 'category 3'],
+    thumbnail: '/img/projects/project03/project03-thumb.jpg',
+    thumbnailAlt: '[Description 1]',
+    description: '[One or two sentences for Project 3.]',
+    introText: '[Longer intro for the detail page for Project 3.]',
+    introImage: '/img/projects/project03/project03-intro.jpg',
+    introImageAlt: '[Description for Project 3]',
+    galleryImages: [
+        { src: '/img/projects/project03/project03-01.jpg', alt: '[Caption Project 3]' },
+        { src: '/img/projects/project03/project03-02.jpg', alt: '[Caption Project 3]' },
+        { src: '/img/projects/project03/project03-03.jpg', alt: '[Caption Project 3]' },
+        { src: '/img/projects/project03/project03-04.jpg', alt: '[Caption Project 3]' },
+    ],
+}
+
+{/* The following part can be completely individualized per project */}
+
+<Image src="/img/projects/project03/project03-thumb.jpg" alt="[Caption for image 1]" width={1600} height={1067} className="w-full h-auto" />
+
+[Some other text for project 3.]
+
+<Image src="/img/projects/project03/project03-02.jpg" alt="[Caption for image 2]" width={1600} height={1067} className="w-full h-auto" />
+
+[Result, exhibition, publication, or insight for project 3.]
