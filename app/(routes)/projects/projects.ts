@@ -47,21 +47,19 @@ export type Project = ProjectMetadata & {
 
 // To add a project: create a new .mdx file and add one import and one entry here.
 export const projects: Project[] = [
-    // --- Creative Technologies (Master) ---
+    { ...(bachelorThesisMeta as ProjectMetadata), Component: BachelorThesis },
+    { ...(etherealMeta as ProjectMetadata), Component: Ethereal },
+    { ...(eoraMeta as ProjectMetadata), Component: Eora },
+    { ...(kusamaMeta as ProjectMetadata), Component: Kusama },
     { ...(cyberdeckMeta as ProjectMetadata), Component: Cyberdeck },
     { ...(grenzenMeta as ProjectMetadata), Component: Grenzen },
     { ...(entityMeta as ProjectMetadata), Component: Entity },
-    { ...(eoraMeta as ProjectMetadata), Component: Eora },
     { ...(blobMeta as ProjectMetadata), Component: Blob },
     { ...(tentaclesMeta as ProjectMetadata), Component: Tentacles },
-    { ...(kusamaMeta as ProjectMetadata), Component: Kusama },
     { ...(shaderSketchesMeta as ProjectMetadata), Component: ShaderSketches },
     { ...(vrWorkshopMeta as ProjectMetadata), Component: VrWorkshop },
-    // --- Design (Bachelor) ---
-    { ...(bachelorThesisMeta as ProjectMetadata), Component: BachelorThesis },
     { ...(nacht3001Meta as ProjectMetadata), Component: Nacht3001 },
     { ...(sneezeMeta as ProjectMetadata), Component: Sneeze },
-    { ...(etherealMeta as ProjectMetadata), Component: Ethereal },
     { ...(undineMeta as ProjectMetadata), Component: Undine },
     { ...(dmagMeta as ProjectMetadata), Component: Dmag },
     { ...(coversMeta as ProjectMetadata), Component: Covers },

@@ -25,10 +25,6 @@ const Contact = () => (
                 <h1 className="hey-title">Contact</h1>
             </div>
 
-            <p className="contact-intro">
-                Want to work together, talk about a project or just say hi? Send me a message!
-            </p>
-
             {/* Flowers bloom around the contact details on hover / keyboard focus */}
             <div className="contact-details group">
                 <img src="/img/contact/Flower_illustration.png" alt="" className="contact-flowers" draggable={false} />
@@ -72,6 +68,9 @@ const Contact = () => (
 
         <aside className="contact-aside">
             <BurgerGirl />
+            <p className="contact-intro">
+                Want to work together, talk about a project or just say hi? Send me a message!
+            </p>
         </aside>
     </div>
 );

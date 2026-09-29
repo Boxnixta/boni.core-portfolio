@@ -223,6 +223,7 @@ html:focus-within {
 
 
 
+
 /* =====================================================================
    boni.core design layer
    Colors, fonts, effects and page styles from the Readymag + three.js
@@ -394,9 +395,9 @@ body {
     .hey-spray {
         /* like the PDF: big, behind the word, starting over the 2nd letter, "y" hanging below */
         @apply absolute z-0 max-w-none select-none;
-        width: 3.9em;
-        left: 0.45em;
-        top: -1.05em;
+        width: 3.3em;
+        left: -0.3em;
+        top: -1.45em;
         transform-origin: 50% 80%;
     }
     .hey-spray:hover {
@@ -442,25 +443,26 @@ body {
     }
 
     .about-photo-cluster {
-        @apply relative h-[280px] w-full max-w-[520px] sm:h-[320px];
+        @apply relative h-[300px] w-full max-w-[560px] sm:h-[340px];
+    }
+    /* photo sits right; cd and cdj are tucked one third behind it (lower z-index) */
+    .about-photo {
+        @apply absolute left-[44%] top-0 z-10 w-[42%] shadow-lg;
     }
     .about-cd {
-        @apply absolute left-[2%] top-[4%] z-10 w-[22%];
+        @apply absolute left-[29%] top-[6%] z-0 w-[22%];
     }
     .about-cd:hover img {
         animation: cd-spin 1.2s linear infinite;
     }
     .about-cdj {
-        @apply absolute bottom-[2%] left-0 z-20 w-[30%] -rotate-12;
+        @apply absolute bottom-[4%] left-[25%] z-0 w-[29%] -rotate-12;
     }
     .about-cdj img {
         filter: drop-shadow(0 6px 8px rgb(0 0 0 / 0.2));
     }
-    .about-photo {
-        @apply absolute left-[30%] top-0 z-10 w-[40%] shadow-lg;
-    }
     .about-stars {
-        @apply absolute left-[20%] top-[40%] z-30 w-[65%];
+        @apply absolute left-[30%] top-[46%] z-30 w-[78%];
     }
 
     .about-intro {
@@ -506,7 +508,7 @@ body {
 
     /* Folder game */
     .folder-playground {
-        @apply relative mt-2 h-[600px] w-full touch-none select-none sm:h-[780px];
+        @apply relative mt-2 h-[540px] w-full touch-none select-none sm:h-[660px];
     }
     .basket {
         @apply pointer-events-none absolute bottom-10 left-0 z-20 w-[92%] max-w-[600px] -rotate-6;
@@ -536,7 +538,7 @@ body {
         rotate: -6deg;
     }
     .basket-counter {
-        @apply absolute bottom-0 left-0 max-w-none font-pixel text-sm text-boni-blue sm:text-base;
+        @apply absolute bottom-3 left-2 z-40 max-w-none font-pixel text-sm text-boni-blue sm:text-base;
     }
 
     /* ================= contact ================= */
@@ -544,18 +546,22 @@ body {
         @apply grid grid-cols-1 gap-10 py-6 lg:grid-cols-[1fr_440px] lg:py-12;
     }
     .contact-main {
-        @apply flex flex-col items-start lg:pl-[8%];
+        @apply flex flex-col items-start lg:pl-[6%];
     }
     .contact-heading .hey-spray {
         width: 4.6em;
         left: -0.6em;
         top: -1.2em;
     }
+    .contact-heading {
+        margin-top: 0.7em;
+    }
     .contact-intro {
-        @apply relative z-10 mt-4 italic text-neutral-700;
+        @apply relative z-10 mt-4 max-w-none text-center italic text-neutral-700;
     }
     .contact-details {
-        @apply relative mt-6 px-6 py-16 sm:px-16 sm:py-24;
+        /* higher and centred under the heading */
+        @apply relative mt-0 self-center px-6 py-10 sm:px-16 sm:py-14;
     }
     .contact-details ul {
         @apply relative z-10 flex flex-col gap-4;
@@ -582,7 +588,7 @@ body {
                group-hover:scale-100 group-hover:opacity-100 group-focus-within:scale-100 group-focus-within:opacity-100;
     }
     .contact-aside {
-        @apply mx-auto w-full max-w-[440px] lg:mt-6;
+        @apply mx-auto w-full max-w-[440px] lg:mt-6 lg:mr-0 lg:translate-x-10;
     }
     .burger-girl img {
         @apply w-full select-none;
@@ -648,6 +654,22 @@ body {
     }
     .embed-start:hover .btn-glow {
         @apply bg-boni-pink text-white;
+    }
+
+    /* projects page: filter pills (inherit .btn), active = filled pink */
+    .filter-pill {
+        @apply rounded-full font-semibold;
+    }
+    .filter-pill.is-active {
+        @apply bg-boni-pink text-white;
+    }
+    /* projects page: blue glow behind the image on hover / keyboard focus */
+    .project-card-media {
+        @apply block rounded-lg transition-shadow duration-300 focus-visible:outline-none;
+    }
+    .project-card-media:hover,
+    .project-card-media:focus-visible {
+        box-shadow: 0 0 40px 12px rgb(51 0 255 / 0.55);
     }
 
     /* live GLSL shaders */

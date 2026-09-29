@@ -1,3 +1,4 @@
+import Collage from '@/app/components/boni/Collage';
 import Embed from '@/app/components/boni/Embed';
 
 export const metadata = {
@@ -18,9 +19,16 @@ export const metadata = {
     ],
 };
 
-<Embed src="https://boxnixta.github.io/threejs-kusama-scene-CC1-03.03/" title="Dispersion Bubbles, live Three.js scene" poster={metadata.thumbnail} label="Start live scene" />
+<Embed src="https://boxnixta.github.io/threejs-kusama-scene-CC1-03.03/" title="Dispersion Bubbles, live Three.js scene" poster="/img/projects/kusama-bubbles/kusama-poster.webp" label="Start live scene" />
 
 Click and scroll to move freely through the scene and enjoy the glass bubbles.
+
+<Collage columns={2} items={[
+    { src: "/img/projects/kusama-bubbles/kusama-00.mp4", alt: "Moving through the scene" },
+    { src: "/img/projects/kusama-bubbles/kusama-03-1.webp", alt: "Glass bubbles with glowing dots" },
+    { src: "/img/projects/kusama-bubbles/kusama-03-2.webp", alt: "Dispersion close-up" },
+    { src: "/img/projects/kusama-bubbles/kusama-03-3.webp", alt: "Overview of the scene" },
+]} />
 
 ## Technical Highlights
 

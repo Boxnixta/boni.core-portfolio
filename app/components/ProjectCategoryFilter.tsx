@@ -5,12 +5,12 @@ import type { ProjectMetadata } from '@/app/(routes)/projects/projects';
 import ProjectCard from './ProjectCard';
 
 type ProjectCategoryFilterProps = {
-    projects: ProjectMetadata[];  // metadata-only — Component is stripped before crossing the server/client boundary
-    categories: string[];  // deduplicated list from projects.ts
+    projects: ProjectMetadata[];
+    categories: string[];
 };
 
+// Filter pills in the boni.core button style: pink outline, active = filled pink
 const ProjectCategoryFilter = ({ projects, categories }: ProjectCategoryFilterProps) => {
-    // activeCategory is the currently selected filter — 'All' shows every project
     const [activeCategory, setActiveCategory] = useState('All');
 
     const filtered = activeCategory === 'All'
@@ -19,24 +19,20 @@ const ProjectCategoryFilter = ({ projects, categories }: ProjectCategoryFilterPr
 
     return (
         <>
-            {/* One button per category */}
-            <div className="flex flex-wrap gap-2 mb-8">
+            <div className="flex flex-wrap gap-3 mb-10" role="group" aria-label="Filter projects by category">
                 {categories.map((cat) => (
                     <button
                         key={cat}
+                        type="button"
                         onClick={() => setActiveCategory(cat)}
-                        className={`px-4 py-1 rounded-full text-sm border transition-colors ${
-                            activeCategory === cat
-                                ? 'bg-neutral-900 text-white border-neutral-900'
-                                : 'bg-white text-neutral-700 border-neutral-300 hover:border-neutral-600'
-                        }`}
+                        aria-pressed={activeCategory === cat}
+                        className={`btn filter-pill ${activeCategory === cat ? 'is-active' : ''}`}
                     >
                         {cat}
                     </button>
                 ))}
             </div>
 
-            {/* Filtered project grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12">
                 {filtered.map((project) => (
                     <ProjectCard key={project.slug} project={project} />
