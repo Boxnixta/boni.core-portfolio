@@ -217,3 +217,126 @@ html:focus-within {
         margin-bottom: 0.2rem;
     }
 }
+
+/* =====================================================================
+   boni.core design layer
+   Colors, fonts and effects from the Readymag + three.js portfolios.
+   Appended at the end of globals.css, so these rules win over the
+   tutorial defaults above when both define the same class.
+   ===================================================================== */
+
+/*
+  @theme inline turns these variables into Tailwind utilities:
+  text-boni-blue, bg-boni-pink, border-boni-pink, font-pixel, font-script …
+  "inline" is needed because the font variables are set by next/font at runtime.
+*/
+@theme inline {
+    --color-boni-blue: #0000ff;
+    --color-boni-violet: #3300ff;
+    --color-boni-pink: #ff98e0;
+    --font-pixel: var(--font-pixelify), monospace;
+    --font-script: var(--font-great-vibes), cursive;
+}
+
+/* The landing section is 100vw wide — clip instead of showing a horizontal scrollbar */
+body {
+    overflow-x: clip;
+}
+
+@layer components {
+    /* --- Glow text, like the headlines in the old portfolio --- */
+    .glow-blue {
+        color: #0000ff;
+        text-shadow: 0 0 6px rgb(0 0 255 / 0.55);
+    }
+
+    /* --- Header --- */
+    .site-header-name {
+        @apply font-pixel font-normal text-boni-blue;
+        text-shadow: 0 0 6px rgb(0 0 255 / 0.5);
+    }
+
+    .main-nav-link {
+        @apply transition-colors hover:text-boni-blue;
+    }
+
+    /* --- Buttons: pink outline with glow ("Nächstes Projekt" style) --- */
+    .btn,
+    .btn-glow {
+        @apply inline-flex items-center gap-2 rounded-md border-2 border-boni-pink bg-white
+               px-4 py-1.5 text-sm font-bold text-boni-pink
+               transition-shadow cursor-pointer
+               focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-boni-blue;
+        box-shadow: 0 0 10px rgb(255 152 224 / 0.7);
+    }
+    .btn:hover,
+    .btn-glow:hover {
+        @apply bg-white text-boni-pink;
+        box-shadow: 0 0 22px rgb(255 152 224 / 0.95);
+    }
+    .btn-glow {
+        @apply text-base px-6 py-2;
+    }
+
+    /* --- Landing desk --- */
+    .landing-desk {
+        /* Break out of the centered max-width container to full screen width */
+        @apply relative left-1/2 w-screen -translate-x-1/2 overflow-hidden bg-white p-0;
+        height: calc(100svh - 3.5rem); /* full screen minus the sticky header */
+        min-height: 520px;
+    }
+    .landing-intro {
+        /* above the desk objects, white halo keeps it readable when objects slide behind */
+        @apply pointer-events-none absolute inset-0 z-20 flex flex-col items-center justify-center text-center;
+        text-shadow: 0 0 6px #fff, 0 0 12px #fff, 0 0 18px #fff;
+    }
+    .landing-intro p {
+        @apply max-w-none text-center text-sm leading-relaxed sm:text-base;
+        font-family: Helvetica, Arial, sans-serif;
+        font-weight: 400;
+    }
+    .desk-item {
+        @apply pointer-events-none absolute select-none;
+        transform-origin: center;
+    }
+    .desk-item img {
+        @apply block w-full;
+        /* soft colored shadow, replaces the blurred duplicate image of the old version */
+        filter: drop-shadow(-6px 8px 8px rgb(0 0 0 / 0.18));
+    }
+    .hint-text {
+        @apply pointer-events-none absolute left-1/2 z-20 flex -translate-x-1/2 flex-col items-center;
+        transition: top 2s cubic-bezier(0.22, 1, 0.36, 1);
+        filter: drop-shadow(0 0 2.5px #0000ff);
+    }
+
+    /* --- Signature bottom left --- */
+    .signature {
+        @apply fixed bottom-4 left-4 z-40 hidden w-24 md:block lg:w-28;
+    }
+    .signature img {
+        @apply w-full h-auto;
+    }
+    .signature:hover img {
+        animation: wiggle 0.5s ease-in-out infinite;
+    }
+}
+
+@keyframes wiggle {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-2deg); }
+    75% { transform: rotate(2deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hint-text { transition: none; }
+    .signature:hover img { animation: none; }
+}
+
+/* Coded cursor: the star replaces the native cursor.
+   The class is set by CursorCanvas only when WebGL is running
+   (mouse devices, no "reduce motion"). */
+.custom-cursor,
+.custom-cursor * {
+    cursor: none !important;
+}
