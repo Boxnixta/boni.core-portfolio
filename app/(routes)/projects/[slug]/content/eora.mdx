@@ -1,0 +1,34 @@
+export const metadata = {
+    slug: "eora",
+    title: "Eora",
+    category: ["3D & Motion"],
+    thumbnail: "/img/projects/eora/eora-thumb.jpg",
+    thumbnailAlt: "MetaHuman character Eora in chrome clothing dissolving into particles",
+    description: "A 5-second vertical cinematic in Unreal Engine 5 with a MetaHuman character dissolving into particles. PGS Final Project, 2026.",
+    introText: "Eora is an \"error girly\" breaking out of a desktop world into an empty white system, like stepping into blank paper, not with fear but with longing. The 120-frame vertical cinematic was made in Unreal Engine 5 as my final project for Procedural Generation and Simulation and submitted to the Gauntlet of Gods 3D Community Challenge by @pwnisher.",
+    introImage: "/img/projects/eora/eora-intro.jpg",
+    introImageAlt: "Final card composite of Eora as a playable champion",
+    galleryImages: [
+        { src: "/img/projects/eora/eora-01.jpg", alt: "Grass field inspired by the Windows XP background, in engine" },
+        { src: "/img/projects/eora/eora-02.jpg", alt: "Particle close-up in the atmosphere" },
+        { src: "/img/projects/eora/eora-03.jpg", alt: "Finished chrome clothing" },
+        { src: "/img/projects/eora/eora-04.jpg", alt: "Particles spawning from masked areas of the body" },
+    ],
+};
+
+## Concept
+
+The piece follows the Gauntlet of Gods card game format: Eora is designed as a playable champion card with the ability "Afflict", a damage-over-time effect that fits her digital disintegration. Format: 1080×1920, 24 fps, 120 frames.
+
+## Process
+
+- **Niagara simulations:** Extended the course systems with curl noise, drag and deterministic physics for a punchy procedural burst
+- **Mesh-based spawning:** Vertex color masks on the skeletal mesh so particles leave only defined body areas, synchronized to frame 63
+- **Shading:** Custom glass and dissolve shaders that react to the simulation
+- **Rendering:** Movie Render Queue as a 4K PNG sequence, finished in DaVinci Resolve. Sound design in InShot.
+
+## Challenges
+
+The render first looked different from the viewport: particles moved slower and glass refractions disappeared. Removing Game Overrides, switching Niagara to deterministic mode and resetting warm-up frames made viewport and render match. A MetaHuman Assembly bug in UE 5.7 was solved by shortening the project path and generating missing textures manually.
+
+[Watch the video on Instagram](https://www.instagram.com/reel/Dc8RcC-R2f9/)

@@ -1,0 +1,33 @@
+export const metadata = {
+    slug: "blob-audio-reactor",
+    title: "Blob Audio Reactor",
+    category: ["Creative Coding", "Sound & Audio"],
+    thumbnail: "/img/projects/blob-audio-reactor/blob-audio-reactor-thumb.jpg",
+    thumbnailAlt: "Eight nested, colorful blob shapes reacting to sound",
+    description: "An audio-reactive openFrameworks app: eight nested blobs that breathe with bass, mids and highs. Creative Coding II Final, 2026.",
+    introText: "Eight round, color-faded blob shapes, one inside the other, move together like one soft, living form. The app plays a music file or listens to the microphone. The outer blobs react to bass, the middle ones to mid tones and the inner ones to highs. Clicking adds a color splash that fades after a few seconds, and sliders shift the hue.",
+    introImage: "/img/projects/blob-audio-reactor/blob-audio-reactor-intro.jpg",
+    introImageAlt: "Final result of the blob app",
+    galleryImages: [
+        { src: "/img/projects/blob-audio-reactor/blob-audio-reactor-01.jpg", alt: "Bass zigzag on the outermost blob" },
+        { src: "/img/projects/blob-audio-reactor/blob-audio-reactor-02.jpg", alt: "Mid bubbles drifting on the inner mid blobs" },
+        { src: "/img/projects/blob-audio-reactor/blob-audio-reactor-03.jpg", alt: "High shimmer on the innermost blob" },
+        { src: "/img/projects/blob-audio-reactor/blob-audio-reactor-04.jpg", alt: "Debug readout with hue slider and file/mic switch" },
+    ],
+};
+
+## Architecture
+
+The project is split into three classes, each with one clear job:
+
+- **AudioAnalyzer** reads a file or the microphone and turns the sound into smooth 0–1 loudness values per band. Instead of FFT it uses simple low-, high- and band-pass filters that update every sample. Extra values describe how deep the sub-bass sits, how bright the highs are and how hard a bass hit is.
+- **Blob** is one layer: 240 points around a center, shifted by Perlin noise and scaled by loudness. Special effects like a bass zigzag, bass and high shimmer and drifting mid bubbles are steered by the analyzer values. Waves ripple inward from outer to inner blobs.
+- **ofApp** connects everything and draws hand-built sliders and switches without a UI library.
+
+## Learning
+
+Real-time audio is fragile: reopening the microphone stream silently stopped sending data after a few tries, with no error. Keeping the stream open permanently fixed it. And a visually complex result benefits a lot from small, single-purpose classes.
+
+Tools: openFrameworks (C++) · ofxAudioFile
+
+[Watch the demo video](https://owncloud.gwdg.de/index.php/s/i6HXKSuyQFh0AEc)

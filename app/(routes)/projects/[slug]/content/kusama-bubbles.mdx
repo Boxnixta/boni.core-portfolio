@@ -1,0 +1,30 @@
+export const metadata = {
+    slug: "kusama-bubbles",
+    title: "Dispersion Bubbles",
+    category: ["Creative Coding"],
+    thumbnail: "/img/projects/kusama-bubbles/kusama-bubbles-thumb.jpg",
+    thumbnailAlt: "Glass spheres with glowing dots in a dotted environment",
+    description: "An interactive Three.js scene with glass bubbles, an homage to Yayoi Kusama. Creative Coding I.",
+    introText: "An interactive Three.js scene in homage to Yayoi Kusama. It combines abstract geometry with physically based materials to create an immersive, sculptural environment. Click and scroll to move freely through the scene and explore the glass bubbles.",
+    introImage: "/img/projects/kusama-bubbles/kusama-bubbles-intro.jpg",
+    introImageAlt: "Glass bubbles with glowing inner dots",
+    galleryImages: [
+        { src: "/img/projects/kusama-bubbles/kusama-bubbles-01.jpg", alt: "Close-up of glass dispersion" },
+        { src: "/img/projects/kusama-bubbles/kusama-bubbles-02.jpg", alt: "Procedural canvas texture with noise and dithering" },
+        { src: "/img/projects/kusama-bubbles/kusama-bubbles-03.jpg", alt: "Bloom glow through the glass" },
+        { src: "/img/projects/kusama-bubbles/kusama-bubbles-04.jpg", alt: "Overview of the scene" },
+    ],
+};
+
+## Technical Highlights
+
+- **Procedural environment:** An inverted sphere with a generated canvas texture using digital noise and dithering
+- **Glass:** MeshPhysicalMaterial with dispersion, IOR and frosted effects
+- **Post-processing:** UnrealBloomPass lets the inner dots glow through the glass
+- **Math:** The dots are aligned on the curved sphere surfaces using normal vectors and quaternions
+
+## Learnings
+
+My focus was on simulating realistic glass. I used AI to understand the mathematical concepts like quaternion alignment and to debug the build step by step, which taught me how to build a Three.js render stack modularly.
+
+[Live demo](https://boxnixta.github.io/threejs-kusama-scene-CC1-03.03/) · [CodePen](https://codepen.io/box-nixta/pen/zxBaPOv) · [Source code](https://github.com/Boxnixta/threejs-kusama-scene-CC1-03.03)

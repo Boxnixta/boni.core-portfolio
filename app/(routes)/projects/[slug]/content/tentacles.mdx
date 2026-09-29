@@ -1,0 +1,31 @@
+export const metadata = {
+    slug: "tentacles",
+    title: "Tentacles",
+    category: ["3D & Motion", "Sound & Audio"],
+    thumbnail: "/img/projects/tentacles/tentacles-thumb.jpg",
+    thumbnailAlt: "Red and pink tentacles in a turquoise architectural space with golden light",
+    description: "An audiovisual piece about octopus perception, with procedural tentacles reacting to a custom soundtrack.",
+    introText: "This 60-second audiovisual piece is inspired by the painting \"Tempel des Cthulhu\" by fellow student Saikhat Musaeva: a turquoise archway tunnel, golden light from above and pink tentacle-like forms below. The piece moves from abstract close-ups to partial recognition of tentacles in an undefined architectural space. Octopuses sense sound as vibration through their bodies, so both sound and visuals focus on felt movement rather than melody.",
+    introImage: "/img/projects/tentacles/tentacles-intro.jpg",
+    introImageAlt: "Blender render of the tentacle scene",
+    galleryImages: [
+        { src: "/img/projects/tentacles/tentacles-01.jpg", alt: "Procedural tentacles in the Blender 3D view" },
+        { src: "/img/projects/tentacles/tentacles-02.jpg", alt: "Material node setup" },
+        { src: "/img/projects/tentacles/tentacles-03.jpg", alt: "Ableton Live project" },
+        { src: "/img/projects/tentacles/tentacles-04.jpg", alt: "Custom watery synth in Vital" },
+    ],
+};
+
+## Sound
+
+Made in Ableton Live at 120 BPM. An ambient opening with a pluck arp and granulated vocals panning through space. From 0:15 a hard bounce beat enters and withdraws again, creating tension and release. A custom Vital synth with slow LFO pitch modulation creates a rippling, water-like motion. Different frequency bands get their own LFO speeds and panning, mimicking the decentralized sensing of an octopus.
+
+## Visuals
+
+Made in Blender with Cycles and finished in DaVinci Resolve. Two tentacle systems: procedural Geometry Nodes spirals driven by an empty that tracks the beat, and hand-drawn curves with noise displacement for constant wobbling. At the midpoint the world shifts from black to soft rose, turning mystery into revelation.
+
+## Learnings
+
+Geometry Nodes are flexible but expensive to render, so adaptive sampling was essential. Blender has no native audio input, so drivers on empties became a non-destructive way to sync animation to sound. It was also my first time building a synth in Vital.
+
+Format: 3840×2160, 60 seconds

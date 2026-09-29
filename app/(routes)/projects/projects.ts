@@ -1,18 +1,26 @@
 import type { ComponentType } from 'react';
 
-// Import each MDX file as both a React component (default) and its metadata (named)
-import Project1Component, { metadata as project1Meta }
-    from './[slug]/content/project1.mdx';
-import Project2Component, { metadata as project2Meta }
-    from './[slug]/content/project2.mdx';
-import Project3Component, { metadata as project3Meta }
-    from './[slug]/content/project3.mdx';
+// Import each MDX file as both a React component (default) and its metadata (named).
+// Order here = order on the projects page.
+import Cyberdeck, { metadata as cyberdeckMeta } from './[slug]/content/cute-cyberdeck.mdx';
+import Grenzen, { metadata as grenzenMeta } from './[slug]/content/grenzen-vr.mdx';
+import Entity, { metadata as entityMeta } from './[slug]/content/the-entity.mdx';
+import Eora, { metadata as eoraMeta } from './[slug]/content/eora.mdx';
+import Blob, { metadata as blobMeta } from './[slug]/content/blob-audio-reactor.mdx';
+import Tentacles, { metadata as tentaclesMeta } from './[slug]/content/tentacles.mdx';
+import Kusama, { metadata as kusamaMeta } from './[slug]/content/kusama-bubbles.mdx';
+import BachelorThesis, { metadata as bachelorThesisMeta } from './[slug]/content/bachelor-thesis.mdx';
+import Nacht3001, { metadata as nacht3001Meta } from './[slug]/content/3001-nacht-reel.mdx';
+import Sneeze, { metadata as sneezeMeta } from './[slug]/content/sneeze-loop.mdx';
+import Ethereal, { metadata as etherealMeta } from './[slug]/content/ethereal-modulations.mdx';
+import Undine, { metadata as undineMeta } from './[slug]/content/undine.mdx';
+import Dmag, { metadata as dmagMeta } from './[slug]/content/d-mag-03.mdx';
+import Covers, { metadata as coversMeta } from './[slug]/content/cover-artworks.mdx';
+import Events, { metadata as eventsMeta } from './[slug]/content/event-design.mdx';
+import Merchant, { metadata as merchantMeta } from './[slug]/content/merchant-of-venice.mdx';
+import Nova, { metadata as novaMeta } from './[slug]/content/nova-picture-book.mdx';
+import KleinSein, { metadata as kleinSeinMeta } from './[slug]/content/klein-sein-comic.mdx';
 
-/*
-  ProjectMetadata describes the shape of the metadata export in each .mdx file.
-  TypeScript cannot infer the full type from MDX exports automatically,
-  so we cast each import against this type to get proper type checking.
-*/
 export type ProjectMetadata = {
     slug: string;
     title: string;
@@ -30,29 +38,36 @@ export type ProjectMetadata = {
     galleryImages: { src: string; alt: string }[];
 };
 
-// Project extends ProjectMetadata with the MDX component
 export type Project = ProjectMetadata & {
     /** The MDX file rendered as a React component on the detail page */
     Component: ComponentType;
 };
 
-/*
-  Each project is defined entirely in its MDX file.
-  The metadata export provides all structured data; the default export is the component.
-  To add a project: create a new .mdx file and add one import and one entry here.
-*/
+// To add a project: create a new .mdx file and add one import and one entry here.
 export const projects: Project[] = [
-    { ...(project1Meta as ProjectMetadata), Component: Project1Component },
-    { ...(project2Meta as ProjectMetadata), Component: Project2Component },
-    { ...(project3Meta as ProjectMetadata), Component: Project3Component },
+    // --- Creative Technologies (Master) ---
+    { ...(cyberdeckMeta as ProjectMetadata), Component: Cyberdeck },
+    { ...(grenzenMeta as ProjectMetadata), Component: Grenzen },
+    { ...(entityMeta as ProjectMetadata), Component: Entity },
+    { ...(eoraMeta as ProjectMetadata), Component: Eora },
+    { ...(blobMeta as ProjectMetadata), Component: Blob },
+    { ...(tentaclesMeta as ProjectMetadata), Component: Tentacles },
+    { ...(kusamaMeta as ProjectMetadata), Component: Kusama },
+    // --- Design (Bachelor) ---
+    { ...(bachelorThesisMeta as ProjectMetadata), Component: BachelorThesis },
+    { ...(nacht3001Meta as ProjectMetadata), Component: Nacht3001 },
+    { ...(sneezeMeta as ProjectMetadata), Component: Sneeze },
+    { ...(etherealMeta as ProjectMetadata), Component: Ethereal },
+    { ...(undineMeta as ProjectMetadata), Component: Undine },
+    { ...(dmagMeta as ProjectMetadata), Component: Dmag },
+    { ...(coversMeta as ProjectMetadata), Component: Covers },
+    { ...(eventsMeta as ProjectMetadata), Component: Events },
+    { ...(merchantMeta as ProjectMetadata), Component: Merchant },
+    { ...(novaMeta as ProjectMetadata), Component: Nova },
+    { ...(kleinSeinMeta as ProjectMetadata), Component: KleinSein },
 ];
 
-/*
-  Derive the category list automatically from the projects array.
-  Array.from(new Set(...)) removes duplicates.
-  'All' is prepended so there is always a "show everything" option.
-  This list never needs manual maintenance — it updates when projects change.
-*/
+// Category list is derived automatically; 'All' is always first.
 export const categories = [
     'All',
     ...Array.from(new Set(projects.flatMap((p) => p.category))),
