@@ -219,6 +219,7 @@ html:focus-within {
 }
 
 
+
 /* =====================================================================
    boni.core design layer
    Colors, fonts, effects and page styles from the Readymag + three.js
@@ -254,14 +255,21 @@ body {
 @layer components {
     /* ================= global ================= */
 
-    /* Fancy headline letters (FancyText): script / pixel mix */
+    /* Fancy headline letters (FancyText): always violet-blue with glow.
+       Script and pixel are scaled up so all three fonts look the same size. */
+    .fancy-text {
+        color: #3300ff;
+        text-shadow: 0 0 8px rgb(51 0 255 / 0.45);
+    }
     .fancy-script {
         @apply font-script font-normal;
-        font-size: 1.15em;
+        font-size: 1.3em;
         line-height: 0;
     }
     .fancy-pixel {
         @apply font-pixel font-normal;
+        font-size: 1.12em;
+        line-height: 0;
     }
 
     .glow-blue {
@@ -490,7 +498,7 @@ body {
 
     /* ================= contact ================= */
     .contact-page {
-        @apply grid grid-cols-1 gap-10 py-6 lg:grid-cols-[1fr_320px] lg:py-12;
+        @apply grid grid-cols-1 gap-10 py-6 lg:grid-cols-[1fr_440px] lg:py-12;
     }
     .contact-main {
         @apply flex flex-col items-start lg:pl-[8%];
@@ -529,7 +537,7 @@ body {
                group-hover:scale-100 group-hover:opacity-100 group-focus-within:scale-100 group-focus-within:opacity-100;
     }
     .contact-aside {
-        @apply mx-auto w-full max-w-[320px] lg:mt-10;
+        @apply mx-auto w-full max-w-[440px] lg:mt-6;
     }
     .burger-girl img {
         @apply w-full select-none;

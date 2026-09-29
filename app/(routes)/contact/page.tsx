@@ -1,6 +1,20 @@
 import { Mail, CodeXml, MapPin } from "lucide-react";
-import FancyText from "@/app/components/boni/FancyText";
 import BurgerGirl from "@/app/components/boni/contact/BurgerGirl";
+
+// Simple outline icons in the lucide style (lucide has no brand logos)
+const InstagramIcon = ({ className = "" }: { className?: string }) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+        <rect x="3" y="3" width="18" height="18" rx="5" />
+        <circle cx="12" cy="12" r="4" />
+        <circle cx="17.5" cy="6.5" r="0.6" fill="currentColor" />
+    </svg>
+);
+const LinkedInIcon = ({ className = "" }: { className?: string }) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+        <rect x="3" y="3" width="18" height="18" rx="3" />
+        <path d="M8 10v7M8 7v.01M12 17v-4a2 2 0 0 1 4 0v4M12 10v7" />
+    </svg>
+);
 
 /* eslint-disable @next/next/no-img-element */
 const Contact = () => (
@@ -8,9 +22,7 @@ const Contact = () => (
         <div className="contact-main">
             <div className="hey-heading contact-heading">
                 <img src="/img/about/hey-spray-illu.png" alt="" className="hey-spray" draggable={false} />
-                <h1 className="hey-title">
-                    <FancyText text="Contact" />
-                </h1>
+                <h1 className="hey-title">Contact</h1>
             </div>
 
             <p className="contact-intro">
@@ -26,6 +38,20 @@ const Contact = () => (
                         <span className="contact-label">E-Mail</span>
                         <a href="mailto:bonigizy@gmail.com?subject=Hey%2C%20just%20wanted%20to%20say%20hi!" className="contact-link">
                             bonigizy@gmail.com
+                        </a>
+                    </li>
+                    <li>
+                        <InstagramIcon className="contact-icon" />
+                        <span className="contact-label">Instagram</span>
+                        <a href="https://www.instagram.com/boni.core/" target="_blank" rel="noopener noreferrer" className="contact-link">
+                            @boni.core
+                        </a>
+                    </li>
+                    <li>
+                        <LinkedInIcon className="contact-icon" />
+                        <span className="contact-label">LinkedIn</span>
+                        <a href="https://www.linkedin.com/in/bonita-von-gizycki-766300166" target="_blank" rel="noopener noreferrer" className="contact-link">
+                            Bonita von Gizycki
                         </a>
                     </li>
                     <li>

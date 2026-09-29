@@ -2,7 +2,6 @@ import Link from "next/link";
 import Parallax from "@/app/components/boni/about/Parallax";
 import FolderPlayground from "@/app/components/boni/about/FolderPlayground";
 import Draggable from "@/app/components/boni/Draggable";
-import FancyText from "@/app/components/boni/FancyText";
 import AccordionAbout from "@/app/components/AccordionAbout";
 
 /* eslint-disable @next/next/no-img-element */
@@ -37,15 +36,14 @@ const About = () => (
             <div className="hey-heading">
                 <img src="/img/about/hey-spray-illu.png" alt="" className="hey-spray" draggable={false} />
                 {/* many o's on purpose: the word always runs out of the screen, never wraps */}
-                <h2 className="hey-title hello-title">
-                    <FancyText text="Hellooooooooooooooo" label="Hello" />
-                </h2>
+                <h2 className="hey-title hello-title">Hellooooooooooooooo</h2>
             </div>
 
             <p className="about-intro">
-                I&apos;m Bonita, a designer and creative technologist based in Potsdam. I build interactive and
-                audiovisual work where 3D, code and sound meet: real-time visuals, VR experiences, generative systems
-                and small hardware builds. My roots are in graphic design, illustration and film.
+                I&apos;m Bonita, a designer and creative technologist based in Potsdam, currently studying Creative
+                Technologies at the Film University Babelsberg. I build interactive and audiovisual work where 3D, code
+                and sound meet: real-time visuals, VR experiences, generative systems and small hardware builds. My
+                roots are in graphic design, branding, illustration and film.
             </p>
 
             <Draggable className="about-heart">
