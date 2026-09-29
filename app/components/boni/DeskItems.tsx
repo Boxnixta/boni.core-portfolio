@@ -105,13 +105,18 @@ const DeskItems = () => {
                 p.y += p.vy;
 
                 // Edges: the bottom edge is solid (nothing gets cut off there),
-                // the other edges let a bit of the object stick out, like on a real desk
-                const wPct = (r.width / box.width) * 100;
-                const hPct = (r.height / box.height) * 100;
-                const minX = -wPct * OUTSIDE;
-                const maxX = 100 - wPct * (1 - OUTSIDE);
-                const minY = -hPct * OUTSIDE;
-                const maxY = 100 - hPct;
+                // the other edges let a bit of the object stick out, like on a real desk.
+                // left/top position the UNROTATED box, but what you see is the rotated one
+                // (e.g. the keyboard is a tall image turned by -80°). So the limits are
+                // computed from the visible (rotated) size r and the unrotated size offset*.
+                const offW = el.offsetWidth;
+                const offH = el.offsetHeight;
+                const toPctX = (px: number) => (px / box.width) * 100;
+                const toPctY = (px: number) => (px / box.height) * 100;
+                const minX = toPctX(-r.width * OUTSIDE + r.width / 2 - offW / 2);
+                const maxX = toPctX(box.width + r.width * OUTSIDE - r.width / 2 - offW / 2);
+                const minY = toPctY(-r.height * OUTSIDE + r.height / 2 - offH / 2);
+                const maxY = toPctY(box.height - r.height / 2 - offH / 2 - 6); // 6px air for the shadow
                 if (p.x < minX) { p.x = minX; p.vx = Math.abs(p.vx) * BOUNCE; }
                 if (p.x > maxX) { p.x = maxX; p.vx = -Math.abs(p.vx) * BOUNCE; }
                 if (p.y < minY) { p.y = minY; p.vy = Math.abs(p.vy) * BOUNCE; }

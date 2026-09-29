@@ -16,6 +16,14 @@ export function generateStaticParams() {
 // In Next.js 15+, params is a Promise — the component must be async to await it
 type Props = { params: Promise<{ slug: string }> };
 
+/*
+  Title always on ONE line: the font size is the normal h1 size, but never bigger
+  than "available width ÷ number of letters". 0.7 ≈ average letter width in em
+  (bold Inter + the bigger fancy letters), so long titles simply get smaller.
+*/
+const titleSize = (title: string) =>
+    `min(clamp(1rem, 8vw + 0.3rem, 10rem), calc(min(84vw, 1480px) / ${(title.length * 0.7).toFixed(2)}))`;
+
 const ProjectPage = async ({ params }: Props) => {
     const { slug } = await params;
 
@@ -27,9 +35,9 @@ const ProjectPage = async ({ params }: Props) => {
 
     return (
         <>
-            {/* Page title — same fancy letter mix as every heading */}
+            {/* Page title — same fancy letter mix as every heading, always one line */}
             <section className="relative w-full text-center">
-                <h1 className="text-center text-balance">
+                <h1 className="text-center whitespace-nowrap" style={{ fontSize: titleSize(project.title) }}>
                     <FancyText text={project.title} />
                 </h1>
             </section>

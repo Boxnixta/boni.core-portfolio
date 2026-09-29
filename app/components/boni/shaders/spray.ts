@@ -1,5 +1,6 @@
 // Spray noise shader (PGS Task 04.02), inspired by the spray photo "Sans titre" by Sébastien Fraysse.
-// Mouse = a hand that pushes the spray away. Original, fully commented file:
+// Mouse = a hand that pushes the spray away. Portfolio version: the mouse gap now lowers
+// the density, so its edge stays grainy. Original, fully commented file:
 // lecture_ss26_procedural_generation_and_simulation / gizycki / code / noise-randomness_gizycki.glsl
 const spray = `#ifdef GL_ES
 precision mediump float;
@@ -40,14 +41,17 @@ void main() {
     density *= smoothstep(blobRadius * 2.2, blobRadius * 1.5, length(toCenter));
     density = clamp(density, 0.0, 1.0);
     
+    // Maus-Aussparung, asymmetrisch zur Bildmitte
+    // Portfolio-Version: die Aussparung senkt die DICHTE statt die Farbe auszublenden,
+    // dadurch bleibt auch der Rand um die Maus körnig (keine glatte, harte Kante mehr)
+    float towardsCenter = dot(normalize(toMouse + 0.0001), normalize(center - mouse + 0.0001));
+    float mouseClear = smoothstep(0.02 + towardsCenter * 0.03, 0.2 + towardsCenter * 0.05, distToMouse);
+    density *= mouseClear;
+    
     // Noise erzeugt die körnige Spray-Textur
     float n = hash(displacedCoord * 50.0 + sin(u_time * 0.0005) * 0.01);
     float spray = step(pow(1.0 - density, 1.5), n);
-    
-    // Maus-Aussparung, asymmetrisch zur Bildmitte
-    float towardsCenter = dot(normalize(toMouse + 0.0001), normalize(center - mouse + 0.0001));
-    float mouseClear = smoothstep(0.04 + towardsCenter * 0.03, 0.1 + towardsCenter * 0.03, distToMouse);
-    spray *= mouseClear;
+    spray *= step(0.001, density); // wo keine Dichte ist, kein einziger Punkt
     
     vec3 color = mix(vec3(1.0), vec3(0.9, 0.1, 0.15), spray);
     gl_FragColor = vec4(color, 1.0);
