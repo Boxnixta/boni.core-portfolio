@@ -224,6 +224,7 @@ html:focus-within {
 
 
 
+
 /* =====================================================================
    boni.core design layer
    Colors, fonts, effects and page styles from the Readymag + three.js
@@ -670,6 +671,34 @@ body {
     .project-card-media:hover,
     .project-card-media:focus-visible {
         box-shadow: 0 0 40px 12px rgb(51 0 255 / 0.55);
+    }
+
+    /* Blob Audio Reactor (web port) */
+    .blob-reactor {
+        @apply my-8 grid gap-6 rounded-xl bg-neutral-50 p-4 shadow-[0_6px_16px_rgb(0_0_0/0.12)] sm:p-6 lg:grid-cols-[1fr_260px];
+    }
+    .blob-canvas {
+        @apply block aspect-square w-full max-w-[640px] cursor-crosshair justify-self-center touch-none;
+    }
+    .blob-controls {
+        @apply flex flex-col gap-4 self-center;
+    }
+    .blob-slider {
+        @apply flex flex-col gap-1 font-pixel text-sm text-boni-violet;
+    }
+    .blob-slider input {
+        accent-color: #ff98e0;
+    }
+    .blob-hint {
+        @apply max-w-none text-xs text-neutral-500;
+    }
+
+    /* big bold section titles inside a project (e.g. Event Design) */
+    .project-section-title {
+        @apply mt-16 mb-2 text-3xl font-extrabold leading-tight text-neutral-900 sm:text-5xl;
+    }
+    .project-section-meta {
+        @apply mb-4 text-sm text-neutral-500;
     }
 
     /* live GLSL shaders */

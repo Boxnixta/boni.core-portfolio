@@ -12,14 +12,12 @@ import Kusama, { metadata as kusamaMeta } from './[slug]/content/kusama-bubbles.
 import ShaderSketches, { metadata as shaderSketchesMeta } from './[slug]/content/shader-sketches.mdx';
 import VrWorkshop, { metadata as vrWorkshopMeta } from './[slug]/content/vr-workshop.mdx';
 import BachelorThesis, { metadata as bachelorThesisMeta } from './[slug]/content/bachelor-thesis.mdx';
-import Nacht3001, { metadata as nacht3001Meta } from './[slug]/content/3001-nacht-reel.mdx';
 import Sneeze, { metadata as sneezeMeta } from './[slug]/content/sneeze-loop.mdx';
 import Ethereal, { metadata as etherealMeta } from './[slug]/content/ethereal-modulations.mdx';
 import Undine, { metadata as undineMeta } from './[slug]/content/undine.mdx';
 import Dmag, { metadata as dmagMeta } from './[slug]/content/d-mag-03.mdx';
 import Covers, { metadata as coversMeta } from './[slug]/content/cover-artworks.mdx';
 import Events, { metadata as eventsMeta } from './[slug]/content/event-design.mdx';
-import Merchant, { metadata as merchantMeta } from './[slug]/content/merchant-of-venice.mdx';
 import Nova, { metadata as novaMeta } from './[slug]/content/nova-picture-book.mdx';
 import KleinSein, { metadata as kleinSeinMeta } from './[slug]/content/klein-sein-comic.mdx';
 
@@ -30,6 +28,8 @@ export type ProjectMetadata = {
     /** Path to the 3:2 thumbnail shown on the listing page */
     thumbnail: string;
     thumbnailAlt: string;
+    /** Optional CSS object-position for the thumbnail, e.g. "20% 50%" */
+    thumbnailPosition?: string;
     /** Short description shown below the thumbnail */
     description: string;
     /** Intro paragraph shown alongside the intro image on the detail page */
@@ -49,24 +49,22 @@ export type Project = ProjectMetadata & {
 export const projects: Project[] = [
     { ...(bachelorThesisMeta as ProjectMetadata), Component: BachelorThesis },
     { ...(etherealMeta as ProjectMetadata), Component: Ethereal },
+    { ...(blobMeta as ProjectMetadata), Component: Blob },
     { ...(eoraMeta as ProjectMetadata), Component: Eora },
     { ...(kusamaMeta as ProjectMetadata), Component: Kusama },
     { ...(cyberdeckMeta as ProjectMetadata), Component: Cyberdeck },
     { ...(grenzenMeta as ProjectMetadata), Component: Grenzen },
     { ...(entityMeta as ProjectMetadata), Component: Entity },
-    { ...(blobMeta as ProjectMetadata), Component: Blob },
     { ...(tentaclesMeta as ProjectMetadata), Component: Tentacles },
-    { ...(shaderSketchesMeta as ProjectMetadata), Component: ShaderSketches },
-    { ...(vrWorkshopMeta as ProjectMetadata), Component: VrWorkshop },
-    { ...(nacht3001Meta as ProjectMetadata), Component: Nacht3001 },
     { ...(sneezeMeta as ProjectMetadata), Component: Sneeze },
-    { ...(undineMeta as ProjectMetadata), Component: Undine },
     { ...(dmagMeta as ProjectMetadata), Component: Dmag },
-    { ...(coversMeta as ProjectMetadata), Component: Covers },
     { ...(eventsMeta as ProjectMetadata), Component: Events },
-    { ...(merchantMeta as ProjectMetadata), Component: Merchant },
     { ...(novaMeta as ProjectMetadata), Component: Nova },
     { ...(kleinSeinMeta as ProjectMetadata), Component: KleinSein },
+    { ...(shaderSketchesMeta as ProjectMetadata), Component: ShaderSketches },
+    { ...(vrWorkshopMeta as ProjectMetadata), Component: VrWorkshop },
+    { ...(undineMeta as ProjectMetadata), Component: Undine },
+    { ...(coversMeta as ProjectMetadata), Component: Covers },
 ];
 
 // Category list is derived automatically; 'All' is always first.

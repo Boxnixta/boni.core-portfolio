@@ -13,6 +13,8 @@ const ProjectCard = ({ project }: { project: ProjectMetadata }) => {
                         alt={project.thumbnailAlt}
                         fill
                         className="object-cover"
+                        // optional per project in the .mdx metadata, e.g. thumbnailPosition: "15% 50%"
+                        style={project.thumbnailPosition ? { objectPosition: project.thumbnailPosition } : undefined}
                     />
                 </div>
             </Link>
