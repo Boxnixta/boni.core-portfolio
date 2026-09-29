@@ -1,30 +1,75 @@
 import BlobReactor from '@/app/components/boni/blob/BlobReactor';
+import Collage from '@/app/components/boni/Collage';
 
 export const metadata = {
     slug: "blob-audio-reactor",
     title: "Blob Audio Reactor",
     category: ["Creative Coding", "Sound & Audio"],
-    thumbnail: "/img/projects/blob-audio-reactor/blob-thumb.webp",
-    thumbnailAlt: "Eight nested, colourful blob shapes reacting to sound",
-    description: "Audio-reactive blobs that breathe with bass, mids and highs. openFrameworks, Creative Coding II, 2026. Try it live!",
-    introText: "Eight round, colour-faded blobs, one inside the other, move like one soft living form. The outer blobs react to bass, the middle ones to mids, the inner ones to highs. Originally an openFrameworks (C++) app, here rebuilt for the browser: play the demo beat, use your microphone or drop in a song.",
-    introImage: "/img/projects/blob-audio-reactor/blob-intro.webp",
-    introImageAlt: "The blobs reacting to a beat",
+    thumbnail: "/img/projects/blob-audio-reactor/blob-thumb-v11.webp",
+    thumbnailAlt: "Blue nested blob shapes reacting to sound",
+    description: "A visual app that moves with sound: eight nested blobs react to bass, mids and highs. openFrameworks, Creative Coding II, 2026. Try it live!",
+    introText: "Eight round, radially colour-faded blobs, one inside the other, move and wobble together like one soft, living form. The outer two react to bass, the three middle ones to mid tones and the three inner ones to high tones. Clicking or dragging adds a colour splash that fades after 8 seconds, and two sliders shift the hue.",
+    introImage: "/img/projects/blob-audio-reactor/high-schimmer.webp",
+    introImageAlt: "The blobs in their starting blue",
     galleryImages: [],
 };
 
+## Try it
+
+This is a browser version of the openFrameworks app, ported 1:1 from my C++ code: same filters, same numbers, same starting blue. Play the demo beat, use your microphone or choose a song from your computer.
+
 <BlobReactor />
 
-## How it works
+<video className="not-prose project-video" src="/img/projects/blob-audio-reactor/final-result.mp4" autoPlay muted loop playsInline />
 
-- **AudioAnalyzer** turns sound into smooth 0 to 1 loudness values per band. Instead of an FFT it uses simple low, high and band pass filters, plus three extra values: how deep the sub bass sits, how bright the highs are and how hard a bass hit is.
-- **Blob** is one layer: 240 points around a centre, moved by Perlin noise and scaled by loudness. Special effects: a bass zigzag, bass and high shimmer and drifting mid bubbles. Waves ripple from the outer to the inner blobs.
-- **ofApp** connects everything and draws hand-built sliders without a UI library.
+## Classes
 
-The browser version is a port of the openFrameworks original with the Web Audio API and Canvas.
+I split the project into three classes. Each class has one clear job.
+
+**AudioAnalyzer** handles all the sound, reading either a file or the microphone. Instead of an FFT it uses simple filters, because the blobs only need one smooth loudness value per band, updated every sample: a low-pass filter gives the bass, a high-pass filter the highs and both combined the mids. Three extra values compare two filters at slightly different cutoffs: how deep the sub-bass sits (40 Hz vs. 70 Hz), how bright the highs are (19 kHz vs. 11 kHz) and how hard a bass hit is.
+
+<img src="/img/projects/blob-audio-reactor/analyzer-regler.webp" alt="Debug readout of the analysed audio values with hue slider, gradient slider and file / mic switch" className="doc-figure" />
+
+**Blob** is one layer of the shape: 240 points around a centre, each shifted every frame by Perlin noise and scaled by the blob's loudness, which gives a soft, breathing outline instead of a plain circle. Four more effects apply only to specific blobs:
+
+**Bass zigzag** (outermost blob): a fast, sharp sine wave in a narrow angle range, sized by sub-bass loudness and pointed by the sub-bass depth.
+
+<img src="/img/projects/blob-audio-reactor/bass-zickzack.webp" alt="Bass zigzag on the outermost blob" className="doc-figure" />
+
+**Bass shimmer** (outermost blob, opposite side): a soft, trembling wobble that only appears on hard, percussive hits.
+
+<img src="/img/projects/blob-audio-reactor/bass-schimmer.webp" alt="Bass shimmer on hard bass hits" className="doc-figure" />
+
+**Mid bubbles** (the two inner mid blobs): small circles that drift on their own noise and grow with the mids, capped so a bubble never reaches past the blob outside it.
+
+<img src="/img/projects/blob-audio-reactor/mid-kreise.webp" alt="Mid bubbles on the inner mid blobs" className="doc-figure" />
+
+**High shimmer** (innermost blob): a trembling wobble that moves up or down with the pitch of the highs.
+
+<img src="/img/projects/blob-audio-reactor/high-schimmer.webp" alt="High shimmer on the innermost blob" className="doc-figure" />
+
+Two more functions connect all eight layers: the wave pattern of each outer blob ripples inward, and a soft clamp pulls a point back if it would grow past the blob outside it.
+
+**ofApp** connects everything: it creates the eight blobs, passes the analyzer values to the matching blob functions every frame and draws hand-built sliders and a file / mic switch without a UI library.
+
+## Making of
+
+<Collage columns={3} items={[
+    { src: "/img/projects/blob-audio-reactor/makingoff-1.mp4", alt: "" },
+    { src: "/img/projects/blob-audio-reactor/makingoff-2.mp4", alt: "" },
+    { src: "/img/projects/blob-audio-reactor/makingoff-3.mp4", alt: "" },
+    { src: "/img/projects/blob-audio-reactor/makingoff-4.mp4", alt: "" },
+    { src: "/img/projects/blob-audio-reactor/makingoff-5.mp4", alt: "" },
+]} />
+
+## Learning
+
+Real-time audio is fragile: closing and reopening the microphone looked fine at first, but silently stopped sending data after a few tries, with no error message. Keeping the microphone stream open permanently fixed it. And a visually complex result benefits a lot from small, single-purpose classes and functions.
+
+I used Claude as a tutor and debugging partner while I designed, wrote and tested the code myself.
 
 <div className="not-prose project-links">
     <a className="btn-glow" href="https://owncloud.gwdg.de/index.php/s/i6HXKSuyQFh0AEc" target="_blank" rel="noopener noreferrer">Original demo video</a>
 </div>
 
-openFrameworks (C++) · ofxAudioFile · Web Audio API · Canvas
+openFrameworks (C++) · ofxAudioFile · browser port: Web Audio API & Canvas

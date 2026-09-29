@@ -7,15 +7,32 @@ const ProjectCard = ({ project }: { project: ProjectMetadata }) => {
     return (
         <div className="flex flex-col gap-3">
             <Link href={`/projects/${project.slug}`} className="project-card-media" aria-label={project.title}>
-                <div className="relative aspect-3/2 w-full overflow-hidden rounded-lg bg-gray-100">
+                <div className="relative aspect-3/2 w-full overflow-hidden rounded-lg bg-white">
+                    {/* optional thumbnailVideo in the .mdx metadata: short muted loop instead of the still */}
+                    {project.thumbnailVideo ? (
+                        <video
+                            src={project.thumbnailVideo}
+                            poster={project.thumbnail}
+                            autoPlay
+                            muted
+                            loop
+                            playsInline
+                            preload="metadata"
+                            aria-label={project.thumbnailAlt}
+                            className={`absolute inset-0 h-full w-full ${project.thumbnailFit === "contain" ? "object-contain bg-white" : "object-cover"}`}
+                        />
+                    ) : (
                     <Image
                         src={project.thumbnail}
                         alt={project.thumbnailAlt}
                         fill
-                        className="object-cover"
-                        // optional per project in the .mdx metadata, e.g. thumbnailPosition: "15% 50%"
+                        // optional per project in the .mdx metadata:
+                        // thumbnailFit: "contain" → whole image visible, white bars top/bottom
+                        // thumbnailPosition: "15% 50%" → which part stays visible when cropped
+                        className={project.thumbnailFit === "contain" ? "object-contain bg-white" : "object-cover"}
                         style={project.thumbnailPosition ? { objectPosition: project.thumbnailPosition } : undefined}
                     />
+                    )}
                 </div>
             </Link>
 

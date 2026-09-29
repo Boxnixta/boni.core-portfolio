@@ -1,21 +1,66 @@
+import Collage from '@/app/components/boni/Collage';
+import Flipbook from '@/app/components/boni/Flipbook';
+
 export const metadata = {
     slug: "vr-workshop",
     title: "VR Workshop",
     category: ["XR & Interactive"],
-    thumbnail: "/img/projects/vr-workshop/vr-workshop-thumb.jpg",
-    thumbnailAlt: "Participants sketching in VR with headsets and controllers",
+    thumbnail: "/img/projects/vr-workshop/vr-workshop-thumb-v11.webp",
+    thumbnailAlt: "Participants sketching in VR",
     description: "\"Visuals in Gravity Sketch\": a VR workshop for prospective students, co-led with Corinna Beyer. Summer school 2024.",
     introText: "Together with Corinna Beyer I designed and led a VR workshop at the summer school for prospective students. The task: create 3D visuals in Gravity Sketch for a fictional job, moving visuals that run live behind a DJ set.",
-    introImage: "/img/projects/vr-workshop/vr-workshop-intro.jpg",
+    introImage: "/img/projects/vr-workshop/48a44719-768d-44e0-bf3a-16c6a7380b5a.webp",
     introImageAlt: "Workshop participants wearing VR headsets",
-    galleryImages: [
-        { src: "/img/projects/vr-workshop/vr-workshop-01.jpg", alt: "Workshop slides: Sketching in VR" },
-        { src: "/img/projects/vr-workshop/vr-workshop-02.jpg", alt: "Participants sketching in Gravity Sketch" },
-        { src: "/img/projects/vr-workshop/vr-workshop-03.jpg", alt: "Workshop slides: learning a new software step by step" },
-        { src: "/img/projects/vr-workshop/vr-workshop-04.jpg", alt: "3D sketch result from the workshop" },
-    ],
+    galleryImages: [],
 };
+
+<Collage columns={3} items={[
+    { src: "/img/projects/vr-workshop/48a44719-768d-44e0-bf3a-16c6a7380b5a.webp", alt: "" },
+    { src: "/img/projects/vr-workshop/0cfe770d-e8ee-4575-8560-ad7908d3c271.webp", alt: "" },
+    { src: "/img/projects/vr-workshop/f58447bf-101a-4c29-a2f1-e4350b397826.webp", alt: "" },
+    { src: "/img/projects/vr-workshop/a6b3bd2c-52e7-4789-9ee1-de8377f9f278.webp", alt: "" },
+    { src: "/img/projects/vr-workshop/b6cf211e-a383-4ee8-a909-ca7e86407a44.webp", alt: "" },
+    { src: "/img/projects/vr-workshop/4fc48886-4c1d-42bc-baab-fc658005b8ce.webp", alt: "" },
+    { src: "/img/projects/vr-workshop/d67c448b-2138-44b4-ba25-a60a2e53324a.webp", alt: "" },
+    { src: "/img/projects/vr-workshop/622ca9f6-4fff-4c7e-ab7d-abe427c0f3b2.webp", alt: "" },
+    { src: "/img/projects/vr-workshop/217dca35-7965-40d1-979c-8b7f6e691892.webp", alt: "" },
+    { src: "/img/projects/vr-workshop/caf39dd2-44b3-4ffa-a670-d0ba1f5d9020.webp", alt: "" },
+]} />
 
 Besides the design task, we taught playful methods for learning new software, an important skill in design and tech jobs. VR headsets were new to everyone, so we also focused on interface logic and thinking in 3D space.
 
-Gravity Sketch · VR · Teaching
+## The Workshop Slides
+
+<Flipbook label="Gravity Sketch workshop slides" pages={[
+    "/img/projects/vr-workshop/gravity-sketch-workshop_seite_01.webp",
+    "/img/projects/vr-workshop/gravity-sketch-workshop_seite_02.webp",
+    "/img/projects/vr-workshop/gravity-sketch-workshop_seite_03.webp",
+    "/img/projects/vr-workshop/gravity-sketch-workshop_seite_05.webp",
+    "/img/projects/vr-workshop/gravity-sketch-workshop_seite_06.webp",
+    "/img/projects/vr-workshop/gravity-sketch-workshop_seite_07.webp",
+    "/img/projects/vr-workshop/gravity-sketch-workshop_seite_08.webp",
+    "/img/projects/vr-workshop/gravity-sketch-workshop_seite_09.webp",
+    "/img/projects/vr-workshop/gravity-sketch-workshop_seite_10.webp",
+    "/img/projects/vr-workshop/gravity-sketch-workshop_seite_11.webp",
+    "/img/projects/vr-workshop/gravity-sketch-workshop_seite_12.webp",
+    "/img/projects/vr-workshop/gravity-sketch-workshop_seite_13.webp",
+    "/img/projects/vr-workshop/gravity-sketch-workshop_seite_14.webp",
+    "/img/projects/vr-workshop/gravity-sketch-workshop_seite_15.webp",
+    "/img/projects/vr-workshop/gravity-sketch-workshop_seite_16.webp",
+    "/img/projects/vr-workshop/gravity-sketch-workshop_seite_17.webp",
+    "/img/projects/vr-workshop/gravity-sketch-workshop_seite_18.webp",
+    "/img/projects/vr-workshop/gravity-sketch-workshop_seite_19.webp",
+    "/img/projects/vr-workshop/gravity-sketch-workshop_seite_20.webp",
+]} />
+
+## Results
+
+<video className="not-prose project-video" src="/img/projects/vr-workshop/vr-outcome.mp4" controls playsInline preload="metadata" />
+
+<Collage columns={3} items={[
+    { src: "/img/projects/vr-workshop/vr-loop-1.mp4", alt: "" },
+    { src: "/img/projects/vr-workshop/vr-loop-2.mp4", alt: "" },
+    { src: "/img/projects/vr-workshop/bildschirmfoto-2025-05-12-um-12.44.43.webp", alt: "" },
+]} />
+
+Gravity Sketch · VR · Teaching · Workshop design

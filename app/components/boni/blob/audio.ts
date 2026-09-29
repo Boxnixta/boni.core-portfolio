@@ -1,86 +1,74 @@
 /*
-  Web Audio version of the AudioAnalyzer class from the openFrameworks app.
-  Like the original it uses simple filters instead of an FFT:
-  lowpass → bass, highpass → highs, both combined → mids.
-  Each band gives a smooth 0–1 loudness (fast attack, slow release, auto gain).
-  Extra values: sub-bass depth (40 Hz vs 70 Hz), high pitch (19 kHz vs 11 kHz)
-  and bass hardness (how fast the sub-bass jumps between frames).
+  1:1 port of AudioAnalyzer.cpp (Creative Coding II final project).
+  Same one-pole filters, same cutoffs, same gains and smoothing:
+    subBass  < 70 Hz      bassReal < 250 Hz
+    midReal  250–2000 Hz  highReal > 11000 Hz
+    subBassDepth = 40 Hz vs 70 Hz,  highPitch = 19000 Hz vs 11000 Hz
+    bassHardness = how fast subBass rises
+  The only web difference: samples come from a Web Audio AnalyserNode
+  instead of ofSoundStream callbacks.
 */
 export type Bands = {
-    sub: number; bass: number; mid: number; high: number;
-    subDepth: number; highPitch: number; bassHardness: number;
+    subBass: number; subBassDepth: number; bassReal: number; midReal: number;
+    highReal: number; highPitch: number; bassHardness: number;
 };
 
-type Probe = { analyser: AnalyserNode; buf: Float32Array<ArrayBuffer>; env: number; peak: number };
-
-const makeFilterChain = (ctx: AudioContext, input: AudioNode, specs: [BiquadFilterType, number][]) => {
-    let node: AudioNode = input;
-    for (const [type, freq] of specs) {
-        const f = ctx.createBiquadFilter();
-        f.type = type;
-        f.frequency.value = freq;
-        f.Q.value = 0.707;
-        node.connect(f);
-        node = f;
-    }
-    const analyser = ctx.createAnalyser();
-    analyser.fftSize = 1024;
-    node.connect(analyser);
-    return { analyser, buf: new Float32Array(analyser.fftSize), env: 0, peak: 0.02 } as Probe;
-};
+const BUFFER = 512;
+const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
 
 export class AudioAnalyzer {
-    ctx: AudioContext;
-    input: GainNode;
-    private probes: Record<string, Probe>;
-    private prevSub = 0;
+    readonly input: AnalyserNode;
+    private win: Float32Array<ArrayBuffer>;
+    private sr: number;
+    private v: Bands = { subBass: 0, subBassDepth: 0, bassReal: 0, midReal: 0, highReal: 0, highPitch: 0, bassHardness: 0 };
+    private prevSubBass = 0;
+    // filter states survive between frames (otherwise clicks at the buffer edges)
+    private s = { subLP: 0, subDeepLP: 0, bassLP: 0, midHP: 0, midHPin: 0, midLP: 0, highHP: 0, highHPin: 0, vHighHP: 0, vHighHPin: 0 };
 
     constructor(ctx: AudioContext) {
-        this.ctx = ctx;
-        this.input = ctx.createGain();
-        this.probes = {
-            sub: makeFilterChain(ctx, this.input, [["lowpass", 70]]),
-            sub40: makeFilterChain(ctx, this.input, [["lowpass", 40]]),
-            bass: makeFilterChain(ctx, this.input, [["lowpass", 250]]),
-            mid: makeFilterChain(ctx, this.input, [["highpass", 250], ["lowpass", 2500]]),
-            high: makeFilterChain(ctx, this.input, [["highpass", 4000]]),
-            high11: makeFilterChain(ctx, this.input, [["highpass", 11000]]),
-            high19: makeFilterChain(ctx, this.input, [["highpass", 16000]]),
-        };
+        this.input = ctx.createAnalyser();
+        this.input.fftSize = BUFFER;
+        this.win = new Float32Array(BUFFER);
+        this.sr = ctx.sampleRate;
     }
 
-    private rms(p: Probe) {
-        p.analyser.getFloatTimeDomainData(p.buf);
-        let s = 0;
-        for (let i = 0; i < p.buf.length; i++) s += p.buf[i] * p.buf[i];
-        return Math.sqrt(s / p.buf.length);
+    reset() {
+        this.v = { subBass: 0, subBassDepth: 0, bassReal: 0, midReal: 0, highReal: 0, highPitch: 0, bassHardness: 0 };
+        this.prevSubBass = 0;
+        for (const k of Object.keys(this.s) as (keyof typeof this.s)[]) this.s[k] = 0;
     }
 
-    // 0–1 loudness with auto gain: rises fast when loud, eases back down when quiet
-    private level(p: Probe) {
-        const v = this.rms(p);
-        p.peak = Math.max(v, p.peak * 0.998, 0.004);
-        const target = Math.min(1, v / p.peak);
-        p.env += (target - p.env) * (target > p.env ? 0.5 : 0.08);
-        return p.env;
-    }
+    private lpA(hz: number) { const RC = 1 / (2 * Math.PI * hz), dt = 1 / this.sr; return dt / (RC + dt); }
+    private hpA(hz: number) { const RC = 1 / (2 * Math.PI * hz), dt = 1 / this.sr; return RC / (RC + dt); }
 
-    read(): Bands {
-        const P = this.probes;
-        const sub = this.level(P.sub);
-        const bass = this.level(P.bass);
-        const mid = this.level(P.mid);
-        const high = this.level(P.high);
-        const r40 = this.rms(P.sub40), r70 = this.rms(P.sub) + 1e-6;
-        const r11 = this.rms(P.high11) + 1e-6, r19 = this.rms(P.high19);
-        const bassHardness = Math.max(0, Math.min(1, (sub - this.prevSub) * 6));
-        this.prevSub = sub;
-        return {
-            sub, bass, mid, high,
-            subDepth: Math.min(1, r40 / r70),
-            highPitch: Math.min(1, (r19 / r11) * 3),
-            bassHardness,
-        };
+    update(): Bands {
+        this.input.getFloatTimeDomainData(this.win);
+        const w = this.win, s = this.s;
+        const aSub = this.lpA(70), aDeep = this.lpA(40), aBass = this.lpA(250);
+        const aMidHP = this.hpA(250), aMidLP = this.lpA(2000), aHigh = this.hpA(11000), aVHigh = this.hpA(19000);
+        let sb = 0, sbd = 0, br = 0, mr = 0, hr = 0, vhr = 0;
+        for (let i = 0; i < BUFFER; i++) {
+            const x = w[i];
+            s.subLP += aSub * (x - s.subLP); sb += s.subLP * s.subLP;
+            s.subDeepLP += aDeep * (x - s.subDeepLP); sbd += s.subDeepLP * s.subDeepLP;
+            s.bassLP += aBass * (x - s.bassLP); br += s.bassLP * s.bassLP;
+            s.midHP = aMidHP * (s.midHP + x - s.midHPin); s.midHPin = x;
+            s.midLP += aMidLP * (s.midHP - s.midLP); mr += s.midLP * s.midLP;
+            s.highHP = aHigh * (s.highHP + x - s.highHPin); s.highHPin = x; hr += s.highHP * s.highHP;
+            s.vHighHP = aVHigh * (s.vHighHP + x - s.vHighHPin); s.vHighHPin = x; vhr += s.vHighHP * s.vHighHP;
+        }
+        const rms = (sum: number) => Math.sqrt(sum / BUFFER);
+        const [SB, SBD, BR, MR, HR, VHR] = [sb, sbd, br, mr, hr, vhr].map(rms);
+        const v = this.v;
+        v.subBass = v.subBass * 0.8 + clamp(SB * 25, 0, 1) * 0.2;
+        v.bassReal = v.bassReal * 0.75 + clamp(BR * 14, 0, 1) * 0.25;
+        v.midReal = v.midReal * 0.75 + clamp(MR * 18, 0, 1) * 0.25;
+        v.highReal = v.highReal * 0.75 + clamp(HR * 20, 0, 1) * 0.25;
+        v.subBassDepth = v.subBassDepth * 0.9 + clamp(SBD / (SB + 0.0001), 0, 1) * 0.1;
+        v.highPitch = v.highPitch * 0.9 + clamp(VHR / (HR + 0.0001), 0, 1) * 0.1;
+        v.bassHardness = v.bassHardness * 0.7 + clamp((v.subBass - this.prevSubBass) * 8, 0, 1) * 0.3;
+        this.prevSubBass = v.subBass;
+        return v;
     }
 }
 
@@ -92,58 +80,41 @@ export const startDemoBeat = (ctx: AudioContext, out: AudioNode) => {
     const master = ctx.createGain();
     master.gain.value = 0.55;
     master.connect(out);
-
     const noiseBuf = ctx.createBuffer(1, ctx.sampleRate * 0.5, ctx.sampleRate);
     const d = noiseBuf.getChannelData(0);
     for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
-
     const beat = 60 / 120;
     const notes = [220, 277.2, 329.6, 415.3, 329.6, 277.2, 246.9, 329.6];
-    let next = ctx.currentTime + 0.05;
-    let step = 0;
-
+    let next = ctx.currentTime + 0.05, step = 0;
     const schedule = () => {
         while (next < ctx.currentTime + 0.2) {
-            const t = next;
-            const sixteenth = step % 4;
-            const bar = Math.floor(step / 16) % 4;
+            const t = next, sixteenth = step % 4, bar = Math.floor(step / 16) % 4;
             if (sixteenth === 0) {
-                // kick: fast pitch drop
                 const o = ctx.createOscillator(), g = ctx.createGain();
-                o.frequency.setValueAtTime(140, t);
-                o.frequency.exponentialRampToValueAtTime(42, t + 0.12);
-                g.gain.setValueAtTime(1, t);
-                g.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
-                o.connect(g).connect(master);
-                o.start(t); o.stop(t + 0.4);
+                o.frequency.setValueAtTime(140, t); o.frequency.exponentialRampToValueAtTime(42, t + 0.12);
+                g.gain.setValueAtTime(1, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
+                o.connect(g).connect(master); o.start(t); o.stop(t + 0.4);
             }
             if (sixteenth === 2) {
-                // off-beat hi-hat
                 const n = ctx.createBufferSource(), hp = ctx.createBiquadFilter(), g = ctx.createGain();
-                n.buffer = noiseBuf; hp.type = "highpass"; hp.frequency.value = 7000;
-                g.gain.setValueAtTime(0.35, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.06);
-                n.connect(hp).connect(g).connect(master);
-                n.start(t); n.stop(t + 0.08);
+                n.buffer = noiseBuf; hp.type = "highpass"; hp.frequency.value = 9000;
+                g.gain.setValueAtTime(0.5, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.07);
+                n.connect(hp).connect(g).connect(master); n.start(t); n.stop(t + 0.08);
             }
             if (step % 2 === 1 && bar !== 3) {
-                // mid arp
                 const o = ctx.createOscillator(), lp = ctx.createBiquadFilter(), g = ctx.createGain();
                 o.type = "sawtooth"; o.frequency.value = notes[(step >> 1) % notes.length];
                 lp.type = "lowpass"; lp.frequency.value = 1800;
-                g.gain.setValueAtTime(0.12, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
-                o.connect(lp).connect(g).connect(master);
-                o.start(t); o.stop(t + 0.2);
+                g.gain.setValueAtTime(0.14, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+                o.connect(lp).connect(g).connect(master); o.start(t); o.stop(t + 0.2);
             }
             if (sixteenth === 0 && step % 8 === 0) {
-                // sub bass note
                 const o = ctx.createOscillator(), g = ctx.createGain();
                 o.type = "sine"; o.frequency.value = bar % 2 ? 49 : 55;
                 g.gain.setValueAtTime(0.5, t); g.gain.exponentialRampToValueAtTime(0.001, t + beat * 1.8);
-                o.connect(g).connect(master);
-                o.start(t); o.stop(t + beat * 2);
+                o.connect(g).connect(master); o.start(t); o.stop(t + beat * 2);
             }
-            next += beat / 4;
-            step++;
+            next += beat / 4; step++;
         }
     };
     schedule();

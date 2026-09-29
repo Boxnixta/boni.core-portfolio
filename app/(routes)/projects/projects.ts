@@ -9,7 +9,6 @@ import Eora, { metadata as eoraMeta } from './[slug]/content/eora.mdx';
 import Blob, { metadata as blobMeta } from './[slug]/content/blob-audio-reactor.mdx';
 import Tentacles, { metadata as tentaclesMeta } from './[slug]/content/tentacles.mdx';
 import Kusama, { metadata as kusamaMeta } from './[slug]/content/kusama-bubbles.mdx';
-import ShaderSketches, { metadata as shaderSketchesMeta } from './[slug]/content/shader-sketches.mdx';
 import VrWorkshop, { metadata as vrWorkshopMeta } from './[slug]/content/vr-workshop.mdx';
 import BachelorThesis, { metadata as bachelorThesisMeta } from './[slug]/content/bachelor-thesis.mdx';
 import Sneeze, { metadata as sneezeMeta } from './[slug]/content/sneeze-loop.mdx';
@@ -28,6 +27,10 @@ export type ProjectMetadata = {
     /** Path to the 3:2 thumbnail shown on the listing page */
     thumbnail: string;
     thumbnailAlt: string;
+    /** Optional short muted video loop shown instead of the thumbnail image */
+    thumbnailVideo?: string;
+    /** Optional: "contain" shows the whole thumbnail with white bars instead of cropping */
+    thumbnailFit?: "contain" | "cover";
     /** Optional CSS object-position for the thumbnail, e.g. "20% 50%" */
     thumbnailPosition?: string;
     /** Short description shown below the thumbnail */
@@ -61,7 +64,6 @@ export const projects: Project[] = [
     { ...(eventsMeta as ProjectMetadata), Component: Events },
     { ...(novaMeta as ProjectMetadata), Component: Nova },
     { ...(kleinSeinMeta as ProjectMetadata), Component: KleinSein },
-    { ...(shaderSketchesMeta as ProjectMetadata), Component: ShaderSketches },
     { ...(vrWorkshopMeta as ProjectMetadata), Component: VrWorkshop },
     { ...(undineMeta as ProjectMetadata), Component: Undine },
     { ...(coversMeta as ProjectMetadata), Component: Covers },

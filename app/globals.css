@@ -225,6 +225,7 @@ html:focus-within {
 
 
 
+
 /* =====================================================================
    boni.core design layer
    Colors, fonts, effects and page styles from the Readymag + three.js
@@ -673,6 +674,32 @@ body {
         box-shadow: 0 0 40px 12px rgb(51 0 255 / 0.55);
     }
 
+    /* Flipbook (comic pages, slides) */
+    .flipbook {
+        @apply my-8 flex flex-col items-center gap-3 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-boni-violet;
+    }
+    .flipbook-page {
+        @apply flex w-full max-w-[1000px] cursor-pointer items-center justify-center overflow-hidden rounded-xl bg-white shadow-[0_6px_16px_rgb(0_0_0/0.15)];
+    }
+    .flipbook-page img {
+        @apply block max-h-[75vh] w-auto max-w-full;
+    }
+    .flipbook-bar {
+        @apply flex items-center gap-4;
+    }
+    .flipbook-count {
+        @apply min-w-16 text-center font-pixel text-boni-violet;
+    }
+    .project-video {
+        @apply my-8 block w-full rounded-xl bg-black shadow-[0_6px_16px_rgb(0_0_0/0.2)];
+    }
+    .project-video.is-portrait {
+        @apply mx-auto max-h-[80vh] w-auto max-w-full;
+    }
+    .doc-figure {
+        @apply my-6 max-w-md rounded-lg shadow-[0_4px_12px_rgb(0_0_0/0.12)];
+    }
+
     /* Blob Audio Reactor (web port) */
     .blob-reactor {
         @apply my-8 grid gap-6 rounded-xl bg-neutral-50 p-4 shadow-[0_6px_16px_rgb(0_0_0/0.12)] sm:p-6 lg:grid-cols-[1fr_260px];
@@ -688,6 +715,9 @@ body {
     }
     .blob-slider input {
         accent-color: #ff98e0;
+    }
+    .blob-source {
+        @apply max-w-none font-pixel text-sm text-boni-violet;
     }
     .blob-hint {
         @apply max-w-none text-xs text-neutral-500;

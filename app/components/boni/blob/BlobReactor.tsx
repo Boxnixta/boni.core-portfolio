@@ -2,50 +2,64 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AudioAnalyzer, startDemoBeat, type Bands } from "./audio";
+import { Blob, type Band } from "./Blob";
+import { type RGBA, toHsb, fromHsb } from "./color";
 import { noise3 } from "./noise";
 
 /*
   Browser port of "Blob Audio Reactor" (openFrameworks, Creative Coding II).
-  Eight nested, radially faded blobs react to sound:
-    outer 2 → bass, middle 3 → mids, inner 3 → highs.
-  Extra effects like in the original: bass zigzag + bass shimmer (outermost),
-  mid bubbles (two inner mid blobs), high shimmer (innermost), waves that ripple
-  inward (outer influence) and a clamp so no blob grows past the one outside it.
-  Click / drag on the shape = colour splash that fades after 8 s.
-  Sound: built-in demo beat, your microphone, or a music file from your computer.
+  Logic, colours and numbers come 1:1 from ofApp.cpp / Blob.cpp / AudioAnalyzer.cpp.
+  The app draws in a fixed 1000 × 1000 space that is scaled to the canvas.
 */
 
-const POINTS = 240;
-const LAYERS = 8;
-const BAND: ("bass" | "mid" | "high")[] = ["bass", "bass", "mid", "mid", "mid", "high", "high", "high"];
-const BASE_HUES = [280, 300, 320, 340, 0, 20, 40, 190];
-const SPLASH_MS = 8000;
+// ofApp::setup(): from outside (big, light) to inside (small, saturated) – the starting blue
+const BASE: RGBA[] = [
+    [161, 191, 242, 222], [145, 175, 238, 226], [126, 159, 234, 230], [107, 141, 230, 234],
+    [91, 124, 226, 238], [74, 104, 218, 242], [58, 86, 210, 248], [44, 66, 198, 255],
+];
+const LAYERS: [number, number, Band][] = [
+    [280, 0.03, "BASS"], [250, 0.04, "BASS"], [220, 0.05, "MID"], [190, 0.065, "MID"],
+    [160, 0.08, "MID"], [130, 0.1, "HIGH"], [100, 0.12, "HIGH"], [50, 0.18, "HIGH"],
+];
+const SIZE = 1000;
+const ofNoise = (x: number) => noise3(x, 0, 0.5);
 
-type Splash = { angle: number; layer: number; born: number; hue: number };
-type Mode = "off" | "demo" | "mic" | "file";
+type Mode = "off" | "track" | "demo" | "mic" | "file";
+
+// Songs from Pixabay (Pixabay Content License: free to use, no attribution required – credited anyway)
+const TRACKS = [
+    { id: "techno", title: "Underground Minimal Techno 26", artist: "officeMIKADO", src: "/audio/underground-minimal-techno-26.mp3" },
+    { id: "gloss", title: "Water Gloss (Frutiger Aero)", artist: "9JackJack8", src: "/audio/water-gloss.mp3" },
+    { id: "aquatic", title: "Aquatic Ambience (Frutiger Aero Chill)", artist: "9JackJack8", src: "/audio/aquatic-ambience.mp3" },
+];
 
 const BlobReactor = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const audioRef = useRef<{ ctx: AudioContext; analyzer: AudioAnalyzer; stop?: () => void } | null>(null);
     const fileRef = useRef<HTMLInputElement>(null);
-    const [mode, setMode] = useState<Mode>("off");
+    const audioRef = useRef<{ ctx: AudioContext; analyzer: AudioAnalyzer; stop?: () => void } | null>(null);
+    const modeRef = useRef<Mode>("off");
+    const [mode, setModeState] = useState<Mode>("off");
+    const [track, setTrack] = useState(TRACKS[0].id);
     const [hue, setHue] = useState(0);
-    const [gradient, setGradient] = useState(60);
+    const [gradient, setGradient] = useState(0);
     const [error, setError] = useState("");
-    const ui = useRef({ hue: 0, gradient: 60 });
+    const ui = useRef({ hue: 0, gradient: 0 });
     ui.current = { hue, gradient };
-    const splashes = useRef<Splash[]>([]);
 
-    // ---------- audio sources ----------
+    const setMode = (m: Mode) => { modeRef.current = m; setModeState(m); };
+
+    // ---------- sound sources (like toggleMode: full reset on every switch) ----------
     const getAudio = async () => {
         if (!audioRef.current) {
             const ctx = new AudioContext();
             audioRef.current = { ctx, analyzer: new AudioAnalyzer(ctx) };
         }
-        await audioRef.current.ctx.resume();
-        audioRef.current.stop?.();
-        audioRef.current.stop = undefined;
-        return audioRef.current;
+        const a = audioRef.current;
+        await a.ctx.resume();
+        a.stop?.();
+        a.stop = undefined;
+        a.analyzer.reset();
+        return a;
     };
 
     const playDemo = async () => {
@@ -62,15 +76,38 @@ const BlobReactor = () => {
     const useMic = async () => {
         setError("");
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
             const a = await getAudio();
             const src = a.ctx.createMediaStreamSource(stream);
             src.connect(a.analyzer.input); // not to the speakers → no feedback
             a.stop = () => { src.disconnect(); stream.getTracks().forEach((t) => t.stop()); };
             setMode("mic");
         } catch {
-            setError("Microphone not available or permission denied.");
+            setError("Microphone could not be opened. Please allow microphone access in your browser.");
         }
+    };
+
+    // plays a song through the analyzer and the speakers (used for the Pixabay tracks and your own file)
+    const playUrl = async (url: string, m: Mode, revoke = false) => {
+        setError("");
+        const a = await getAudio();
+        const el = new Audio(url);
+        el.loop = true;
+        const src = a.ctx.createMediaElementSource(el);
+        src.connect(a.analyzer.input);
+        src.connect(a.ctx.destination);
+        try {
+            await el.play();
+        } catch {
+            setError("The song could not be played.");
+            return;
+        }
+        a.stop = () => { el.pause(); src.disconnect(); if (revoke) URL.revokeObjectURL(url); };
+        setMode(m);
+    };
+    const playTrack = (id: string) => {
+        setTrack(id);
+        playUrl(TRACKS.find((t) => t.id === id)!.src, "track");
     };
 
     const playFile = async (file: File) => {
@@ -88,149 +125,115 @@ const BlobReactor = () => {
 
     const stop = () => {
         audioRef.current?.stop?.();
-        if (audioRef.current) audioRef.current.stop = undefined;
+        if (audioRef.current) { audioRef.current.stop = undefined; audioRef.current.analyzer.reset(); }
         setMode("off");
     };
 
     useEffect(() => () => { audioRef.current?.stop?.(); audioRef.current?.ctx.close(); }, []);
 
-    // ---------- drawing ----------
+    // ---------- the app (setup / update / draw) ----------
     useEffect(() => {
         const canvas = canvasRef.current;
         if (!canvas) return;
         const g = canvas.getContext("2d")!;
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
-        const radii = Array.from({ length: LAYERS }, () => new Float32Array(POINTS));
-        const offsets = Array.from({ length: LAYERS }, () => new Float32Array(POINTS));
-        const bubbles = Array.from({ length: 6 }, (_, i) => ({ seed: i * 13.7 }));
-        let frame = 0, running = false, t = 0;
-        const idle: Bands = { sub: 0, bass: 0, mid: 0, high: 0, subDepth: 0.5, highPitch: 0.5, bassHardness: 0 };
+        const blobs = LAYERS.map(([r, lag, band], i) => new Blob(r, BASE[i], lag, band, SIZE / 2, SIZE / 2));
+        const baseHsb = BASE.map((c) => toHsb(c));
+        const silent: Bands = { subBass: 0, subBassDepth: 0, bassReal: 0, midReal: 0, highReal: 0, highPitch: 0, bassHardness: 0 };
+        let noiseTime = 0, highShimmerTime = 0, frame = 0, running = false, first = true;
+        let lastSplash = -10, session = 0;
+        const t0 = performance.now();
+        const now = () => (performance.now() - t0) / 1000;
 
         const resize = () => {
-            canvas.width = canvas.clientWidth * dpr;
-            canvas.height = canvas.clientHeight * dpr;
+            canvas.width = Math.round(canvas.clientWidth * dpr);
+            canvas.height = Math.round(canvas.clientHeight * dpr);
+            first = true;
         };
         resize();
         window.addEventListener("resize", resize);
 
-        const draw = () => {
-            if (!running) return;
-            t += 1 / 60;
-            const W = canvas.width, H = canvas.height, cx = W / 2, cy = H / 2;
-            const R = Math.min(W, H) * 0.44;
-            const b = audioRef.current && mode !== "off" ? audioRef.current.analyzer.read() : idle;
-            // gentle breathing when there is no sound
-            const breath = 0.08 + 0.04 * Math.sin(t * 1.3);
-            const level = (band: "bass" | "mid" | "high") => Math.max(breath, band === "bass" ? b.bass : band === "mid" ? b.mid : b.high);
+        const update = () => {
+            noiseTime += 0.005;
+            highShimmerTime += 0.15;
+            const a = audioRef.current && modeRef.current !== "off" ? audioRef.current.analyzer.update() : silent;
+            const cx = SIZE / 2 + (ofNoise(noiseTime) * 120 - 60);
+            const cy = SIZE / 2 + (ofNoise(noiseTime + 100) * 120 - 60);
 
-            // 1) base shape: radius per point, shifted by noise and scaled by the band loudness
-            for (let L = 0; L < LAYERS; L++) {
-                const base = R * (1 - L * 0.105);
-                const amp = level(BAND[L]);
-                for (let i = 0; i < POINTS; i++) {
-                    const a = (i / POINTS) * Math.PI * 2;
-                    const n = noise3(Math.cos(a) * 1.4 + L * 3.1, Math.sin(a) * 1.4, t * 0.6 + L * 0.2) - 0.5;
-                    offsets[L][i] = n * base * (0.12 + amp * 0.55);
-                    radii[L][i] = base * (0.92 + amp * 0.12) + offsets[L][i];
-                }
-            }
+            // hue slider turns all layers together, gradient adds an offset that fades from outside to inside
+            const last = blobs.length - 1;
+            blobs.forEach((b, i) => {
+                const [h, s, v] = baseHsb[i];
+                b.color = fromHsb((h + ui.current.hue + ui.current.gradient * (1 - i / last)) % 256, s, v, BASE[i][3]);
+            });
 
-            // 2) special effects
-            const zzDir = b.subDepth * Math.PI * 2;
-            for (let i = 0; i < POINTS; i++) {
-                const a = (i / POINTS) * Math.PI * 2;
-                const dz = Math.atan2(Math.sin(a - zzDir), Math.cos(a - zzDir));
-                // bass zigzag: sharp sine in a narrow angle range on the outermost blob
-                if (Math.abs(dz) < 0.6) radii[0][i] += Math.sin(a * 60) * R * 0.05 * b.sub * (1 - Math.abs(dz) / 0.6);
-                // bass shimmer: opposite side, only on hard hits
-                const ds = Math.atan2(Math.sin(a - zzDir - Math.PI), Math.cos(a - zzDir - Math.PI));
-                if (Math.abs(ds) < 0.8) radii[0][i] += (Math.random() - 0.5) * R * 0.08 * b.sub * b.bassHardness;
-                // high shimmer: innermost blob, position follows the treble pitch
-                const hp = b.highPitch * Math.PI - Math.PI / 2;
-                const dh = Math.atan2(Math.sin(a - hp), Math.cos(a - hp));
-                if (Math.abs(dh) < 0.7) radii[LAYERS - 1][i] += (Math.random() - 0.5) * R * 0.05 * b.high;
-            }
+            const t = now();
+            blobs.forEach((b, i) => {
+                let v = b.band === "BASS" ? a.bassReal : b.band === "MID" ? a.midReal : a.highReal;
+                if (i === last) v = Math.min(1, v * 1.6);
+                b.update(v, cx, cy, t);
+            });
 
-            // 3) outer influence (waves ripple inward) + clamp to the blob outside
-            for (let L = 1; L < LAYERS; L++) {
-                for (let i = 0; i < POINTS; i++) {
-                    radii[L][i] += offsets[L - 1][i] * 0.35;
-                    const max = radii[L - 1][i] * 0.97;
-                    if (radii[L][i] > max) radii[L][i] += (max - radii[L][i]) * 0.8;
-                }
-            }
-
-            // 4) draw
-            g.clearRect(0, 0, W, H);
-            const now = performance.now();
-            splashes.current = splashes.current.filter((s) => now - s.born < SPLASH_MS);
-            for (let L = 0; L < LAYERS; L++) {
-                const hL = (BASE_HUES[L] + ui.current.hue) % 360;
-                const grad = g.createRadialGradient(cx, cy, 0, cx, cy, R * (1 - L * 0.105) * 1.1);
-                grad.addColorStop(0, `hsla(${hL}, 90%, ${60 + ui.current.gradient * 0.3}%, 1)`);
-                grad.addColorStop(1, `hsla(${(hL + ui.current.gradient) % 360}, 85%, 55%, 1)`);
-                g.beginPath();
-                for (let i = 0; i <= POINTS; i++) {
-                    const a = (i / POINTS) * Math.PI * 2;
-                    const r = radii[L][i % POINTS];
-                    const x = cx + Math.cos(a) * r, y = cy + Math.sin(a) * r;
-                    if (i === 0) g.moveTo(x, y); else g.lineTo(x, y);
-                }
-                g.closePath();
-                g.fillStyle = grad;
-                g.fill();
-
-                // colour splashes on this layer, fading out
-                for (const s of splashes.current.filter((s) => s.layer === L)) {
-                    const life = 1 - (now - s.born) / SPLASH_MS;
-                    const r = radii[L][Math.round((s.angle / (Math.PI * 2)) * POINTS) % POINTS] * 0.8;
-                    const sx = cx + Math.cos(s.angle) * r, sy = cy + Math.sin(s.angle) * r;
-                    const sg = g.createRadialGradient(sx, sy, 0, sx, sy, R * 0.35);
-                    sg.addColorStop(0, `hsla(${s.hue}, 95%, 60%, ${0.8 * life})`);
-                    sg.addColorStop(1, `hsla(${s.hue}, 95%, 60%, 0)`);
-                    g.save(); g.clip(); g.fillStyle = sg; g.fillRect(0, 0, W, H); g.restore();
-                }
-
-                // mid bubbles on the two inner mid blobs
-                if (L === 3 || L === 4) {
-                    for (const bb of bubbles) {
-                        const a = noise3(bb.seed, t * 0.2, L) * Math.PI * 4;
-                        const rr = radii[L][Math.floor(((a % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2) / (Math.PI * 2) * POINTS) % POINTS];
-                        const d = rr * (0.4 + noise3(bb.seed + 5, t * 0.3, L) * 0.4);
-                        const size = Math.min(R * 0.06, R * 0.012 + b.mid * R * 0.05);
-                        g.beginPath();
-                        g.arc(cx + Math.cos(a) * d, cy + Math.sin(a) * d, size, 0, Math.PI * 2);
-                        g.fillStyle = `hsla(${(hL + 180) % 360}, 90%, 85%, 0.8)`;
-                        g.fill();
-                    }
-                }
-            }
-            frame = requestAnimationFrame(draw);
+            blobs[0].applySubBassZigzag(a.subBass, a.subBassDepth);
+            blobs[0].applyBassShimmer(a.subBass, a.bassHardness, a.subBassDepth * Math.PI * 2 + Math.PI, highShimmerTime);
+            const margin = 4;
+            blobs[3].applyMidBubbles(a.midReal, blobs[2], margin);
+            blobs[4].applyMidBubbles(a.midReal, blobs[3], margin);
+            for (let i = 1; i < blobs.length; i++) blobs[i].applyOuterInfluence(blobs[i - 1], 0.35);
+            blobs[last].applyHighShimmer(a.highReal, a.highPitch, 1, highShimmerTime);
+            for (let i = last - 1; i >= 0; i--) blobs[i].applyOuterInfluence(blobs[i + 1], 0.35);
+            for (let i = 1; i < blobs.length; i++) blobs[i].clampToOuter(blobs[i - 1], margin, 18);
+            return a;
         };
 
+        const draw = (a: Bands) => {
+            const scale = Math.min(canvas.width, canvas.height) / SIZE;
+            g.setTransform(1, 0, 0, 1, 0, 0);
+            // off-white with low alpha → soft trails, like in the original
+            g.fillStyle = first ? "rgb(245,242,235)" : "rgba(245,242,235,0.157)";
+            g.fillRect(0, 0, canvas.width, canvas.height);
+            first = false;
+            g.setTransform(scale, 0, 0, scale, (canvas.width - SIZE * scale) / 2, (canvas.height - SIZE * scale) / 2);
+            blobs.forEach((b, i) => {
+                b.draw(g);
+                if (i === 3 || i === 4) b.drawBubbles(g);
+            });
+            // analyzer readout (top left), like the debug text of the app
+            g.setTransform(1, 0, 0, 1, 0, 0);
+            g.fillStyle = "rgb(245,242,235)"; // clear the text area every frame (no trails on the numbers)
+            g.fillRect(0, 0, 160 * dpr, 100 * dpr);
+            g.fillStyle = "rgba(0,0,0,0.75)";
+            g.font = `${11 * dpr}px ui-monospace, Menlo, monospace`;
+            [["SUBBASS", a.subBass], ["BASSREAL", a.bassReal], ["MIDREAL", a.midReal], ["HIGHREAL", a.highReal], ["HIGHPITCH", a.highPitch]]
+                .forEach(([k, v], i) => g.fillText(`${k}:${(v as number).toFixed(3)}`, 12 * dpr, (20 + i * 16) * dpr));
+        };
+
+        const loop = () => {
+            if (!running) return;
+            draw(update());
+            frame = requestAnimationFrame(loop);
+        };
         const io = new IntersectionObserver(([e]) => {
             running = e.isIntersecting;
-            if (running) frame = requestAnimationFrame(draw);
+            if (running) frame = requestAnimationFrame(loop);
             else cancelAnimationFrame(frame);
         });
         io.observe(canvas);
 
-        // click / drag = colour splash on the layer under the pointer
-        const splash = (e: PointerEvent) => {
+        // click / drag on a blob = local hue splash on the topmost layer that was hit
+        const toApp = (e: PointerEvent) => {
             const r = canvas.getBoundingClientRect();
-            const x = (e.clientX - r.left) * dpr - canvas.width / 2;
-            const y = (e.clientY - r.top) * dpr - canvas.height / 2;
-            const angle = (Math.atan2(y, x) + Math.PI * 2) % (Math.PI * 2);
-            const dist = Math.hypot(x, y);
-            const idx = Math.round((angle / (Math.PI * 2)) * POINTS) % POINTS;
-            let layer = -1;
-            for (let L = 0; L < LAYERS; L++) if (dist < radii[L][idx]) layer = L;
-            if (layer < 0) return;
-            const last = splashes.current[splashes.current.length - 1];
-            if (last && performance.now() - last.born < 60) return;
-            splashes.current.push({ angle, layer, born: performance.now(), hue: Math.random() * 360 });
+            const scale = Math.min(r.width, r.height) / SIZE;
+            return { x: (e.clientX - r.left - (r.width - SIZE * scale) / 2) / scale, y: (e.clientY - r.top - (r.height - SIZE * scale) / 2) / scale };
         };
-        const onDown = (e: PointerEvent) => { splash(e); canvas.setPointerCapture(e.pointerId); };
+        const splash = (e: PointerEvent) => {
+            const t = now();
+            if (t - lastSplash < 0.05) return;
+            lastSplash = t;
+            const p = toApp(e);
+            for (let i = blobs.length - 1; i >= 0; i--) if (blobs[i].tryAddHueSplash(p.x, p.y, 70, 1.2, session, t)) break;
+        };
+        const onDown = (e: PointerEvent) => { session++; canvas.setPointerCapture(e.pointerId); splash(e); };
         const onMove = (e: PointerEvent) => { if (e.buttons) splash(e); };
         canvas.addEventListener("pointerdown", onDown);
         canvas.addEventListener("pointermove", onMove);
@@ -243,29 +246,44 @@ const BlobReactor = () => {
             canvas.removeEventListener("pointerdown", onDown);
             canvas.removeEventListener("pointermove", onMove);
         };
-    }, [mode]);
+    }, []);
 
     return (
         <div className="blob-reactor not-prose">
             <canvas ref={canvasRef} className="blob-canvas" aria-label="Audio-reactive blob visual" role="img" />
             <div className="blob-controls">
+                <p className="blob-source">source: {mode === "off" ? "–" : mode === "track" ? TRACKS.find((t) => t.id === track)!.title : mode === "demo" ? "demo beat" : mode === "mic" ? "microphone (live)" : "your file"}</p>
+                <div className="flex flex-col gap-2" role="group" aria-label="Songs">
+                    {TRACKS.map((t) => (
+                        <button key={t.id} type="button" className={`btn filter-pill justify-start text-left ${mode === "track" && track === t.id ? "is-active" : ""}`} onClick={() => playTrack(t.id)}>
+                            ▶ {t.title}
+                        </button>
+                    ))}
+                </div>
                 <div className="flex flex-wrap gap-3">
-                    <button type="button" className={`btn filter-pill ${mode === "demo" ? "is-active" : ""}`} onClick={playDemo}>▶ Demo beat</button>
+                    <button type="button" className={`btn filter-pill ${mode === "demo" ? "is-active" : ""}`} onClick={playDemo}>Demo beat</button>
                     <button type="button" className={`btn filter-pill ${mode === "mic" ? "is-active" : ""}`} onClick={useMic}>Microphone</button>
                     <button type="button" className={`btn filter-pill ${mode === "file" ? "is-active" : ""}`} onClick={() => fileRef.current?.click()}>Your music file</button>
                     {mode !== "off" && <button type="button" className="btn filter-pill" onClick={stop}>■ Stop</button>}
                     <input ref={fileRef} type="file" accept="audio/*" className="hidden" onChange={(e) => e.target.files?.[0] && playFile(e.target.files[0])} />
                 </div>
                 <label className="blob-slider">
-                    <span>Hue</span>
-                    <input type="range" min={0} max={360} value={hue} onChange={(e) => setHue(+e.target.value)} />
+                    <span>HUE: {hue}</span>
+                    <input type="range" min={0} max={255} value={hue} onChange={(e) => setHue(+e.target.value)} />
                 </label>
                 <label className="blob-slider">
-                    <span>Gradient</span>
-                    <input type="range" min={0} max={120} value={gradient} onChange={(e) => setGradient(+e.target.value)} />
+                    <span>GRADIENT: {gradient}</span>
+                    <input type="range" min={0} max={255} value={gradient} onChange={(e) => setGradient(+e.target.value)} />
                 </label>
-                {error && <p className="text-sm text-red-600 max-w-none">{error}</p>}
+                {error && <p className="max-w-none text-sm text-red-600">{error}</p>}
                 <p className="blob-hint">click or drag on the blob for a colour splash · your file stays on your computer</p>
+                <p className="blob-hint">
+                    Music:{" "}
+                    {TRACKS.map((t, i) => (
+                        <span key={t.id}>{t.title} by {t.artist}{i < TRACKS.length - 1 ? " · " : ""}</span>
+                    ))}{" "}
+                    via <a className="underline" href="https://pixabay.com/music/" target="_blank" rel="noopener noreferrer">Pixabay</a>
+                </p>
             </div>
         </div>
     );
