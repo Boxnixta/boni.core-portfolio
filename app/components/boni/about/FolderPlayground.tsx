@@ -12,12 +12,12 @@ import { useRef, useState } from "react";
 type Folder = { id: string; label: string; src: string; x: number; y: number; inCart: boolean };
 
 const START: Folder[] = [
-    { id: "animation",    label: "Animation",              src: "/img/about/Ordner-Icon_Animation.png",           x: 20, y: 0,  inCart: false },
-    { id: "grafik",       label: "Graphic Design",         src: "/img/about/Ordner-Icon_Grafik-Design.png",       x: 2,  y: 16, inCart: false },
-    { id: "3d",           label: "3D Design",              src: "/img/about/Ordner-Icon_3D-Design.png",           x: 26, y: 12, inCart: false },
-    { id: "film",         label: "Film & Post-production", src: "/img/about/Ordner-Icon_Film-Postproduction.png", x: 50, y: 8,  inCart: false },
-    { id: "illustration", label: "Illustration",           src: "/img/about/Ordner-Icon_Illustration.png",        x: 74, y: 14, inCart: false },
-    { id: "sound",        label: "Sound Design",           src: "/img/about/Ordner-Icon_Sounddesign.png",         x: 76, y: 40, inCart: false },
+    { id: "animation",    label: "Animation",              src: "/img/about/Ordner-Icon_Animation.png",           x: 0, y: 0,  inCart: false },
+    { id: "grafik",       label: "Graphic Design",         src: "/img/about/Ordner-Icon_Grafik-Design.png",       x: 35, y: 3, inCart: false },
+    { id: "3d",           label: "3D Design",              src: "/img/about/Ordner-Icon_3D-Design.png",           x: 70, y: 0, inCart: false },
+    { id: "film",         label: "Film & Post-production", src: "/img/about/Ordner-Icon_Film-Postproduction.png", x: 12, y: 22,  inCart: false },
+    { id: "illustration", label: "Illustration",           src: "/img/about/Ordner-Icon_Illustration.png",        x: 47, y: 25, inCart: false },
+    { id: "sound",        label: "Sound Design",           src: "/img/about/Ordner-Icon_Sounddesign.png",         x: 74, y: 23, inCart: false },
 ];
 
 const FolderPlayground = () => {

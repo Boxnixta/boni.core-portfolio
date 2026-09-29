@@ -220,6 +220,7 @@ html:focus-within {
 
 
 
+
 /* =====================================================================
    boni.core design layer
    Colors, fonts, effects and page styles from the Readymag + three.js
@@ -353,11 +354,17 @@ body {
 
     /* ================= big heading with "hey!" spray ================= */
     .hey-heading {
-        @apply relative mt-10 mb-4 lg:mt-16;
+        /* font-size lives here, so the "hey!" (sized in em) scales together with the word */
+        @apply relative mb-6;
+        font-size: clamp(3rem, 8vw, 7.5rem);
+        margin-top: 0.9em;
     }
     .hey-spray {
-        /* top left, above the word */
-        @apply absolute z-0 -left-[4%] -top-[75%] w-[55%] max-w-[380px] select-none;
+        /* like the PDF: big, behind the word, starting over the 2nd letter, "y" hanging below */
+        @apply absolute z-0 max-w-none select-none;
+        width: 3.9em;
+        left: 0.45em;
+        top: -1.05em;
         transform-origin: 50% 80%;
     }
     .hey-spray:hover {
@@ -366,8 +373,8 @@ body {
     .hey-title {
         /* pointer-events-none: the "hey!" underneath stays hoverable */
         @apply pointer-events-none relative z-10 font-extrabold leading-none text-neutral-900;
-        font-size: clamp(3rem, 8vw, 7.5rem);
-        letter-spacing: 0.03em;
+        font-size: 1em;
+        letter-spacing: 0.02em;
     }
     /* never wraps: the o's always run out of the screen (body clips them) */
     .hello-title {
@@ -425,7 +432,11 @@ body {
     }
 
     .about-intro {
-        @apply relative z-10 max-w-[52ch] font-mono text-xs leading-relaxed text-neutral-700 sm:text-sm lg:leading-relaxed;
+        /* grows with the window; "pretty" wrapping + no auto-hyphens = even ragged right edge */
+        @apply relative z-10 max-w-[46ch] font-mono leading-relaxed text-neutral-700;
+        font-size: clamp(0.8rem, 0.5rem + 0.7vw, 1.3rem);
+        hyphens: manual;
+        text-wrap: pretty;
     }
     .about-heart {
         @apply mx-auto my-4 w-14 sm:w-16;
@@ -463,13 +474,13 @@ body {
 
     /* Folder game */
     .folder-playground {
-        @apply relative mt-2 h-[560px] w-full touch-none select-none sm:h-[680px];
+        @apply relative mt-2 h-[600px] w-full touch-none select-none sm:h-[780px];
     }
     .basket {
-        @apply pointer-events-none absolute bottom-8 left-0 z-20 w-[80%] max-w-[460px] -rotate-6;
+        @apply pointer-events-none absolute bottom-10 left-0 z-20 w-[92%] max-w-[600px] -rotate-6;
     }
     .folder {
-        @apply absolute z-30 w-[22%] max-w-[120px] cursor-grab rounded-md
+        @apply absolute z-30 w-[30%] max-w-[190px] cursor-grab rounded-md
                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-boni-blue;
         transition: scale 0.3s ease, rotate 0.3s ease;
         touch-action: none;
@@ -504,7 +515,9 @@ body {
         @apply flex flex-col items-start lg:pl-[8%];
     }
     .contact-heading .hey-spray {
-        @apply -left-[25%] -top-[80%] w-[140%] max-w-[760px];
+        width: 4.6em;
+        left: -0.6em;
+        top: -1.2em;
     }
     .contact-intro {
         @apply relative z-10 mt-4 italic text-neutral-700;
@@ -541,6 +554,49 @@ body {
     }
     .burger-girl img {
         @apply w-full select-none;
+    }
+}
+
+
+@layer components {
+    /* ================= collage + lightbox (project pages) ================= */
+    .collage {
+        @apply my-8 gap-3 sm:gap-4;
+    }
+    .collage-tile {
+        @apply mb-3 block w-full cursor-zoom-in break-inside-avoid overflow-hidden rounded-lg bg-neutral-100 shadow-[0_6px_16px_rgb(0_0_0/0.15)] transition-transform duration-300 sm:mb-4
+               hover:-rotate-1 hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-boni-violet;
+    }
+    .collage-tile img,
+    .collage-tile video {
+        @apply block h-auto w-full;
+    }
+    .lightbox {
+        /* below the cursor layer (z 9999) so the star stays visible */
+        @apply fixed inset-0 z-[9000] flex items-center justify-center bg-white/90 p-4 backdrop-blur-md sm:p-12;
+    }
+    .lightbox-media {
+        @apply flex max-h-full max-w-full flex-col items-center;
+    }
+    .lightbox-media img,
+    .lightbox-media video {
+        @apply max-h-[80vh] w-auto max-w-full rounded-lg shadow-2xl;
+    }
+    .lightbox-caption {
+        @apply mt-3 max-w-none text-center text-sm text-neutral-600;
+    }
+    .lightbox-btn {
+        @apply absolute top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border-2 border-boni-pink bg-white text-3xl leading-none text-boni-pink;
+        box-shadow: 0 0 12px rgb(255 152 224 / 0.8);
+    }
+    .lightbox-close {
+        @apply absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white text-3xl leading-none text-neutral-700 shadow;
+    }
+    .lightbox-count {
+        @apply absolute bottom-4 left-1/2 max-w-none -translate-x-1/2 font-pixel text-sm text-boni-violet;
+    }
+    .project-links {
+        @apply my-6 flex flex-wrap gap-3;
     }
 }
 

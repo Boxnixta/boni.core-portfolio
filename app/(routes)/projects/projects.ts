@@ -9,6 +9,7 @@ import Eora, { metadata as eoraMeta } from './[slug]/content/eora.mdx';
 import Blob, { metadata as blobMeta } from './[slug]/content/blob-audio-reactor.mdx';
 import Tentacles, { metadata as tentaclesMeta } from './[slug]/content/tentacles.mdx';
 import Kusama, { metadata as kusamaMeta } from './[slug]/content/kusama-bubbles.mdx';
+import VrWorkshop, { metadata as vrWorkshopMeta } from './[slug]/content/vr-workshop.mdx';
 import BachelorThesis, { metadata as bachelorThesisMeta } from './[slug]/content/bachelor-thesis.mdx';
 import Nacht3001, { metadata as nacht3001Meta } from './[slug]/content/3001-nacht-reel.mdx';
 import Sneeze, { metadata as sneezeMeta } from './[slug]/content/sneeze-loop.mdx';
@@ -53,6 +54,7 @@ export const projects: Project[] = [
     { ...(blobMeta as ProjectMetadata), Component: Blob },
     { ...(tentaclesMeta as ProjectMetadata), Component: Tentacles },
     { ...(kusamaMeta as ProjectMetadata), Component: Kusama },
+    { ...(vrWorkshopMeta as ProjectMetadata), Component: VrWorkshop },
     // --- Design (Bachelor) ---
     { ...(bachelorThesisMeta as ProjectMetadata), Component: BachelorThesis },
     { ...(nacht3001Meta as ProjectMetadata), Component: Nacht3001 },

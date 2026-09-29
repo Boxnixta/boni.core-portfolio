@@ -1,11 +1,13 @@
+import Collage from '@/app/components/boni/Collage';
+
 export const metadata = {
     slug: "bachelor-thesis",
     title: "Schönheit und Bewusstsein",
     category: ["3D & Motion"],
     thumbnail: "/img/projects/bachelor-thesis/Titelbild.png",
     thumbnailAlt: "Title image of the short film",
-    description: "A sci-fi short film about beauty norms and self-acceptance. Bachelor thesis, Hochschule Anhalt. Nominated for German Design Graduates 2025.",
-    introText: "The theoretical part of my bachelor thesis, supervised by Prof. Alejandro Lecuna and Prof. Rochus Hartmann, examines socially constructed beauty ideals, the devaluation of ugliness and the psychological and social consequences of these norms. The central element of the project is the short film \"Schönheit und Bewusstsein: Eine Reise zur Selbstakzeptanz\" (Beauty and Consciousness: A Journey to Self-Acceptance), a film that imagines a speculative future in which self-acceptance is strengthened by a digital companion.",
+    description: "Science fiction short film about beauty ideals and self-acceptance. Bachelor project, 2025. Nominated for German Design Graduates.",
+    introText: "In my bachelor project, supervised by Prof. Alejandro Lecuna and Prof. Rochus Hartmann, I explored socially constructed beauty ideals and their psychological effects. From this research grew a short film that follows a protagonist's inner shift from self-optimisation to self-acceptance, accompanied by a digital mentor.",
     introImage: "/img/projects/bachelor-thesis/Mentor_entity.gif",
     introImageAlt: "The digital companion from the film",
     galleryImages: [
@@ -16,22 +18,56 @@ export const metadata = {
     ],
 };
 
-## Research
+<div className="not-prose project-links">
+    <a className="btn-glow" href="https://youtu.be/VnI4VLYoquw" target="_blank" rel="noopener noreferrer">Watch the film</a>
+    <a className="btn-glow" href="https://germandesigngraduates.com/science-fiction-kurzfilm-schoenheit-und-bewusstsein/" target="_blank" rel="noopener noreferrer">German Design Graduates 2025</a>
+</div>
 
-The thesis looks at body dysmorphic disorder, the effects of social media, self-optimization in a neoliberal context, and the influence of patriarchal and colonial structures on body perception. Methodically, I used a mixed-methods approach with a qualitative focus, analyzing secondary sources from sociology, psychology and cultural studies.
+## The Film
 
-## Film Insights
+Reduced, retro-futuristic imagery with holographic elements shows how social norms shape the way we see ourselves. The mentor is a minimalist, genderless avatar: a reflective counterpart, never a replacement for human closeness.
 
-<video src="/img/projects/bachelor-thesis/film_insights/1.mp4" autoPlay muted loop playsInline className="w-full h-auto" />
+<Collage columns={3} items={[
+    { src: "/img/projects/bachelor-thesis/film_insights/1.mp4", alt: "Film still 1" },
+    { src: "/img/projects/bachelor-thesis/film_insights/2.mp4", alt: "Film still 2" },
+    { src: "/img/projects/bachelor-thesis/film_insights/3.mp4", alt: "Film still 3" },
+    { src: "/img/projects/bachelor-thesis/film_insights/4.mp4", alt: "Film still 4" },
+    { src: "/img/projects/bachelor-thesis/film_insights/5.mp4", alt: "Film still 5" },
+    { src: "/img/projects/bachelor-thesis/film_insights/6.mp4", alt: "Film still 6" },
+    { src: "/img/projects/bachelor-thesis/film_insights/7.mp4", alt: "Film still 7" },
+    { src: "/img/projects/bachelor-thesis/film_insights/8.mp4", alt: "Film still 8" },
+    { src: "/img/projects/bachelor-thesis/film_insights/9.mp4", alt: "Film still 9" },
+    { src: "/img/projects/bachelor-thesis/film_insights/10.mp4", alt: "Film still 10" },
+    { src: "/img/projects/bachelor-thesis/film_insights/11.mp4", alt: "Film still 11" }
+]} />
 
-## Process
+## Making of
 
-From character design in pre-production to 3D modeling of the companion, city and room scenes in Blender, title animation and compositing in After Effects, and final color grading.
+Research, script, storyboard and animatic came first. For the three shooting days I briefed a crew of younger students, so I could focus on directing and on the lead actress, who had never acted before. The mentor, the city and the rooms were built in Blender, compositing was done in After Effects.
 
-<img src="/img/projects/bachelor-thesis/pre_production/CharacterDesign_entity.jpg" alt="Character design of the digital companion" className="w-full h-auto" />
+<Collage columns={4} items={[
+    { src: "/img/projects/bachelor-thesis/pre_production/CharacterDesign_entity.jpg", alt: "Character design of the mentor" },
+    { src: "/img/projects/bachelor-thesis/post-production/Entity_Character3D_1.png", alt: "Entity Character3D 1" },
+    { src: "/img/projects/bachelor-thesis/post-production/Entity_Character3D_3.png", alt: "Entity Character3D 3" },
+    { src: "/img/projects/bachelor-thesis/post-production/Entity_Character3D_5.png", alt: "Entity Character3D 5" },
+    { src: "/img/projects/bachelor-thesis/post-production/Entity_Character3D_8.png", alt: "Entity Character3D 8" },
+    { src: "/img/projects/bachelor-thesis/post-production/Blender_entity_interface.png", alt: "Blender entity interface" },
+    { src: "/img/projects/bachelor-thesis/post-production/Blender_entity_interface2.png", alt: "Blender entity interface2" },
+    { src: "/img/projects/bachelor-thesis/post-production/Blender_City3D.png", alt: "Blender City3D" },
+    { src: "/img/projects/bachelor-thesis/post-production/City_render.png", alt: "City render" },
+    { src: "/img/projects/bachelor-thesis/post-production/Blender_city3D_volumetricLight.png", alt: "Blender city3D volumetricLight" },
+    { src: "/img/projects/bachelor-thesis/post-production/City_Design_Atmo.png", alt: "City Design Atmo" },
+    { src: "/img/projects/bachelor-thesis/post-production/Blender_Room3D.png", alt: "Blender Room3D" },
+    { src: "/img/projects/bachelor-thesis/post-production/Blender_Room_rendering.png", alt: "Blender Room rendering" },
+    { src: "/img/projects/bachelor-thesis/post-production/Optimized-Body_MainCharacter.png", alt: "Optimized Body MainCharacter" },
+    { src: "/img/projects/bachelor-thesis/post-production/Holo-Chicks2.png", alt: "Holo Chicks2" },
+    { src: "/img/projects/bachelor-thesis/post-production/Blender_typo_animation.png", alt: "Blender typo animation" },
+    { src: "/img/projects/bachelor-thesis/post-production/Aftereffects_Titelanimation.png", alt: "Aftereffects Titelanimation" },
+    { src: "/img/projects/bachelor-thesis/post-production/After_effects_freistellen.png", alt: "After effects freistellen" },
+    { src: "/img/projects/bachelor-thesis/post-production/AfterEffects_ProcessPicture.png", alt: "AfterEffects ProcessPicture" },
+    { src: "/img/projects/bachelor-thesis/post-production/AfterEffects_ProcessPicture3.png", alt: "AfterEffects ProcessPicture3" },
+    { src: "/img/projects/bachelor-thesis/post-production/AfterEffects_ProcessPicture6.png", alt: "AfterEffects ProcessPicture6" },
+    { src: "/img/projects/bachelor-thesis/post-production/Colorgrading.png", alt: "Colorgrading" }
+]} />
 
-## Recognition
-
-Nominated for **German Design Graduates 2025**.
-
-[Watch the film on YouTube](https://youtu.be/VnI4VLYoquw) · [German Design Graduates](https://germandesigngraduates.com/science-fiction-kurzfilm-schoenheit-und-bewusstsein/)
+*Script, storyboard and the full research are available on request.*
