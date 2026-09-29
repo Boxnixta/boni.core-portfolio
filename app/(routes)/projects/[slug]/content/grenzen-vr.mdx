@@ -1,35 +1,52 @@
+import Collage from '@/app/components/boni/Collage';
+import Embed from '@/app/components/boni/Embed';
+
 export const metadata = {
     slug: "grenzen-vr",
     title: "Grenzen",
     category: ["XR & Interactive"],
-    thumbnail: "/img/projects/grenzen-vr/grenzen-vr-thumb.jpg",
-    thumbnailAlt: "VR view of a street at Kottbusser Tor in Berlin",
+    thumbnail: "/img/projects/grenzen-vr/grenzen-vr-thumb.webp",
+    thumbnailAlt: "An angry NPC approaching the player at Kottbusser Tor in VR",
     description: "A VR empathy experience about street harassment and personal boundaries. Orientation Project, 2026.",
-    introText: "Grenzen is a Meta Quest VR experience that builds empathy through embodied perspective-taking. Players inhabit a scaled-down body and walk through a geospatial recreation of Kottbusser Tor in Berlin. NPCs with AI-generated voices approach them, invade their personal space and speak directly to them, creating a physical sense of vulnerability.",
-    introImage: "/img/projects/grenzen-vr/grenzen-vr-intro.jpg",
-    introImageAlt: "An NPC approaching the player in VR",
+    introText: "Grenzen (boundaries) puts you into the body of a much smaller person. Walking through a real 3D model of Kottbusser Tor in Berlin, you meet people who come too close, block your way and talk at you. The goal: empathy for everyone who lives this every day.",
+    introImage: "/img/projects/grenzen-vr/Grenzen_AngryM.webp",
+    introImageAlt: "NPC invading the player's personal space",
     galleryImages: [
-        { src: "/img/projects/grenzen-vr/grenzen-vr-01.jpg", alt: "Geospatial recreation of Kottbusser Tor" },
-        { src: "/img/projects/grenzen-vr/grenzen-vr-02.jpg", alt: "NPC character created in Character Creator 4" },
-        { src: "/img/projects/grenzen-vr/grenzen-vr-03.jpg", alt: "Unity scene setup" },
-        { src: "/img/projects/grenzen-vr/grenzen-vr-04.jpg", alt: "Player perspective from a scaled-down body" },
+        { src: "/img/projects/grenzen-vr/Grenzen_StartIntro.webp", alt: "Start screen" },
+        { src: "/img/projects/grenzen-vr/Grenzen-boii.webp", alt: "Encounter with an NPC" },
+        { src: "/img/projects/grenzen-vr/Grenzen-Outro.webp", alt: "Outro screen" },
+        { src: "/img/projects/grenzen-vr/cesium.webp", alt: "Kottbusser Tor from Cesium geospatial data" },
     ],
 };
 
-## Context
+<Embed src="https://www.youtube-nocookie.com/embed/QbuluG_SNlY" title="Grenzen gameplay trailer" poster={metadata.introImage} label="Play trailer" />
 
-Street harassment is often discussed but rarely felt by those who do not experience it. Grenzen uses the body-based nature of VR to shift perspective: being smaller, being approached, not being able to step away.
+<div className="not-prose project-links">
+    <a className="btn-glow" href="https://github.com/Boxnixta/grenzen-vr" target="_blank" rel="noopener noreferrer">Documentation on GitHub</a>
+</div>
 
-## Process
+## How it works
 
-- Unity 6 LTS with the XR Interaction Toolkit and continuous locomotion
-- Cesium for Unity for real 3D geospatial data of the neighborhood
-- NPCs built in Character Creator 4, voiced with ElevenLabs
-- Custom C# systems for NPC sequencing and audio management
-- Perlin-noise-based mouth animation
+- **Real place:** Kottbusser Tor built from 3D geospatial data with Cesium for Unity
+- **Smaller body:** a scaled XR rig makes you feel physically smaller and more exposed
+- **NPCs:** characters from Character Creator 4 with AI voices (ElevenLabs), spatial audio and Perlin noise mouth movement
+- **Story logic:** a character sequencer instead of physical triggers, so the scenes always play in the right order
 
-## Results
+<Collage columns={3} items={[
+    { src: "/img/projects/grenzen-vr/screen.webp", alt: "Grenzen in Unity" },
+    { src: "/img/projects/grenzen-vr/firstsettings.webp", alt: "First XR settings and grey boxing" },
+    { src: "/img/projects/grenzen-vr/PlayerInSzene.webp", alt: "The player in the scene" },
+    { src: "/img/projects/grenzen-vr/1.webp", alt: "Scene 1" },
+    { src: "/img/projects/grenzen-vr/2.webp", alt: "Scene 2" },
+    { src: "/img/projects/grenzen-vr/3.webp", alt: "Scene 3" },
+    { src: "/img/projects/grenzen-vr/AAA.webp", alt: "Debugging" },
+    { src: "/img/projects/grenzen-vr/szen.webp", alt: "Scene before color grading" },
+    { src: "/img/projects/grenzen-vr/colorgraded.webp", alt: "Scene after color grading" },
+    { src: "/img/projects/grenzen-vr/Ausstellung.webp", alt: "Grenzen at the exhibition" },
+]} />
 
-A working MVP, completed in March 2026 after more than 100 hours of development. The biggest learning: the best solutions often came out of failures. Persistent debugging turned a steep learning curve into a stable architecture that goes beyond the initial plan.
+## Learnings
 
-[Project page](https://boxnixta.github.io/grenzen-vr/)
+With three months of C# behind me, this was a big leap: more than 100 hours of debugging in a pipeline of Unity, Cesium, Character Creator and VR physics. The biggest learning: the best solutions often came out of failures.
+
+Unity 6 · XR Interaction Toolkit · Meta Quest 2 · Cesium · Character Creator 4 · ElevenLabs · C#

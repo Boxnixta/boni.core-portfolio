@@ -1,3 +1,5 @@
+import Embed from '@/app/components/boni/Embed';
+
 export const metadata = {
     slug: "kusama-bubbles",
     title: "Dispersion Bubbles",
@@ -16,15 +18,21 @@ export const metadata = {
     ],
 };
 
+<Embed src="https://boxnixta.github.io/threejs-kusama-scene-CC1-03.03/" title="Dispersion Bubbles, live Three.js scene" poster={metadata.thumbnail} label="Start live scene" />
+
+Click and scroll to move freely through the scene and enjoy the glass bubbles.
+
 ## Technical Highlights
 
-- **Procedural environment:** An inverted sphere with a generated canvas texture using digital noise and dithering
+- **Procedural environment:** an inverted sphere with a generated canvas texture using noise and dithering
 - **Glass:** MeshPhysicalMaterial with dispersion, IOR and frosted effects
 - **Post-processing:** UnrealBloomPass lets the inner dots glow through the glass
-- **Math:** The dots are aligned on the curved sphere surfaces using normal vectors and quaternions
+- **Math:** the dots sit exactly on the curved spheres using normal vectors and quaternions
 
-## Learnings
+<div className="not-prose project-links">
+    <a className="btn-glow" href="https://boxnixta.github.io/threejs-kusama-scene-CC1-03.03/" target="_blank" rel="noopener noreferrer">Open fullscreen</a>
+    <a className="btn-glow" href="https://codepen.io/box-nixta/pen/zxBaPOv" target="_blank" rel="noopener noreferrer">CodePen</a>
+    <a className="btn-glow" href="https://github.com/Boxnixta/threejs-kusama-scene-CC1-03.03" target="_blank" rel="noopener noreferrer">Source code</a>
+</div>
 
-My focus was on simulating realistic glass. I used AI to understand the mathematical concepts like quaternion alignment and to debug the build step by step, which taught me how to build a Three.js render stack modularly.
-
-[Live demo](https://boxnixta.github.io/threejs-kusama-scene-CC1-03.03/) · [CodePen](https://codepen.io/box-nixta/pen/zxBaPOv) · [Source code](https://github.com/Boxnixta/threejs-kusama-scene-CC1-03.03)
+Three.js · GLSL · Post-processing

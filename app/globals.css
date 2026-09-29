@@ -221,6 +221,7 @@ html:focus-within {
 
 
 
+
 /* =====================================================================
    boni.core design layer
    Colors, fonts, effects and page styles from the Readymag + three.js
@@ -262,6 +263,12 @@ body {
         color: #3300ff;
         text-shadow: 0 0 8px rgb(51 0 255 / 0.45);
     }
+    /* fixed-width letter boxes (width set by FancyText) → the word never changes size */
+    .fancy-slot {
+        display: inline-block;
+        text-align: center;
+        white-space: nowrap;
+    }
     .fancy-script {
         @apply font-script font-normal;
         font-size: 1.3em;
@@ -291,9 +298,12 @@ body {
                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-boni-blue;
         box-shadow: 0 0 10px rgb(255 152 224 / 0.7);
     }
+    /* hover / keyboard focus: filled pink, white text → clearly clickable */
     .btn:hover,
-    .btn-glow:hover {
-        @apply bg-white text-boni-pink;
+    .btn-glow:hover,
+    .btn:focus-visible,
+    .btn-glow:focus-visible {
+        @apply bg-boni-pink text-white;
         box-shadow: 0 0 22px rgb(255 152 224 / 0.95);
     }
     .btn-glow {
@@ -595,6 +605,29 @@ body {
     .lightbox-count {
         @apply absolute bottom-4 left-1/2 max-w-none -translate-x-1/2 font-pixel text-sm text-boni-violet;
     }
+    /* click-to-load iframe (live demos, videos) */
+    .embed {
+        @apply relative my-8 w-full overflow-hidden rounded-xl bg-neutral-900 shadow-[0_6px_16px_rgb(0_0_0/0.2)];
+    }
+    .embed iframe {
+        @apply absolute inset-0 h-full w-full border-0;
+    }
+    .embed-start {
+        @apply absolute inset-0 flex h-full w-full cursor-pointer items-center justify-center;
+    }
+    .embed-start img {
+        @apply absolute inset-0 h-full w-full object-cover opacity-80 transition-opacity;
+    }
+    .embed-start:hover img {
+        @apply opacity-100;
+    }
+    .embed-start .btn-glow {
+        @apply relative;
+    }
+    .embed-start:hover .btn-glow {
+        @apply bg-boni-pink text-white;
+    }
+
     .project-links {
         @apply my-6 flex flex-wrap gap-3;
     }

@@ -1,37 +1,56 @@
+import Collage from '@/app/components/boni/Collage';
+
 export const metadata = {
     slug: "cute-cyberdeck",
     title: "Cute Cyberdeck",
     category: ["Physical Computing"],
-    thumbnail: "/img/projects/cute-cyberdeck/cute-cyberdeck-thumb.jpg",
+    thumbnail: "/img/projects/cute-cyberdeck/cute-cyberdeck-thumb.webp",
     thumbnailAlt: "Open pink snakeskin clutch with a built-in touchscreen computer",
     description: "A Raspberry Pi computer built into a pink faux snakeskin clutch bag. Second Term Project, 2026.",
-    introText: "A small personal computer built into a secondhand pink faux snakeskin clutch. The project joins a growing online community of FLINTA, queer creators and allies who build custom computers into vintage handbags, reclaiming knowledge that sealed, proprietary consumer electronics usually hide. As a DJ, I also wanted a portable machine that can connect to a beamer and run visuals on site.",
-    introImage: "/img/projects/cute-cyberdeck/cute-cyberdeck-intro.jpg",
-    introImageAlt: "The finished cyberdeck, open, with the touchscreen and keyboard",
+    introText: "A small personal computer inside a secondhand pink faux snakeskin clutch. The project joins a growing online community of FLINTA, queer creators and allies who build computers into vintage handbags and take back the knowledge that sealed, proprietary devices hide. As a DJ I also wanted a portable machine that plugs into a beamer and runs visuals on site.",
+    introImage: "/img/projects/cute-cyberdeck/deck.webp",
+    introImageAlt: "The finished cyberdeck, open, with touchscreen and keyboard",
     galleryImages: [
-        { src: "/img/projects/cute-cyberdeck/cute-cyberdeck-01.jpg", alt: "Hardware components laid out before assembly" },
-        { src: "/img/projects/cute-cyberdeck/cute-cyberdeck-02.jpg", alt: "Raspberry Pi and ribbon cables installed inside the clutch" },
-        { src: "/img/projects/cute-cyberdeck/cute-cyberdeck-03.jpg", alt: "Custom mounts designed in Blender" },
-        { src: "/img/projects/cute-cyberdeck/cute-cyberdeck-04.jpg", alt: "Wearing the cyberdeck and looking down on the screen" },
+        { src: "/img/projects/cute-cyberdeck/materialien.webp", alt: "Hardware components before assembly" },
+        { src: "/img/projects/cute-cyberdeck/wearing.webp", alt: "Wearing the cyberdeck and looking down on the screen" },
+        { src: "/img/projects/cute-cyberdeck/screen-halterung-blender.webp", alt: "Screen mount designed in Blender" },
+        { src: "/img/projects/cute-cyberdeck/cutch-installed-1.webp", alt: "Components installed in the clutch" },
     ],
 };
 
-## Concept
-
-The hyperfeminine cyberdeck community felt immediately relevant to me, not only as a research subject but as a space I wanted to be part of. Building my own deck was a way of joining that conversation through making. It was also my first physical computing project. The clutch is not just an enclosure. It is the concept.
+<div className="not-prose project-links">
+    <a className="btn-glow" href="https://github.com/Boxnixta/Second-Term-Project-Cyberdeck" target="_blank" rel="noopener noreferrer">Documentation on GitHub</a>
+</div>
 
 ## Build
 
-- **Hardware:** Raspberry Pi 4, Waveshare 5 inch capacitive touchscreen, mini wireless keyboard with touchpad, flat ribbon cables for HDMI and USB touch, second HDMI output for a beamer
-- **Mounts:** Designed in Blender with exact millimeter measurements and 3D printed. The Pi mount carries a snake-like "ssss" pattern. The small letters were rebuilt by hand with modeling gel and finished with chrome gel nail polish.
-- **Software:** Raspberry Pi OS, VS Code, Git, Obsidian, Pure Data, Chromium, offline Wikipedia (Kiwix), Organic Maps, SuperTuxKart and the retro RPG Moonring via Box64
+A Raspberry Pi 4 with a 5 inch Waveshare touchscreen, a mini wireless keyboard and flat ribbon cables, the game changer that made everything fit into the tiny bag. A second HDMI output is ready for a beamer. The mounts are my own designs, modelled in Blender, 3D printed and finished with modeling gel and chrome nail polish.
 
-## Theoretical Background
+<Collage columns={3} items={[
+    { src: "/img/projects/cute-cyberdeck/clutch.webp", alt: "The clutch, closed" },
+    { src: "/img/projects/cute-cyberdeck/removing-fabric-1.webp", alt: "Preparing the clutch" },
+    { src: "/img/projects/cute-cyberdeck/pi-installed.webp", alt: "Mounting the Raspberry Pi" },
+    { src: "/img/projects/cute-cyberdeck/ribbon-installed.webp", alt: "Installing the ribbon cables" },
+    { src: "/img/projects/cute-cyberdeck/cutch-installed-2.webp", alt: "All components installed" },
+    { src: "/img/projects/cute-cyberdeck/pi-halterung-blender.webp", alt: "Pi mount with snake-like ssss pattern, Blender" },
+    { src: "/img/projects/cute-cyberdeck/modeling.webp", alt: "Rebuilding the letters with modeling gel" },
+    { src: "/img/projects/cute-cyberdeck/uv.webp", alt: "Curing the printed part under UV light" },
+    { src: "/img/projects/cute-cyberdeck/deck-1.webp", alt: "The finished cyberdeck" },
+    { src: "/img/projects/cute-cyberdeck/deck-2.webp", alt: "The finished cyberdeck" },
+]} />
 
-The build is connected to my short paper *Cuteness as a Mechanism of Access: The Hyperfeminine Cyberdeck Community as a Case Study in Maker Culture* (Academic Conference Simulation, Film University Babelsberg, 2026), which draws on Cute Studies and feminist HCI to ask how a playful, cute aesthetic can lower the barriers to hardware participation.
+## Software
 
-## Reflection
+Raspberry Pi OS with VS Code, Git, Obsidian, Pure Data and Chromium, plus offline tools that fit the cyberdeck idea: offline Wikipedia (Kiwix), Organic Maps, SuperTuxKart and the retro RPG Moonring.
 
-The hardest part was finding the hardware: the planned Pi Zero 2 W was sold out for months, so a Pi 4 became the stand-in. Getting openFrameworks to run on the Pi is still an open task. Next steps are a Pi Zero 2 W with a battery for a fully wireless deck, better cooling, and audio-reactive visuals for parties. Most importantly, I lost the fear of touching hardware.
+<Collage columns={3} items={[
+    { src: "/img/projects/cute-cyberdeck/pi-software-installed.webp", alt: "Software running on the Pi" },
+    { src: "/img/projects/cute-cyberdeck/wiki-search.mp4", alt: "Offline Wikipedia search on the Pi" },
+    { src: "/img/projects/cute-cyberdeck/play-game.mp4", alt: "A round of Moonring on the Pi" },
+]} />
 
-Tools: Raspberry Pi · Linux · Blender · 3D printing
+## Background & Next Steps
+
+The build is linked to my short paper *Cuteness as a Mechanism of Access*, which asks how a cute aesthetic can lower the barriers to hardware and maker culture. Next up: a Pi Zero 2 W with battery for a fully wireless deck, better cooling and audio-reactive party visuals. The biggest win: I lost my fear of touching hardware.
+
+Raspberry Pi · Linux · Blender · 3D printing
