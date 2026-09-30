@@ -231,6 +231,7 @@ html:focus-within {
 
 
 
+
 /* =====================================================================
    boni.core design layer
    Colors, fonts, effects and page styles from the Readymag + three.js
@@ -830,6 +831,23 @@ body {
     .blob-canvas {
         /* same 4:3 format as the openFrameworks window (1024 × 768), as wide as the column allows */
         @apply block aspect-[4/3] w-full cursor-crosshair justify-self-center touch-none;
+    }
+    /* phones: no card around it, the blob runs edge to edge (square) */
+    @media (max-width: 639px) {
+        .blob-reactor {
+            @apply rounded-none bg-transparent p-0 shadow-none;
+            grid-template-columns: minmax(0, 1fr); /* the wide canvas must not stretch the column */
+        }
+        .blob-canvas {
+            aspect-ratio: 1 / 1;
+            /* full screen width: centred on the (centred) column, then as wide as the window */
+            position: relative;
+            left: 50%;
+            width: 100vw;
+            max-width: none;
+            translate: -50% 0;
+            justify-self: start;
+        }
     }
     .blob-controls {
         @apply flex flex-col gap-4 self-center;

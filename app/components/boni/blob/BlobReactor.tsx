@@ -25,6 +25,14 @@ const LAYERS: [number, number, Band][] = [
     [160, 0.08, "MID"], [130, 0.1, "HIGH"], [100, 0.12, "HIGH"], [50, 0.18, "HIGH"],
 ];
 const W = 1024, H = 768, STEP = 1 / 60;
+// Phones (canvas narrower than 640 px): square canvas, zoomed in on the blob (860 × 860 around the centre),
+// and no number readout, so nothing ever covers the blob.
+const NARROW = 640, ZOOM = 860;
+const view = (cssW: number, w: number, h: number) => {
+    const narrow = cssW < NARROW;
+    const scale = narrow ? Math.min(w, h) / ZOOM : Math.min(w / W, h / H);
+    return { narrow, scale, x: w / 2 - (W / 2) * scale, y: h / 2 - (H / 2) * scale };
+};
 
 type Mode = "off" | "track" | "demo" | "mic" | "file";
 
@@ -189,20 +197,20 @@ const BlobReactor = () => {
         };
 
         const draw = (a: Bands) => {
-            const scale = Math.min(canvas.width / W, canvas.height / H);
+            const v = view(canvas.clientWidth, canvas.width, canvas.height);
             g.setTransform(1, 0, 0, 1, 0, 0);
             // clear the whole frame (no ghost trails behind the blobs)
             g.fillStyle = "rgb(245,242,235)";
             g.fillRect(0, 0, canvas.width, canvas.height);
-            g.setTransform(scale, 0, 0, scale, (canvas.width - W * scale) / 2, (canvas.height - H * scale) / 2);
+            g.setTransform(v.scale, 0, 0, v.scale, v.x, v.y);
             blobs.forEach((b, i) => {
                 b.draw(g);
                 if (i === 3 || i === 4) b.drawBubbles(g);
             });
-            // analyzer readout (top left), like the debug text of the app
+            // analyzer readout (top left), like the debug text of the app — desktop only.
+            // Drawn after the blob, without an extra background box (the old box could cover the blob).
+            if (v.narrow) return;
             g.setTransform(1, 0, 0, 1, 0, 0);
-            g.fillStyle = "rgb(245,242,235)"; // clear the text area every frame (no trails on the numbers)
-            g.fillRect(0, 0, 160 * dpr, 100 * dpr);
             g.fillStyle = "rgba(0,0,0,0.75)";
             g.font = `${11 * dpr}px ui-monospace, Menlo, monospace`;
             [["SUBBASS", a.subBass], ["BASSREAL", a.bassReal], ["MIDREAL", a.midReal], ["HIGHREAL", a.highReal], ["HIGHPITCH", a.highPitch]]
@@ -230,8 +238,8 @@ const BlobReactor = () => {
         // click / drag on a blob = local hue splash on the topmost layer that was hit
         const toApp = (e: PointerEvent) => {
             const r = canvas.getBoundingClientRect();
-            const scale = Math.min(r.width / W, r.height / H);
-            return { x: (e.clientX - r.left - (r.width - W * scale) / 2) / scale, y: (e.clientY - r.top - (r.height - H * scale) / 2) / scale };
+            const v = view(r.width, r.width, r.height);
+            return { x: (e.clientX - r.left - v.x) / v.scale, y: (e.clientY - r.top - v.y) / v.scale };
         };
         const splash = (e: PointerEvent) => {
             const t = now();
