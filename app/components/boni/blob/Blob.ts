@@ -3,12 +3,11 @@
   240 points around a centre, noise displacement scaled by the audio value,
   zigzag / shimmer / bubbles / outer influence / clamp / hue splashes.
 */
-import { noise3 } from "./noise";
+import { ofNoise } from "./noise";
 import { type RGBA, toHsb, fromHsb, lerpColor, css } from "./color";
 
 export type Band = "BASS" | "MID" | "HIGH";
 const N = 240, BUBBLES = 6, TWO_PI = Math.PI * 2, PI = Math.PI, HALF_PI = Math.PI / 2;
-const ofNoise = (x: number, y = 0) => noise3(x, y, 0.5);
 const map = (v: number, a: number, b: number, c: number, d: number) => c + ((v - a) / (b - a)) * (d - c);
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;

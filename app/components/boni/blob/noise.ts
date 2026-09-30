@@ -1,25 +1,54 @@
-// Small 3D value noise (smooth, 0–1), stands in for ofNoise
+/*
+  Exact port of ofNoise (openFrameworks ofNoise.h = Stefan Gustavson's simplex noise,
+  "slang" version) with Ken Perlin's permutation table.
+    ofNoise(x)    = noise1(x) * 0.5 + 0.5      (1D, scaled by 0.25 like PRMan)
+    ofNoise(x, y) = noise2(x, y) * 0.5 + 0.5   (2D, scaled by 40)
+  The earlier version used a smooth value noise, which moves more softly than
+  the real ofNoise — the blob looked calmer than in the app.
+*/
+const P = [151,160,137,91,90,15,131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,8,99,37,240,21,10,23,190,6,148,247,120,234,75,0,26,197,62,94,252,219,203,117,35,11,32,57,177,33,88,237,149,56,87,174,20,125,136,171,168,68,175,74,165,71,134,139,48,27,166,77,146,158,231,83,111,229,122,60,211,133,230,220,105,92,41,55,46,245,40,244,102,143,54,65,25,63,161,1,216,80,73,209,76,132,187,208,89,18,169,200,196,135,130,116,188,159,86,164,100,109,198,173,186,3,64,52,217,226,250,124,123,5,202,38,147,118,126,255,82,85,212,207,206,59,227,47,16,58,17,182,189,28,42,223,183,170,213,119,248,152,2,44,154,163,70,221,153,101,155,167,43,172,9,129,22,39,253,19,98,108,110,79,113,224,232,178,185,112,104,218,246,97,228,251,34,242,193,238,210,144,12,191,179,162,241,81,51,145,235,249,14,239,107,49,192,214,31,181,199,106,157,184,84,204,176,115,121,50,45,127,4,150,254,138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180];
 const perm = new Uint8Array(512);
-{
-    const p = Array.from({ length: 256 }, (_, i) => i);
-    let seed = 7;
-    for (let i = 255; i > 0; i--) {
-        seed = (seed * 16807) % 2147483647;
-        const j = seed % (i + 1);
-        [p[i], p[j]] = [p[j], p[i]];
-    }
-    for (let i = 0; i < 512; i++) perm[i] = p[i & 255];
-}
-const fade = (t: number) => t * t * (3 - 2 * t);
-const h = (x: number, y: number, z: number) => perm[(perm[(perm[x & 255] + y) & 255] + z) & 255] / 255;
+for (let i = 0; i < 512; i++) perm[i] = P[i & 255];
 
-export const noise3 = (x: number, y: number, z: number) => {
-    const xi = Math.floor(x), yi = Math.floor(y), zi = Math.floor(z);
-    const xf = fade(x - xi), yf = fade(y - yi), zf = fade(z - zi);
-    const l = (a: number, b: number, t: number) => a + (b - a) * t;
-    return l(
-        l(l(h(xi, yi, zi), h(xi + 1, yi, zi), xf), l(h(xi, yi + 1, zi), h(xi + 1, yi + 1, zi), xf), yf),
-        l(l(h(xi, yi, zi + 1), h(xi + 1, yi, zi + 1), xf), l(h(xi, yi + 1, zi + 1), h(xi + 1, yi + 1, zi + 1), xf), yf),
-        zf
-    );
+const grad1 = (hash: number, x: number) => {
+    const h = hash & 15;
+    let g = 1 + (h & 7);
+    if (h & 8) g = -g;
+    return g * x;
 };
+const grad2 = (hash: number, x: number, y: number) => {
+    const h = hash & 7;
+    const u = h < 4 ? x : y, v = h < 4 ? y : x;
+    return (h & 1 ? -u : u) + (h & 2 ? -2 * v : 2 * v);
+};
+
+export const noise1 = (x: number) => {
+    const i0 = Math.floor(x), i1 = i0 + 1;
+    const x0 = x - i0, x1 = x0 - 1;
+    let t0 = 1 - x0 * x0; t0 *= t0;
+    let t1 = 1 - x1 * x1; t1 *= t1;
+    return 0.25 * (t0 * t0 * grad1(perm[i0 & 0xff], x0) + t1 * t1 * grad1(perm[i1 & 0xff], x1));
+};
+
+const F2 = 0.366025403, G2 = 0.211324865;
+export const noise2 = (x: number, y: number) => {
+    const s = (x + y) * F2;
+    const i = Math.floor(x + s), j = Math.floor(y + s);
+    const t = (i + j) * G2;
+    const x0 = x - (i - t), y0 = y - (j - t);
+    const [i1, j1] = x0 > y0 ? [1, 0] : [0, 1];
+    const x1 = x0 - i1 + G2, y1 = y0 - j1 + G2;
+    const x2 = x0 - 1 + 2 * G2, y2 = y0 - 1 + 2 * G2;
+    const ii = i & 0xff, jj = j & 0xff;
+    let n0 = 0, n1 = 0, n2 = 0;
+    let t0 = 0.5 - x0 * x0 - y0 * y0;
+    if (t0 >= 0) { t0 *= t0; n0 = t0 * t0 * grad2(perm[ii + perm[jj]], x0, y0); }
+    let t1 = 0.5 - x1 * x1 - y1 * y1;
+    if (t1 >= 0) { t1 *= t1; n1 = t1 * t1 * grad2(perm[ii + i1 + perm[jj + j1]], x1, y1); }
+    let t2 = 0.5 - x2 * x2 - y2 * y2;
+    if (t2 >= 0) { t2 *= t2; n2 = t2 * t2 * grad2(perm[ii + 1 + perm[jj + 1]], x2, y2); }
+    return 40 * (n0 + n1 + n2);
+};
+
+/** ofNoise(x) or ofNoise(x, y), range 0–1 */
+export const ofNoise = (x: number, y?: number) => (y === undefined ? noise1(x) : noise2(x, y)) * 0.5 + 0.5;

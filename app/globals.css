@@ -230,6 +230,7 @@ html:focus-within {
 
 
 
+
 /* =====================================================================
    boni.core design layer
    Colors, fonts, effects and page styles from the Readymag + three.js
@@ -827,7 +828,8 @@ body {
         @apply my-8 grid gap-6 rounded-xl bg-neutral-50 p-4 shadow-[0_6px_16px_rgb(0_0_0/0.12)] sm:p-6 lg:grid-cols-[1fr_260px];
     }
     .blob-canvas {
-        @apply block aspect-square w-full max-w-[640px] cursor-crosshair justify-self-center touch-none;
+        /* same 4:3 format as the openFrameworks window (1024 × 768), as wide as the column allows */
+        @apply block aspect-[4/3] w-full cursor-crosshair justify-self-center touch-none;
     }
     .blob-controls {
         @apply flex flex-col gap-4 self-center;
@@ -900,4 +902,27 @@ body {
 html,
 body {
     overflow-x: clip;
+}
+
+/* Impressum & privacy page */
+@layer components {
+    .legal-page {
+        @apply mx-auto max-w-2xl py-10 text-sm leading-relaxed text-neutral-700;
+    }
+    .legal-page h1 {
+        @apply font-pixel text-3xl text-boni-blue;
+    }
+    .legal-page h2 {
+        @apply mt-8 mb-2 text-base font-bold text-neutral-900;
+    }
+    .legal-page p {
+        @apply mb-3 max-w-none text-sm;
+        line-height: 1.65;
+    }
+    .legal-page a {
+        @apply text-boni-blue underline;
+    }
+    .legal-sub {
+        @apply mb-6 text-xs text-neutral-500;
+    }
 }

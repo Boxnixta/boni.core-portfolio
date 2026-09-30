@@ -4,12 +4,15 @@ import { useEffect, useRef, useState } from "react";
 import { AudioAnalyzer, startDemoBeat, type Bands } from "./audio";
 import { Blob, type Band } from "./Blob";
 import { type RGBA, toHsb, fromHsb } from "./color";
-import { noise3 } from "./noise";
+import { ofNoise } from "./noise";
 
 /*
   Browser port of "Blob Audio Reactor" (openFrameworks, Creative Coding II).
   Logic, colours and numbers come 1:1 from ofApp.cpp / Blob.cpp / AudioAnalyzer.cpp.
-  The app draws in a fixed 1000 × 1000 space that is scaled to the canvas.
+  The app draws in the same 1024 × 768 space as the openFrameworks window (main.cpp),
+  scaled to the canvas, and update() runs at a fixed 60 steps per second like
+  ofSetFrameRate(60) — also on 120 Hz screens, where it used to run twice as fast
+  (faster release = the blob calmed down too quickly).
 */
 
 // ofApp::setup(): from outside (big, light) to inside (small, saturated) – the starting blue
@@ -21,8 +24,7 @@ const LAYERS: [number, number, Band][] = [
     [280, 0.03, "BASS"], [250, 0.04, "BASS"], [220, 0.05, "MID"], [190, 0.065, "MID"],
     [160, 0.08, "MID"], [130, 0.1, "HIGH"], [100, 0.12, "HIGH"], [50, 0.18, "HIGH"],
 ];
-const SIZE = 1000;
-const ofNoise = (x: number) => noise3(x, 0, 0.5);
+const W = 1024, H = 768, STEP = 1 / 60;
 
 type Mode = "off" | "track" | "demo" | "mic" | "file";
 
@@ -137,10 +139,11 @@ const BlobReactor = () => {
         if (!canvas) return;
         const g = canvas.getContext("2d")!;
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
-        const blobs = LAYERS.map(([r, lag, band], i) => new Blob(r, BASE[i], lag, band, SIZE / 2, SIZE / 2));
+        const blobs = LAYERS.map(([r, lag, band], i) => new Blob(r, BASE[i], lag, band, W / 2, H / 2));
         const baseHsb = BASE.map((c) => toHsb(c));
         const silent: Bands = { subBass: 0, subBassDepth: 0, bassReal: 0, midReal: 0, highReal: 0, highPitch: 0, bassHardness: 0 };
-        let noiseTime = 0, highShimmerTime = 0, frame = 0, running = false;
+        let noiseTime = 0, highShimmerTime = 0, frame = 0, running = false, acc = 0, last = 0;
+        let bands: Bands = silent;
         let lastSplash = -10, session = 0;
         const t0 = performance.now();
         const now = () => (performance.now() - t0) / 1000;
@@ -156,8 +159,8 @@ const BlobReactor = () => {
             noiseTime += 0.005;
             highShimmerTime += 0.15;
             const a = audioRef.current && modeRef.current !== "off" ? audioRef.current.analyzer.update() : silent;
-            const cx = SIZE / 2 + (ofNoise(noiseTime) * 120 - 60);
-            const cy = SIZE / 2 + (ofNoise(noiseTime + 100) * 120 - 60);
+            const cx = W / 2 + (ofNoise(noiseTime) * 120 - 60);
+            const cy = H / 2 + (ofNoise(noiseTime + 100) * 120 - 60);
 
             // hue slider turns all layers together, gradient adds an offset that fades from outside to inside
             const last = blobs.length - 1;
@@ -186,12 +189,12 @@ const BlobReactor = () => {
         };
 
         const draw = (a: Bands) => {
-            const scale = Math.min(canvas.width, canvas.height) / SIZE;
+            const scale = Math.min(canvas.width / W, canvas.height / H);
             g.setTransform(1, 0, 0, 1, 0, 0);
             // clear the whole frame (no ghost trails behind the blobs)
             g.fillStyle = "rgb(245,242,235)";
             g.fillRect(0, 0, canvas.width, canvas.height);
-            g.setTransform(scale, 0, 0, scale, (canvas.width - SIZE * scale) / 2, (canvas.height - SIZE * scale) / 2);
+            g.setTransform(scale, 0, 0, scale, (canvas.width - W * scale) / 2, (canvas.height - H * scale) / 2);
             blobs.forEach((b, i) => {
                 b.draw(g);
                 if (i === 3 || i === 4) b.drawBubbles(g);
@@ -206,14 +209,20 @@ const BlobReactor = () => {
                 .forEach(([k, v], i) => g.fillText(`${k}:${(v as number).toFixed(3)}`, 12 * dpr, (20 + i * 16) * dpr));
         };
 
-        const loop = () => {
+        // fixed 60 Hz logic, drawing at whatever rate the screen has
+        const loop = (ts: number) => {
             if (!running) return;
-            draw(update());
+            acc += Math.min(0.1, last ? (ts - last) / 1000 : STEP);
+            last = ts;
+            let steps = 0;
+            while (acc >= STEP && steps < 6) { bands = update(); acc -= STEP; steps++; }
+            if (steps === 6) acc = 0;
+            draw(bands);
             frame = requestAnimationFrame(loop);
         };
         const io = new IntersectionObserver(([e]) => {
             running = e.isIntersecting;
-            if (running) frame = requestAnimationFrame(loop);
+            if (running) { last = 0; frame = requestAnimationFrame(loop); }
             else cancelAnimationFrame(frame);
         });
         io.observe(canvas);
@@ -221,8 +230,8 @@ const BlobReactor = () => {
         // click / drag on a blob = local hue splash on the topmost layer that was hit
         const toApp = (e: PointerEvent) => {
             const r = canvas.getBoundingClientRect();
-            const scale = Math.min(r.width, r.height) / SIZE;
-            return { x: (e.clientX - r.left - (r.width - SIZE * scale) / 2) / scale, y: (e.clientY - r.top - (r.height - SIZE * scale) / 2) / scale };
+            const scale = Math.min(r.width / W, r.height / H);
+            return { x: (e.clientX - r.left - (r.width - W * scale) / 2) / scale, y: (e.clientY - r.top - (r.height - H * scale) / 2) / scale };
         };
         const splash = (e: PointerEvent) => {
             const t = now();

@@ -6,7 +6,8 @@ const withMDX = createMDX({});
 const nextConfig: NextConfig = {
     reactStrictMode: true,
 
-    // output: "export", // ← kommentiert für dev, später aktivieren!
+    output: "export", 
+    trailingSlash: true,
 
     pageExtensions: ["js", "jsx", "ts", "tsx", "md", "mdx"],
 
