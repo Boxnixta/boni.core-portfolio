@@ -227,6 +227,7 @@ html:focus-within {
 
 
 
+
 /* =====================================================================
    boni.core design layer
    Colors, fonts, effects and page styles from the Readymag + three.js
@@ -279,6 +280,11 @@ body {
     }
     .fancy-script {
         @apply font-script font-normal;
+    }
+    /* script capitals swing far to the right → nudge them left so they don't touch the next letter */
+    .fancy-slot.is-upper > .fancy-script {
+        position: relative;
+        left: -0.12em;
     }
     .fancy-pixel {
         @apply font-pixel font-normal;
@@ -683,7 +689,7 @@ body {
         @apply flex w-full max-w-[1000px] cursor-pointer items-center justify-center overflow-hidden rounded-xl bg-white shadow-[0_6px_16px_rgb(0_0_0/0.15)];
     }
     .flipbook-page img {
-        @apply block max-h-[75vh] w-auto max-w-full;
+        @apply block h-auto max-h-[85vh] w-full object-contain;
     }
     .flipbook-bar {
         @apply flex items-center gap-4;
@@ -730,6 +736,9 @@ body {
             top: auto;
             width: 80%;
         }
+    }
+    .sketch-figure {
+        @apply mx-auto my-8 block h-auto w-full max-w-[1100px];
     }
     .doc-figure {
         @apply my-6 max-w-md rounded-lg shadow-[0_4px_12px_rgb(0_0_0/0.12)];
