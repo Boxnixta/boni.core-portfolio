@@ -228,6 +228,7 @@ html:focus-within {
 
 
 
+
 /* =====================================================================
    boni.core design layer
    Colors, fonts, effects and page styles from the Readymag + three.js
@@ -736,6 +737,20 @@ body {
             top: auto;
             width: 80%;
         }
+    }
+    /* 3001 Nacht: two moodboards + a small colour palette beside them */
+    .moodboard-row {
+        @apply my-8 grid items-start gap-4;
+        grid-template-columns: 1fr 1fr 70px;
+    }
+    .moodboard-row img {
+        @apply h-auto w-full rounded-lg shadow-[0_6px_16px_rgb(0_0_0/0.15)];
+    }
+    .moodboard-row img.palette {
+        @apply rounded-none shadow-none;
+    }
+    @media (max-width: 640px) {
+        .moodboard-row { grid-template-columns: 1fr 1fr 40px; gap: 0.5rem; }
     }
     .sketch-figure {
         @apply mx-auto my-8 block h-auto w-full max-w-[1100px];
