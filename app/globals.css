@@ -229,6 +229,7 @@ html:focus-within {
 
 
 
+
 /* =====================================================================
    boni.core design layer
    Colors, fonts, effects and page styles from the Readymag + three.js
@@ -300,8 +301,11 @@ body {
     .fancy-slot.is-upper > .fancy-script { font-size: 1.3em; }
     .fancy-slot.is-upper > .fancy-pixel  { font-size: 1.69em; }
     .fancy-slot.is-upper > span:not(.fancy-script):not(.fancy-pixel) { font-size: 1.46em; }
-    .fancy-slot:not(.is-upper) > .fancy-script { font-size: 1.5em; }
-    .fancy-slot:not(.is-upper) > .fancy-pixel  { font-size: 1.2em; }
+    .fancy-slot:not(.is-upper):not(.is-cap) > .fancy-script { font-size: 1.5em; }
+    .fancy-slot:not(.is-upper):not(.is-cap) > .fancy-pixel  { font-size: 1.2em; }
+    /* every other capital (not the first letter): normal cap height, same as the regular font */
+    .fancy-slot.is-cap > .fancy-script { font-size: 0.89em; position: relative; left: -0.04em; }
+    .fancy-slot.is-cap > .fancy-pixel  { font-size: 1.16em; }
 
     .glow-blue {
         color: #0000ff;
@@ -335,7 +339,8 @@ body {
 
     /* Signature bottom left — sits above the footer */
     .signature {
-        @apply fixed bottom-20 left-4 z-40 hidden w-24 md:block lg:w-28;
+        /* bottom offset is set by Signature.tsx: low in the corner, lifted above the footer when it scrolls in */
+        @apply fixed bottom-4 left-4 z-40 hidden w-24 md:block lg:w-28;
     }
     .signature img {
         @apply h-auto w-full;
@@ -517,15 +522,24 @@ body {
     }
 
     /* Folder game */
+    .about-play {
+        container-type: inline-size; /* → cqw below = % of this column's width */
+    }
     .folder-playground {
-        @apply relative mt-2 h-[540px] w-full touch-none select-none sm:h-[660px];
+        /* folder size and row distance; the top padding keeps both folder rows above the basket */
+        --folder-w: min(30cqw, 190px);
+        --folder-pitch: calc(var(--folder-w) * 0.8);
+        @apply relative mt-2 w-full touch-none select-none pb-9;
+        padding-top: calc(var(--folder-pitch) + var(--folder-w) + 5cqw);
     }
     .basket {
-        @apply pointer-events-none absolute bottom-10 left-0 z-20 w-[92%] max-w-[600px] -rotate-6;
+        /* in the normal flow below the folders; the counter sits right under it */
+        @apply pointer-events-none relative z-20 block w-[92%] max-w-[600px] -rotate-6;
     }
     .folder {
-        @apply absolute z-30 w-[30%] max-w-[190px] cursor-grab rounded-md
+        @apply absolute z-30 cursor-grab rounded-md
                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-boni-blue;
+        width: var(--folder-w);
         transition: scale 0.3s ease, rotate 0.3s ease;
         touch-action: none;
     }
@@ -548,7 +562,7 @@ body {
         rotate: -6deg;
     }
     .basket-counter {
-        @apply absolute bottom-3 left-2 z-40 max-w-none font-pixel text-sm text-boni-blue sm:text-base;
+        @apply absolute bottom-1 left-2 z-40 max-w-none font-pixel text-sm text-boni-blue sm:text-base;
     }
 
     /* ================= contact ================= */
@@ -743,6 +757,55 @@ body {
         @apply my-8 grid items-start gap-4;
         grid-template-columns: 1fr 1fr 70px;
     }
+    /* collage without the card look (Ethereal portraits) */
+    .collage.is-plain .collage-tile {
+        @apply rounded-none bg-transparent shadow-none;
+    }
+
+    /* Readymag-style rows (Event Design) */
+    .media-row {
+        @apply my-6 flex flex-wrap justify-center gap-3 sm:gap-4;
+    }
+    .media-row.is-grid > .media-tile {
+        width: calc((100% - 2 * 1rem) / 3);
+    }
+    .media-row.is-grid > .media-tile.span-2 {
+        width: calc((100% - 2 * 1rem) / 3 * 2 + 1rem);
+    }
+    .media-row.is-grid > .media-tile.span-3 {
+        width: 100%;
+    }
+    .media-row.is-row {
+        @apply flex-nowrap items-end;
+    }
+    .media-tile {
+        @apply block min-w-0 cursor-zoom-in overflow-hidden rounded-lg bg-neutral-100 shadow-[0_6px_16px_rgb(0_0_0/0.15)] transition-transform duration-300
+               hover:-rotate-1 hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-boni-violet;
+    }
+    .media-tile img,
+    .media-tile video {
+        @apply block h-full w-full object-cover;
+    }
+    /* cut-out PNG: no card, no shadow box — the shadow follows the shape */
+    .media-tile.is-plain {
+        @apply overflow-visible rounded-none bg-transparent shadow-none hover:rotate-0;
+    }
+    .media-tile.is-plain img {
+        @apply object-contain;
+        filter: drop-shadow(0 8px 12px rgb(0 0 0 / 0.18));
+    }
+    /* the row runs out to the right edge of the window (hand reaches in from outside) */
+    .bleed-right {
+        margin-right: calc(50% - 50vw);
+    }
+    .jazz-hero .media-tile.is-plain {
+        @apply self-center;
+    }
+    @media (max-width: 640px) {
+        .media-row { gap: 0.5rem; }
+        .media-row.is-grid > .media-tile { width: calc((100% - 2 * 0.5rem) / 3); }
+        .media-row.is-grid > .media-tile.span-3 { width: 100%; }
+    }
     .moodboard-row img {
         @apply h-auto w-full rounded-lg shadow-[0_6px_16px_rgb(0_0_0/0.15)];
     }
@@ -753,7 +816,7 @@ body {
         .moodboard-row { grid-template-columns: 1fr 1fr 40px; gap: 0.5rem; }
     }
     .sketch-figure {
-        @apply mx-auto my-8 block h-auto w-full max-w-[1100px];
+        @apply mx-auto my-8 block h-auto w-full max-w-[550px];
     }
     .doc-figure {
         @apply my-6 max-w-md rounded-lg shadow-[0_4px_12px_rgb(0_0_0/0.12)];
@@ -831,4 +894,10 @@ body {
 @media (prefers-reduced-motion: reduce) {
     .hint-text { transition: none; }
     .signature:hover img, .hey-spray:hover, .about-cd:hover img, .about-twinkle img, .about-heart img { animation: none; }
+}
+
+/* rows that run to the window edge must not cause sideways scrolling */
+html,
+body {
+    overflow-x: clip;
 }

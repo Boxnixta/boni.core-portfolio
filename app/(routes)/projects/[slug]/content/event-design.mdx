@@ -1,4 +1,5 @@
 import Collage from '@/app/components/boni/Collage';
+import MediaRow from '@/app/components/boni/MediaRow';
 
 export const metadata = {
     slug: "event-design",
@@ -57,16 +58,18 @@ For the Jazz Against The Machine Festival 2024 I designed the official event pos
 
 The festival at Artheater Köln brought together musical genre and gender diversity with support for local young talent. My design supported the communication of these contents and shaped the visual identity of the event.
 
-<Collage columns={3} items={[
-    { src: "/img/projects/event-design/jazz-poster-mockup.webp", alt: "" },
-    { src: "/img/projects/event-design/jazz-2.webp", alt: "" },
-    { src: "/img/projects/event-design/jazz-5.webp", alt: "" },
-    { src: "/img/projects/event-design/jazz-4.webp", alt: "" },
-    { src: "/img/projects/event-design/jazz-1.webp", alt: "" },
-    { src: "/img/projects/event-design/jazz-insta-story.webp", alt: "" },
+<MediaRow mode="row" className="bleed-right jazz-hero" items={[
+    { src: "/img/projects/event-design/jazz-poster-mockup.webp", alt: "Poster at a bus stop", ratio: 0.7089 },
+    { src: "/img/projects/event-design/jazz-2.webp", alt: "Instagram feed", ratio: 0.4794 },
+    { src: "/img/projects/event-design/jazz-hand.webp", alt: "Hand holding a phone with the festival post", ratio: 1.1129, plain: true },
 ]} />
 
-<Collage columns={3} items={[
+<MediaRow mode="row" items={[
+    { src: "/img/projects/event-design/jazz-1.webp", alt: "Planning the feed in Illustrator", ratio: 0.7402 },
+    { src: "/img/projects/event-design/jazz-4.webp", alt: "Festival poster", ratio: 0.7083 },
+]} />
+
+<MediaRow items={[
     { src: "/img/projects/event-design/jazz-post-1.webp", alt: "" },
     { src: "/img/projects/event-design/jazz-post-2.webp", alt: "" },
     { src: "/img/projects/event-design/jazz-post-3.webp", alt: "" },
@@ -96,17 +99,12 @@ The design carries the concept of the event into the digital world and invites p
 
 Posts, stories and animated stories for the club night at Menschmeier, Berlin.
 
-<Collage columns={3} items={[
-    { src: "/img/projects/event-design/mw-img-1185.webp", alt: "" },
-    { src: "/img/projects/event-design/mw-img-1186.webp", alt: "" },
-    { src: "/img/projects/event-design/mw-img-1187.webp", alt: "" },
-    { src: "/img/projects/event-design/mw-1080x1920.webp", alt: "" },
-    { src: "/img/projects/event-design/mw-instapost.webp", alt: "" },
-    { src: "/img/projects/event-design/mw-10-mitbild.webp", alt: "" },
-    { src: "/img/projects/event-design/mw-logo-miomorph.webp", alt: "" },
-    { src: "/img/projects/event-design/mw-video-1.mp4", alt: "" },
-    { src: "/img/projects/event-design/mw-video-2.mp4", alt: "" },
-    { src: "/img/projects/event-design/mw-video-3.mp4", alt: "" },
+<MediaRow items={[
+    { src: "/img/projects/event-design/mw-img-1185.webp", alt: "Post: morph mal wieder" },
+    { src: "/img/projects/event-design/mw-img-1186.webp", alt: "Post: 23:00 – 11:00" },
+    { src: "/img/projects/event-design/mw-img-1187.webp", alt: "Post: alles durcheinander morphen" },
+    { src: "/img/projects/event-design/mw-1080x1920.webp", alt: "Story poster" },
+    { src: "/img/projects/event-design/mw-video-1.mp4", alt: "Animated story" },
 ]} />
 
 <h2 className="not-prose project-section-title">Morph nochmal</h2>
@@ -114,18 +112,14 @@ Posts, stories and animated stories for the club night at Menschmeier, Berlin.
 
 Banner, posts, line-up and stories for the club night at Killi & Void, Berlin.
 
-<Collage columns={3} items={[
-    { src: "/img/projects/event-design/mn-facebookkkk-zeichenfla-che-1.webp", alt: "" },
-    { src: "/img/projects/event-design/mn-img-1671.webp", alt: "" },
-    { src: "/img/projects/event-design/mn-img-1672.webp", alt: "" },
-    { src: "/img/projects/event-design/mn-img-1673.webp", alt: "" },
-    { src: "/img/projects/event-design/mn-img-1776.webp", alt: "" },
-    { src: "/img/projects/event-design/mn-lineup-zeichenfla-che-1.webp", alt: "" },
-    { src: "/img/projects/event-design/mn-phone.webp", alt: "" },
-    { src: "/img/projects/event-design/mn-instagram-zeichenfla-che-1.webp", alt: "" },
-    { src: "/img/projects/event-design/mn-video-1.mp4", alt: "" },
-    { src: "/img/projects/event-design/mn-video-2.mp4", alt: "" },
-    { src: "/img/projects/event-design/mn-video-3.mp4", alt: "" },
+<MediaRow items={[
+    { src: "/img/projects/event-design/mn-facebookkkk-zeichenfla-che-1.webp", alt: "Event banner", span: 3 },
+    { src: "/img/projects/event-design/mn-img-1671.webp", alt: "Post" },
+    { src: "/img/projects/event-design/mn-img-1672.webp", alt: "Post: tanz aus der reihe" },
+    { src: "/img/projects/event-design/mn-img-1673.webp", alt: "Post: morph nochmal 15.07.2022" },
+    { src: "/img/projects/event-design/mn-img-1776.webp", alt: "Story poster" },
+    { src: "/img/projects/event-design/mn-lineup-zeichenfla-che-1.webp", alt: "Line-up story" },
+    { src: "/img/projects/event-design/mn-video-1.mp4", alt: "Story video" },
 ]} />
 
 <h2 className="not-prose project-section-title">The Merchant of Venice</h2>

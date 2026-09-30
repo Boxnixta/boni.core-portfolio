@@ -6,18 +6,20 @@ import { useRef, useState } from "react";
   Skill folders that can be dragged into the shopping basket.
   A folder lands exactly where it is dropped. Dropped over the basket = "in the basket":
   it shrinks a little and stays ON TOP of the basket.
-  Positions are stored in % of the playground, so they survive resizing.
+  At the start the folders sit in two rows ABOVE the basket (row → CSS var --folder-pitch),
+  so none of them looks like it is already in the basket.
+  After a drag the position is stored in % of the playground, so it survives resizing.
   Keyboard: Tab to a folder, Enter / Space puts it into the basket or takes it out.
 */
-type Folder = { id: string; label: string; src: string; x: number; y: number; inCart: boolean };
+type Folder = { id: string; label: string; src: string; x: number; row: number; y?: number; inCart: boolean };
 
 const START: Folder[] = [
-    { id: "animation",    label: "Animation",              src: "/img/about/Ordner-Icon_Animation.png",           x: 0, y: 0,  inCart: false },
-    { id: "grafik",       label: "Graphic Design",         src: "/img/about/Ordner-Icon_Grafik-Design.png",       x: 35, y: 3, inCart: false },
-    { id: "3d",           label: "3D Design",              src: "/img/about/Ordner-Icon_3D-Design.png",           x: 70, y: 0, inCart: false },
-    { id: "film",         label: "Film & Post-production", src: "/img/about/Ordner-Icon_Film-Postproduction.png", x: 12, y: 22,  inCart: false },
-    { id: "illustration", label: "Illustration",           src: "/img/about/Ordner-Icon_Illustration.png",        x: 47, y: 25, inCart: false },
-    { id: "sound",        label: "Sound Design",           src: "/img/about/Ordner-Icon_Sounddesign.png",         x: 74, y: 23, inCart: false },
+    { id: "animation",    label: "Animation",              src: "/img/about/Ordner-Icon_Animation.png",           x: 0,  row: 0,    inCart: false },
+    { id: "grafik",       label: "Graphic Design",         src: "/img/about/Ordner-Icon_Grafik-Design.png",       x: 35, row: 0.08, inCart: false },
+    { id: "3d",           label: "3D Design",              src: "/img/about/Ordner-Icon_3D-Design.png",           x: 70, row: 0,    inCart: false },
+    { id: "film",         label: "Film & Post-production", src: "/img/about/Ordner-Icon_Film-Postproduction.png", x: 12, row: 1,    inCart: false },
+    { id: "illustration", label: "Illustration",           src: "/img/about/Ordner-Icon_Illustration.png",        x: 47, row: 1.08, inCart: false },
+    { id: "sound",        label: "Sound Design",           src: "/img/about/Ordner-Icon_Sounddesign.png",         x: 74, row: 1,    inCart: false },
 ];
 
 const FolderPlayground = () => {
@@ -106,7 +108,7 @@ const FolderPlayground = () => {
                     key={f.id}
                     type="button"
                     className={`folder ${f.inCart ? "in-cart" : ""}`}
-                    style={{ left: `${f.x}%`, top: `${f.y}%` }}
+                    style={{ left: `${f.x}%`, top: f.y === undefined ? `calc(${f.row} * var(--folder-pitch))` : `${f.y}%` }}
                     onPointerDown={(e) => onPointerDown(e, f)}
                     onPointerMove={onPointerMove}
                     onPointerUp={onPointerUp}
