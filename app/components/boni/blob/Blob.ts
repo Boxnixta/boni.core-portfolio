@@ -174,47 +174,50 @@ export class Blob {
     }
 
     /*
-      Off-white centre + soft seam in 8 smoothstep steps towards the full colour (like the ofMesh
-      strips in Blob::draw). Painted from the outside in; wherever a hue splash is active, the
-      affected wedge is painted again in the shifted colour.
+      Off-white centre that fades softly into the full colour towards the edge.
+      Instead of stacked rings, each layer is filled once with a radial gradient
+      (smoothstep curve sampled into many stops), so there are no visible steps.
+      Wherever a hue splash is active, that wedge is painted again in the shifted colour.
     */
+    private gradient(g: CanvasRenderingContext2D, c: RGBA, meanR: number, band: number) {
+        const grad = g.createRadialGradient(this.pos.x, this.pos.y, 0, this.pos.x, this.pos.y, Math.max(1, meanR));
+        const center = lerpColor(c, OFF_WHITE, 0.85);
+        const t0 = Math.max(0, (meanR - band) / meanR);
+        grad.addColorStop(0, css(center));
+        grad.addColorStop(t0, css(center));
+        const STEPS = 16;
+        for (let s = 1; s <= STEPS; s++) {
+            const t = s / STEPS, e = t * t * (3 - 2 * t);
+            grad.addColorStop(t0 + (1 - t0) * t, css(lerpColor(center, c, e)));
+        }
+        return grad;
+    }
+
     draw(g: CanvasRenderingContext2D) {
         const band = Math.min(100, this.radius * 0.7);
-        const steps = 8;
-        const center = lerpColor(this.color, OFF_WHITE, 0.85);
-        const alpha = this.color[3] / 255;
-        const inner = (i: number) => this.radii[i] - band;
-        const at = (t: number) => (i: number) => lerp(inner(i), this.radii[i], t);
+        let meanR = 0;
+        for (let i = 0; i < N; i++) meanR += this.radii[i];
+        meanR /= N;
 
         g.save();
-        g.globalAlpha = alpha;
-        for (let s = steps - 1; s >= 0; s--) {
-            const t1 = (s + 1) / steps, e1 = t1 * t1 * (3 - 2 * t1);
-            this.ring(g, at(t1));
-            g.fillStyle = css(lerpColor(center, this.color, e1));
-            g.fill();
-        }
-        this.ring(g, inner);
-        g.fillStyle = css(center);
+        g.globalAlpha = this.color[3] / 255;
+        this.ring(g, (i) => this.radii[i]);
+        g.fillStyle = this.gradient(g, this.color, meanR, band);
         g.fill();
 
-        // hue splashes: repaint only the wedges that are shifted
+        // hue splashes: repaint only the shifted wedges (opaque, so overlaps don't add up)
+        g.globalAlpha = 1;
         for (let i = 0; i < N; i++) {
             if (Math.abs(this.hueCurrent[i]) < 0.5) continue;
-            const pc = this.pointColor(i), pcc = lerpColor(pc, OFF_WHITE, 0.85);
-            const a0 = (i / N) * TWO_PI - 0.004, a1 = ((i + 1) / N) * TWO_PI + 0.004, j = (i + 1) % N;
-            for (let s = steps; s >= 0; s--) {
-                const t = s / steps, e = t * t * (3 - 2 * t);
-                const r0 = s === 0 ? 0 : lerp(inner(i), this.radii[i], t), r1 = s === 0 ? 0 : lerp(inner(j), this.radii[j], t);
-                const R0 = s === 0 ? inner(i) : r0, R1 = s === 0 ? inner(j) : r1;
-                g.beginPath();
-                g.moveTo(this.pos.x, this.pos.y);
-                g.lineTo(this.pos.x + Math.cos(a0) * R0, this.pos.y + Math.sin(a0) * R0);
-                g.lineTo(this.pos.x + Math.cos(a1) * R1, this.pos.y + Math.sin(a1) * R1);
-                g.closePath();
-                g.fillStyle = css(s === 0 ? pcc : lerpColor(pcc, pc, e));
-                g.fill();
-            }
+            const j = (i + 1) % N;
+            const a0 = (i / N) * TWO_PI - 0.003, a1 = ((i + 1) / N) * TWO_PI + 0.003;
+            g.beginPath();
+            g.moveTo(this.pos.x, this.pos.y);
+            g.lineTo(this.pos.x + Math.cos(a0) * this.radii[i], this.pos.y + Math.sin(a0) * this.radii[i]);
+            g.lineTo(this.pos.x + Math.cos(a1) * this.radii[j], this.pos.y + Math.sin(a1) * this.radii[j]);
+            g.closePath();
+            g.fillStyle = this.gradient(g, this.pointColor(i), meanR, band);
+            g.fill();
         }
         g.restore();
     }

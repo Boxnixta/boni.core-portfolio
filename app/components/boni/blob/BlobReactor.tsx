@@ -140,7 +140,7 @@ const BlobReactor = () => {
         const blobs = LAYERS.map(([r, lag, band], i) => new Blob(r, BASE[i], lag, band, SIZE / 2, SIZE / 2));
         const baseHsb = BASE.map((c) => toHsb(c));
         const silent: Bands = { subBass: 0, subBassDepth: 0, bassReal: 0, midReal: 0, highReal: 0, highPitch: 0, bassHardness: 0 };
-        let noiseTime = 0, highShimmerTime = 0, frame = 0, running = false, first = true;
+        let noiseTime = 0, highShimmerTime = 0, frame = 0, running = false;
         let lastSplash = -10, session = 0;
         const t0 = performance.now();
         const now = () => (performance.now() - t0) / 1000;
@@ -148,7 +148,6 @@ const BlobReactor = () => {
         const resize = () => {
             canvas.width = Math.round(canvas.clientWidth * dpr);
             canvas.height = Math.round(canvas.clientHeight * dpr);
-            first = true;
         };
         resize();
         window.addEventListener("resize", resize);
@@ -189,10 +188,9 @@ const BlobReactor = () => {
         const draw = (a: Bands) => {
             const scale = Math.min(canvas.width, canvas.height) / SIZE;
             g.setTransform(1, 0, 0, 1, 0, 0);
-            // off-white with low alpha → soft trails, like in the original
-            g.fillStyle = first ? "rgb(245,242,235)" : "rgba(245,242,235,0.157)";
+            // clear the whole frame (no ghost trails behind the blobs)
+            g.fillStyle = "rgb(245,242,235)";
             g.fillRect(0, 0, canvas.width, canvas.height);
-            first = false;
             g.setTransform(scale, 0, 0, scale, (canvas.width - SIZE * scale) / 2, (canvas.height - SIZE * scale) / 2);
             blobs.forEach((b, i) => {
                 b.draw(g);

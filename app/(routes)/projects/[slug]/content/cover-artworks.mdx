@@ -1,24 +1,31 @@
+import Collage from '@/app/components/boni/Collage';
+
 export const metadata = {
     slug: "cover-artworks",
     title: "Cover Artworks",
-    category: ["Graphic & Editorial"],
+    category: ["Graphic & Editorial", "Illustration"],
     thumbnail: "/img/thumbs/cover-artworks-poster.webp",
-    thumbnailAlt: "Album cover \"Bisschen Acid\" by Hannes Hansen",
+    thumbnailAlt: "Glossy chrome cover artwork with a small label",
     thumbnailVideo: "/img/thumbs/cover-artworks.mp4",
+    thumbnailPosition: "100% 100%",
     description: "Album and single covers for musicians, 2020 to 2025.",
-    introText: "Cover artworks that mix hand-drawn illustration, 3D elements and UI aesthetics. As a DJ myself, I love translating the mood of a track into one image, sometimes with a clear political statement.",
-    introImage: "/img/projects/cover-artworks/cover-artworks-intro.jpg",
-    introImageAlt: "Album artwork \"Bisschen Acid\"",
-    galleryImages: [
-        { src: "/img/projects/cover-artworks/cover-artworks-01.jpg", alt: "Album artwork \"Bisschen Acid\" for Hannes Hansen" },
-        { src: "/img/projects/cover-artworks/cover-artworks-02.jpg", alt: "Single cover \"The Loop\" for Hannes Hansen" },
-        { src: "/img/projects/cover-artworks/cover-artworks-03.jpg", alt: "Single cover for Mo114music & Hannes Kreschel" },
-        { src: "/img/projects/cover-artworks/cover-artworks-04.jpg", alt: "Single cover \"Flamingo's Sunset\" for Rafael Grossmann" },
-    ],
+    introText: "These cover artworks combine analog and digital techniques, from hand-drawn illustration to 3D elements and UI aesthetics. They show how visual identity, music and technology can merge to carry emotional, cultural and sometimes political statements.",
+    introImage: "/img/projects/cover-artworks/cover-1.webp",
+    introImageAlt: "Album artwork",
+    galleryImages: [],
 };
+
+<Collage columns={2} items={[
+    { src: "/img/projects/cover-artworks/cover-1.webp", alt: "" },
+    { src: "/img/projects/cover-artworks/cover-2.webp", alt: "" },
+    { src: "/img/projects/cover-artworks/cover-3.webp", alt: "" },
+    { src: "/img/projects/cover-artworks/cover-4.webp", alt: "" },
+]} />
 
 - **"Bisschen Acid"**: album artwork for Hannes Hansen, 2024
 - **"The Loop"**: single cover for Hannes Hansen, 2024
 - **"ABC Fi\*\* die AFD!"**: single cover for Mo114music & Hannes Kreschel, 2024
 - **Lucidcora**: cover artwork, 2025
 - **"Flamingo's Sunset"**: single cover for Rafael Grossmann, 2020
+
+Illustration · 3D · Typography

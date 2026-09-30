@@ -226,6 +226,7 @@ html:focus-within {
 
 
 
+
 /* =====================================================================
    boni.core design layer
    Colors, fonts, effects and page styles from the Readymag + three.js
@@ -695,6 +696,40 @@ body {
     }
     .project-video.is-portrait {
         @apply mx-auto max-h-[80vh] w-auto max-w-full;
+    }
+    .project-video.is-small {
+        @apply mx-auto max-w-[480px];
+    }
+    /* thumbnail film that only appears while hovering (bachelor) */
+    .thumb-hover-video {
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    .thumb-hover-video:hover {
+        opacity: 1;
+    }
+    /* loose illustrations, randomly placed (Scatter) */
+    .scatter {
+        @apply relative my-10 w-full;
+        height: var(--scatter-h, 900px);
+    }
+    .scatter-pos {
+        position: absolute;
+        left: var(--l);
+        top: var(--t);
+        width: var(--w);
+        rotate: var(--r);
+    }
+    @media (max-width: 640px) {
+        .scatter {
+            @apply flex h-auto flex-col items-center gap-6;
+        }
+        .scatter-pos {
+            position: relative;
+            left: auto;
+            top: auto;
+            width: 80%;
+        }
     }
     .doc-figure {
         @apply my-6 max-w-md rounded-lg shadow-[0_4px_12px_rgb(0_0_0/0.12)];

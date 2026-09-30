@@ -1,31 +1,45 @@
+import Collage from '@/app/components/boni/Collage';
+
 export const metadata = {
     slug: "tentacles",
     title: "Tentacles",
     category: ["3D & Motion", "Sound & Audio"],
-    thumbnail: "/img/projects/tentacles/tentacles-thumb.jpg",
-    thumbnailAlt: "Red and pink tentacles in a turquoise architectural space with golden light",
-    description: "An audiovisual piece about octopus perception, with procedural tentacles reacting to a custom soundtrack.",
-    introText: "This 60-second audiovisual piece is inspired by the painting \"Tempel des Cthulhu\" by fellow student Saikhat Musaeva: a turquoise archway tunnel, golden light from above and pink tentacle-like forms below. The piece moves from abstract close-ups to partial recognition of tentacles in an undefined architectural space. Octopuses sense sound as vibration through their bodies, so both sound and visuals focus on felt movement rather than melody.",
-    introImage: "/img/projects/tentacles/tentacles-intro.jpg",
-    introImageAlt: "Blender render of the tentacle scene",
-    galleryImages: [
-        { src: "/img/projects/tentacles/tentacles-01.jpg", alt: "Procedural tentacles in the Blender 3D view" },
-        { src: "/img/projects/tentacles/tentacles-02.jpg", alt: "Material node setup" },
-        { src: "/img/projects/tentacles/tentacles-03.jpg", alt: "Ableton Live project" },
-        { src: "/img/projects/tentacles/tentacles-04.jpg", alt: "Custom watery synth in Vital" },
-    ],
+    thumbnail: "/img/thumbs/tentacles.webp",
+    thumbnailAlt: "Pink procedural tentacles in Blender",
+    description: "An audiovisual piece about octopus perception: procedural tentacles react to a custom soundtrack. Theoretical Backgrounds of Audio & Graphics, 2025/26.",
+    introText: "This 60-second audiovisual piece is inspired by the painting \"Tempel des Cthulhu\" by fellow student Saikhat Musaeva: a turquoise archway tunnel, golden light from above and pink tentacle-like forms below. It moves from abstract close-ups to a partial recognition of tentacles in an undefined architectural space. Octopuses sense sound as vibration through their bodies, so both sound and visuals focus on felt movement rather than heard melody.",
+    introImage: "/img/projects/tentacles/blenderscreenshot.webp",
+    introImageAlt: "The tentacle scene in Blender",
+    galleryImages: [],
 };
+
+<div className="not-prose project-links">
+    <a className="btn-glow" href="https://owncloud.gwdg.de/index.php/s/u6QbQek6NlX7XhQ" target="_blank" rel="noopener noreferrer">Watch the film (4K)</a>
+</div>
 
 ## Sound
 
 Made in Ableton Live at 120 BPM. An ambient opening with a pluck arp and granulated vocals panning through space. From 0:15 a hard bounce beat enters and withdraws again, creating tension and release. A custom Vital synth with slow LFO pitch modulation creates a rippling, water-like motion. Different frequency bands get their own LFO speeds and panning, mimicking the decentralized sensing of an octopus.
 
+<Collage columns={2} items={[
+    { src: "/img/projects/tentacles/abletonprojekt.webp", alt: "" },
+    { src: "/img/projects/tentacles/vitalwatersynth.webp", alt: "" },
+]} />
+
 ## Visuals
 
-Made in Blender with Cycles and finished in DaVinci Resolve. Two tentacle systems: procedural Geometry Nodes spirals driven by an empty that tracks the beat, and hand-drawn curves with noise displacement for constant wobbling. At the midpoint the world shifts from black to soft rose, turning mystery into revelation.
+Made in Blender with Cycles and finished in DaVinci Resolve. Two tentacle systems: procedural Geometry Nodes spirals driven by an empty that tracks the beat, and hand-drawn curves with noise displacement for constant wobbling. At the midpoint the world shifts from black to soft rose, turning mystery into revelation, and the tentacles change colour with it.
+
+<Collage columns={3} items={[
+    { src: "/img/projects/tentacles/tentacle3Dview.webp", alt: "" },
+    { src: "/img/projects/tentacles/tentacle1.webp", alt: "" },
+    { src: "/img/projects/tentacles/tentacle2.webp", alt: "" },
+    { src: "/img/projects/tentacles/materialinsight.webp", alt: "" },
+    { src: "/img/projects/tentacles/renderblender.webp", alt: "" },
+]} />
 
 ## Learnings
 
-Geometry Nodes are flexible but expensive to render, so adaptive sampling was essential. Blender has no native audio input, so drivers on empties became a non-destructive way to sync animation to sound. It was also my first time building a synth in Vital.
+Geometry Nodes are flexible but expensive to render, so adaptive sampling was essential. Blender has no native audio input, so drivers on empties became a non-destructive way to sync animation to sound. EXR exports needed a consistent linear colour space from Blender to DaVinci. And it was my first time building a synth in Vital.
 
-Format: 3840×2160, 60 seconds
+Blender (Geometry Nodes, Cycles) · Ableton Live · Vital · DaVinci Resolve · 3840×2160, 60 s

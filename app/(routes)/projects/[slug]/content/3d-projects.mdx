@@ -1,0 +1,76 @@
+import Collage from '@/app/components/boni/Collage';
+import Flipbook from '@/app/components/boni/Flipbook';
+
+export const metadata = {
+    slug: "3d-projects",
+    title: "3D Projects",
+    category: ["3D & Motion"],
+    thumbnail: "/img/thumbs/3d-projects-poster.webp",
+    thumbnailAlt: "Scenes from Sneeze and Undine",
+    thumbnailVideo: "/img/thumbs/3d-projects.mp4",
+    description: "Two 3D projects: the Y3K loop animation \"Sneeze\" and the digital garment \"Undine\". 2021\u20132023.",
+    introText: "Two projects where I built characters, garments and whole little worlds in 3D: an endlessly looping animation with a Y3K character, and a purely digital piece of fashion.",
+    introImage: "/img/projects/sneeze-loop/16.webp",
+    introImageAlt: "Still from Sneeze",
+    galleryImages: [],
+};
+
+<h2 className="not-prose project-section-title">Sneeze</h2>
+<p className="not-prose project-section-meta">Loop animation · Character design · Blender & Grease Pencil · 2023</p>
+
+Made in two weeks in a short project with Prof. Mathias Jüsche: an endlessly looping animation inspired by a speculative Y3K aesthetic. I developed my own character including 3D model, posing, rigging and frame-by-frame animation with Grease Pencil. Light, sound and camera movement turn it into a funny, atmospheric loop where motion, style and sound melt together.
+
+<video className="not-prose project-video is-portrait" src="/img/projects/sneeze-loop/sneeze-loop.mp4" poster="/img/projects/sneeze-loop/16.webp" controls loop playsInline preload="metadata" />
+
+<Collage columns={3} items={[
+    { src: "/img/projects/sneeze-loop/gro.webp", alt: "" },
+    { src: "/img/projects/sneeze-loop/klein.webp", alt: "" },
+    { src: "/img/projects/sneeze-loop/1.webp", alt: "" },
+    { src: "/img/projects/sneeze-loop/2.webp", alt: "" },
+    { src: "/img/projects/sneeze-loop/3.webp", alt: "" },
+]} />
+
+<Collage columns={3} items={[
+    { src: "/img/projects/sneeze-loop/4.webp", alt: "" },
+    { src: "/img/projects/sneeze-loop/5.webp", alt: "" },
+    { src: "/img/projects/sneeze-loop/9.webp", alt: "" },
+    { src: "/img/projects/sneeze-loop/8.webp", alt: "" },
+    { src: "/img/projects/sneeze-loop/7.webp", alt: "" },
+    { src: "/img/projects/sneeze-loop/15.webp", alt: "" },
+    { src: "/img/projects/sneeze-loop/10.webp", alt: "" },
+    { src: "/img/projects/sneeze-loop/11.webp", alt: "" },
+    { src: "/img/projects/sneeze-loop/12.webp", alt: "" },
+    { src: "/img/projects/sneeze-loop/13.webp", alt: "" },
+]} />
+
+<h2 className="not-prose project-section-title">Undine</h2>
+<p className="not-prose project-section-meta">Digital fashion · Blender · 2021</p>
+
+In this experimental project I explored the future of the fashion industry, inspired by haute couture and digital fashion. "Undine" is a purely digital garment with a glowing warm core and floating drop elements that create an almost timeless atmosphere. Virtual space opens new, sustainable perspectives on fashion, beyond wear and material consumption.
+
+<video className="not-prose project-video" src="/img/projects/undine/undine-film.mp4" poster="/img/projects/undine/bildschirmfoto-2025-05-06-um-12.54.51.webp" controls playsInline preload="metadata" />
+
+<Collage columns={3} items={[
+    { src: "/img/projects/undine/11.webp", alt: "" },
+    { src: "/img/projects/undine/bildschirmfoto-2025-05-06-um-12.54.51.webp", alt: "" },
+    { src: "/img/projects/undine/bildschirmfoto-2025-05-06-um-12.55.08.webp", alt: "" },
+    { src: "/img/projects/undine/10.webp", alt: "" },
+    { src: "/img/projects/undine/13.webp", alt: "" },
+    { src: "/img/projects/undine/9.webp", alt: "" },
+]} />
+
+<video className="not-prose project-video" src="/img/projects/undine/undine-process.mp4" autoPlay muted loop playsInline />
+
+<Collage columns={3} items={[
+    { src: "/img/projects/undine/1.webp", alt: "" },
+    { src: "/img/projects/undine/2.webp", alt: "" },
+    { src: "/img/projects/undine/3.webp", alt: "" },
+    { src: "/img/projects/undine/4.webp", alt: "" },
+    { src: "/img/projects/undine/5.webp", alt: "" },
+    { src: "/img/projects/undine/6.webp", alt: "" },
+    { src: "/img/projects/undine/12.webp", alt: "" },
+    { src: "/img/projects/undine/7.webp", alt: "" },
+    { src: "/img/projects/undine/8.webp", alt: "" },
+]} />
+
+Blender · Grease Pencil · Clo3D · Character design · Sound

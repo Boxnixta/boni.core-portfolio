@@ -11,9 +11,8 @@ import Tentacles, { metadata as tentaclesMeta } from './[slug]/content/tentacles
 import Kusama, { metadata as kusamaMeta } from './[slug]/content/kusama-bubbles.mdx';
 import VrWorkshop, { metadata as vrWorkshopMeta } from './[slug]/content/vr-workshop.mdx';
 import BachelorThesis, { metadata as bachelorThesisMeta } from './[slug]/content/bachelor-thesis.mdx';
-import Sneeze, { metadata as sneezeMeta } from './[slug]/content/sneeze-loop.mdx';
+import ThreeD, { metadata as threeDMeta } from './[slug]/content/3d-projects.mdx';
 import Ethereal, { metadata as etherealMeta } from './[slug]/content/ethereal-modulations.mdx';
-import Undine, { metadata as undineMeta } from './[slug]/content/undine.mdx';
 import Dmag, { metadata as dmagMeta } from './[slug]/content/d-mag-03.mdx';
 import Covers, { metadata as coversMeta } from './[slug]/content/cover-artworks.mdx';
 import Events, { metadata as eventsMeta } from './[slug]/content/event-design.mdx';
@@ -27,6 +26,8 @@ export type ProjectMetadata = {
     /** Path to the 3:2 thumbnail shown on the listing page */
     thumbnail: string;
     thumbnailAlt: string;
+    /** true: the still is shown, thumbnailVideo only plays while hovering */
+    thumbnailVideoOnHover?: boolean;
     /** Optional short muted video loop shown instead of the thumbnail image */
     thumbnailVideo?: string;
     /** Optional: "contain" shows the whole thumbnail with white bars instead of cropping */
@@ -59,13 +60,12 @@ export const projects: Project[] = [
     { ...(grenzenMeta as ProjectMetadata), Component: Grenzen },
     { ...(entityMeta as ProjectMetadata), Component: Entity },
     { ...(tentaclesMeta as ProjectMetadata), Component: Tentacles },
-    { ...(sneezeMeta as ProjectMetadata), Component: Sneeze },
+    { ...(threeDMeta as ProjectMetadata), Component: ThreeD },
     { ...(dmagMeta as ProjectMetadata), Component: Dmag },
     { ...(eventsMeta as ProjectMetadata), Component: Events },
     { ...(novaMeta as ProjectMetadata), Component: Nova },
     { ...(kleinSeinMeta as ProjectMetadata), Component: KleinSein },
     { ...(vrWorkshopMeta as ProjectMetadata), Component: VrWorkshop },
-    { ...(undineMeta as ProjectMetadata), Component: Undine },
     { ...(coversMeta as ProjectMetadata), Component: Covers },
 ];
 
