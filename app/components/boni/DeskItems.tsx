@@ -6,6 +6,8 @@ import { useEffect, useRef } from "react";
   Desk objects scattered over the landing section.
   x / y: start position in % of the section, width: size in px at a 1400px wide screen,
   rotation: in degrees. Objects are pushed away by the cursor and tilt a little.
+  While an object moves it lifts off the desk: the image tips up and away from its own
+  shadow (CSS vars --lift / --lx / --ly), the shadow stays and gets softer.
 */
 const ITEMS = [
     { src: "/img/desk/canon.webp",      x: 55, y: 45, rotation: -200, width: 330, z: 2 },
@@ -33,7 +35,7 @@ const DeskItems = () => {
         const narrow = container.clientWidth < 640;
         // Mutable per-frame state lives outside React state → no re-renders at 60 fps
         // x/y = position in %, vx/vy = velocity in % per frame
-        const pos = ITEMS.map((it) => ({ x: it.x, y: narrow ? 8 + (it.y - 20) * 2.6 : it.y, vx: 0, vy: 0, tilt: 0 }));
+        const pos = ITEMS.map((it) => ({ x: it.x, y: narrow ? 8 + (it.y - 20) * 2.6 : it.y, vx: 0, vy: 0, tilt: 0, lift: 0, lx: 0, ly: 0 }));
         itemRefs.current.forEach((el, i) => {
             if (el) el.style.top = `${pos[i].y}%`;
         });
@@ -125,6 +127,21 @@ const DeskItems = () => {
                 el.style.left = `${p.x}%`;
                 el.style.top = `${p.y}%`;
                 el.style.setProperty("--tilt", `${p.tilt}deg`);
+
+                // lift: the faster it slides, the more it rises off its shadow
+                const svx = (p.vx / 100) * box.width; // px per frame on screen
+                const svy = (p.vy / 100) * box.height;
+                const speed = Math.hypot(svx, svy);
+                p.lift += (Math.min(1, speed / 5) - p.lift) * 0.12;
+                // direction of travel in the object's own (rotated) frame, so the leading edge tips up
+                const a = (-(ITEMS[i].rotation + p.tilt) * Math.PI) / 180;
+                const dirX = speed > 0.01 ? svx / speed : 0;
+                const dirY = speed > 0.01 ? svy / speed : 0;
+                p.lx += ((dirX * Math.cos(a) - dirY * Math.sin(a)) * p.lift - p.lx) * 0.15;
+                p.ly += ((dirX * Math.sin(a) + dirY * Math.cos(a)) * p.lift - p.ly) * 0.15;
+                el.style.setProperty("--lift", p.lift.toFixed(3));
+                el.style.setProperty("--lx", p.lx.toFixed(3));
+                el.style.setProperty("--ly", p.ly.toFixed(3));
             });
 
             frameId = requestAnimationFrame(animate);

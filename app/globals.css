@@ -386,15 +386,24 @@ body {
         @apply block w-full;
     }
     /* colored shadow: the same image, blurred, shifted and half transparent */
+    /* --lift (0-1, set by DeskItems while an object slides): the shadow stays on the desk
+       and gets softer, the image rises away from it and tips its leading edge up (--lx/--ly) */
     .desk-item .desk-shadow {
         @apply absolute;
         top: 8px;
         left: -6px;
-        filter: blur(8px);
-        opacity: 0.5;
+        filter: blur(calc(8px + var(--lift, 0) * 7px));
+        opacity: calc(0.5 - var(--lift, 0) * 0.18);
     }
     .desk-item .desk-img {
         @apply relative;
+        /* away from the shadow = opposite of its offset (shadow sits down-left) */
+        transform:
+            perspective(700px)
+            translate(calc(var(--lift, 0) * 7px), calc(var(--lift, 0) * -9px))
+            rotateY(calc(var(--lx, 0) * 16deg))
+            rotateX(calc(var(--ly, 0) * -16deg))
+            scale(calc(1 + var(--lift, 0) * 0.04));
     }
     .hint-text {
         @apply pointer-events-none absolute left-1/2 z-20 flex -translate-x-1/2 flex-col items-center;
@@ -411,17 +420,18 @@ body {
     }
     .hey-spray {
         /* like the PDF: big, behind the word, starting over the 2nd letter, "y" hanging below */
+        /* behind the word (the one image that sits under text) */
         @apply absolute z-0 max-w-none select-none;
-        width: 3.3em;
-        left: -0.3em;
-        top: -1.45em;
+        width: 4em;
+        left: -0.45em;
+        top: -1.9em;
         transform-origin: 50% 80%;
     }
     .hey-spray:hover {
         animation: hey-wiggle 0.6s ease-in-out infinite;
     }
     .hey-title {
-        /* pointer-events-none: the "hey!" underneath stays hoverable */
+        /* above the "hey!" spray; pointer-events-none keeps the "hey!" hoverable */
         @apply pointer-events-none relative z-10 font-extrabold leading-none text-neutral-900;
         font-size: 1em;
         letter-spacing: 0.02em;
@@ -445,6 +455,18 @@ body {
     .about-right {
         @apply lg:col-start-2 lg:row-span-2 lg:row-start-1;
     }
+    /* one column (below lg): pull the photo + everything after it up into the empty
+       space right of / below the signature */
+    @media (width < 64rem) {
+        .about-right {
+            margin-top: calc(70px - 30vw);
+        }
+    }
+    @media (width >= 64rem) {
+        .hey-heading .hey-spray {
+            left: -0.75em;
+        }
+    }
     .about-play {
         @apply lg:col-start-1 lg:row-start-2;
     }
@@ -459,35 +481,118 @@ body {
         animation: twinkle 4s ease-in-out infinite;
     }
 
+    /* above the text below it (it floats down over the heading/intro while scrolling) */
     .about-photo-cluster {
-        @apply relative h-[300px] w-full max-w-[560px] sm:h-[340px];
+        /* narrow screens: right-aligned so it can sit beside the signature; desktop: nudged right */
+        @apply relative z-20 ml-auto h-[300px] w-full max-w-[560px] sm:h-[340px] lg:left-[14%] lg:ml-0;
     }
     /* photo sits right; cd and cdj are tucked one third behind it (lower z-index) */
+    /* No filter/opacity on this wrapper: it would cut the glass off from what lies behind it. */
     .about-photo {
-        @apply absolute left-[44%] top-0 z-10 w-[42%] shadow-lg;
+        @apply absolute left-[44%] top-0 z-10 w-[42%];
+        aspect-ratio: 696 / 938;
+        --glass-mask: url("/img/about/portrait-glass-mask.png") center / 100% 100% no-repeat;
+    }
+    /* portrait.png is 620x862, the mask has 38px of room on every side */
+    .about-photo .about-photo-img {
+        @apply absolute;
+        left: 5.46%;
+        top: 4.05%;
+        width: 89.08%;
+    }
+    .about-photo-glass,
+    .about-photo-light {
+        @apply pointer-events-none absolute inset-0 block;
+    }
+    /* the acrylic outline: frosts, cools and refracts what is behind it, plus a diagonal sheen */
+    .about-photo-glass {
+        background:
+            linear-gradient(
+                115deg,
+                rgba(255, 255, 255, 0) 30%,
+                rgba(255, 255, 255, 0.45) 38%,
+                rgba(255, 255, 255, 0) 44%,
+                rgba(255, 255, 255, 0) 62%,
+                rgba(255, 255, 255, 0.3) 66%,
+                rgba(255, 255, 255, 0) 70%
+            ),
+            /* faint iridescence, like holographic acrylic */
+            linear-gradient(
+                130deg,
+                rgba(255, 170, 215, 0.22),
+                rgba(170, 210, 255, 0.22) 30%,
+                rgba(180, 255, 225, 0.18) 55%,
+                rgba(255, 225, 170, 0.2) 80%,
+                rgba(215, 180, 255, 0.22)
+            ),
+            linear-gradient(160deg, rgba(235, 245, 255, 0.2), rgba(215, 230, 255, 0.04) 50%, rgba(240, 235, 255, 0.16));
+        -webkit-backdrop-filter: blur(3px) saturate(2) brightness(1.08) contrast(1.05);
+        backdrop-filter: blur(3px) saturate(2) brightness(1.08) contrast(1.05);
+        -webkit-mask: var(--glass-mask);
+        mask: var(--glass-mask);
+    }
+    /* baked bevel lighting (portrait-glass-light.png): specular edge highlights + darker far side */
+    .about-photo-light {
+        background: url("/img/about/portrait-glass-light.png") center / 100% 100% no-repeat;
+    }
+    /* prism rim: thin red / blue slivers where the outline shifted sideways sticks out past itself */
+    .about-photo::before,
+    .about-photo::after {
+        content: "";
+        @apply pointer-events-none absolute inset-0 z-[1];
+        -webkit-mask: var(--glass-mask), var(--glass-mask);
+        -webkit-mask-composite: source-out;
+        mask: var(--glass-mask), var(--glass-mask);
+        mask-composite: subtract;
+    }
+    .about-photo::before {
+        background: rgba(255, 60, 120, 0.12);
+        -webkit-mask-position: -1px -0.5px, center;
+        mask-position: -1px -0.5px, center;
+    }
+    .about-photo::after {
+        background: rgba(60, 140, 255, 0.12);
+        -webkit-mask-position: 1px 0.5px, center;
+        mask-position: 1px 0.5px, center;
+    }
+    /* Chromium can run an SVG filter on the backdrop: real RGB split of the things behind */
+    @supports (-webkit-app-region: drag) {
+        .about-photo-glass {
+            backdrop-filter: blur(1.5px) url(#glass-dispersion) saturate(2) brightness(1.08) contrast(1.05);
+        }
     }
     .about-cd {
-        @apply absolute left-[29%] top-[6%] z-0 w-[22%];
+        @apply absolute left-[43%] top-[6%] z-0 w-[22%];
     }
     .about-cd:hover img {
         animation: cd-spin 1.2s linear infinite;
     }
     .about-cdj {
-        @apply absolute bottom-[4%] left-[25%] z-0 w-[29%] -rotate-12;
+        @apply absolute bottom-[17%] left-[35%] z-0 w-[29%] rotate-[30deg];
     }
     .about-cdj img {
         filter: drop-shadow(0 6px 8px rgb(0 0 0 / 0.2));
     }
+    /* sterne-illu.png is trimmed to the stars (was 2388x1668 with empty margins, cut at 337/587).
+       Numbers keep the stars exactly where the untrimmed image put them (left 30%, top 46%, width 78%);
+       margin-top in % is relative to the width, like the cut-off part was. */
     .about-stars {
-        @apply absolute left-[30%] top-[46%] z-30 w-[78%];
+        @apply absolute left-[41.01%] top-[46%] z-30 mt-[0%] w-[55.27%];
     }
 
     .about-intro {
-        /* grows with the window; "pretty" wrapping + no auto-hyphens = even ragged right edge */
-        @apply relative z-10 max-w-[46ch] font-mono leading-relaxed text-neutral-700;
-        font-size: clamp(0.8rem, 0.5rem + 0.7vw, 1.3rem);
-        hyphens: manual;
+        /* indented like the titles inside the CV blocks (their px-5), grows with the window */
+        @apply relative z-0 w-full max-w-none px-5 font-mono leading-relaxed text-neutral-700;
+        font-size: clamp(0.75rem, 0.45rem + 0.55vw, 1.08rem);
+        /* nice ragged right ("Flattersatz"): the browser balances the line lengths of the whole
+           paragraph, and only long words (10+ letters, min. 4 on each side) may be hyphenated,
+           so no line ends far shorter than its neighbours */
         text-wrap: pretty;
+        hyphens: auto;
+        hyphenate-limit-chars: 10 4 4;
+        -webkit-hyphenate-limit-before: 4;
+        -webkit-hyphenate-limit-after: 4;
+        overflow-wrap: break-word;
     }
     .about-heart {
         @apply mx-auto my-4 w-14 sm:w-16;
@@ -497,8 +602,9 @@ body {
     }
 
     /* Accordion (Vita, Skills, Awards) */
+    /* stays above the floating photo cluster (z-20) */
     .accordion-about {
-        @apply mt-2 flex w-full flex-col gap-3 p-0;
+        @apply relative z-30 mt-2 flex w-full flex-col gap-3 p-0;
     }
     .accordion-entry {
         @apply overflow-hidden rounded-xl border border-neutral-200 bg-white shadow-[0_6px_16px_rgb(0_0_0/0.12)];
@@ -528,20 +634,24 @@ body {
         container-type: inline-size; /* → cqw below = % of this column's width */
     }
     .folder-playground {
-        /* folder size and row distance; the top padding keeps both folder rows above the basket */
-        --folder-w: min(30cqw, 190px);
-        --folder-pitch: calc(var(--folder-w) * 0.8);
+        /* folder size and row distance: three rows fit into the space above the basket */
+        --folder-w: min(28cqw, 180px);
+        --folder-pitch: calc(var(--folder-w) * 0.86);
         @apply relative mt-2 w-full touch-none select-none pb-9;
-        padding-top: calc(var(--folder-pitch) + var(--folder-w) + 5cqw);
+        /* fixed: keeps the basket where it always was, however many folders there are */
+        padding-top: calc(min(30cqw, 190px) * 1.8 + 5cqw);
     }
     .basket {
         /* in the normal flow below the folders; the counter sits right under it */
         @apply pointer-events-none relative z-20 block w-[92%] max-w-[600px] -rotate-6;
+        /* the png has ~22% empty space below the basket: pull the counter up under it */
+        margin-bottom: calc(min(92cqw, 600px) * -0.17);
     }
     .folder {
         @apply absolute z-30 cursor-grab rounded-md
                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-boni-blue;
         width: var(--folder-w);
+        container-type: inline-size; /* cqw inside = % of the folder width */
         transition: scale 0.3s ease, rotate 0.3s ease;
         touch-action: none;
     }
@@ -554,15 +664,130 @@ body {
         scale: 1.08;
         transition: none;
     }
-    .folder img {
-        @apply pointer-events-none w-full;
-        filter: drop-shadow(0 4px 6px rgb(0 0 0 / 0.15));
+    /* ---- folder icon (built in CSS, no image) ---- */
+    .folder-icon {
+        @apply pointer-events-none relative mx-auto block;
+        width: 58cqw;
+        aspect-ratio: 100 / 76;
+        perspective: 120cqw;
+        filter: drop-shadow(0 1.5cqw 2.5cqw rgb(0 0 0 / 0.18));
     }
-    /* In the basket: a bit smaller, stays ON TOP of the basket */
+    .folder-back {
+        @apply absolute inset-0 h-full w-full;
+        fill: #1f8fd8;
+    }
+    /* coloured sheets inside (2-4, colours from FolderPlayground), peek out when the flap opens */
+    .folder-paper {
+        @apply absolute rounded-[1.5cqw];
+        left: 9%;
+        right: 9%;
+        top: 25%; /* hidden behind the front until the flap opens */
+        bottom: 12%;
+        rotate: var(--paper-rot);
+        translate: var(--paper-shift) 0;
+        box-shadow: 0 -0.3cqw 1cqw rgb(0 0 0 / 0.12);
+        transition: translate 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .folder-front {
+        @apply absolute inset-x-0 bottom-0;
+        top: 22%;
+        border-radius: 5cqw;
+        background:
+            radial-gradient(ellipse 60% 55% at 55% 52%, rgb(255 255 255 / 0.22), transparent 70%),
+            linear-gradient(180deg, #5cc8fb 0%, #46b9f6 55%, #36a9ef 100%);
+        box-shadow:
+            inset 0 0.6cqw 0 rgb(255 255 255 / 0.35),
+            inset 0 -0.8cqw 1.5cqw rgb(0 60 140 / 0.12);
+        transform-origin: 50% 100%;
+        transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    /* hover / keyboard focus / dragging: the flap tips forward, the paper rises */
+    .folder:hover .folder-front,
+    .folder:focus-visible .folder-front,
+    .folder.is-dragging .folder-front {
+        transform: rotateX(-28deg);
+    }
+    .folder:hover .folder-paper,
+    .folder:focus-visible .folder-paper,
+    .folder.is-dragging .folder-paper {
+        translate: var(--paper-shift) var(--paper-lift);
+    }
+    .folder-label {
+        @apply pointer-events-none mt-[3cqw] block text-center font-bold leading-[1.05] text-white;
+        font-family: var(--font-inter), system-ui, sans-serif;
+        font-size: max(11.5cqw, 9px);
+        letter-spacing: -0.01em;
+        text-wrap: balance;
+        /* blue glow straight behind the letters, no offset (the site's signature blue) */
+        text-shadow:
+            0 0 1cqw rgb(0 0 255 / 0.55),
+            0 0 3cqw rgb(0 0 255 / 0.45);
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .folder-front, .folder-paper { transition: none; }
+    }
+    /* In the basket: same size, slightly tilted like the basket, stays ON TOP of it */
     .folder.in-cart {
-        scale: 0.85;
         rotate: -6deg;
     }
+
+    /* pink guide wire from the held folder into the basket, like a TouchDesigner node
+       connection: a thin quiet cable with bright pulses flowing along it, ports at both ends */
+    .basket-guide {
+        @apply pointer-events-none absolute inset-0 z-40 h-full w-full overflow-visible opacity-0;
+        transition: opacity 0.2s ease;
+    }
+    .basket-guide.is-visible {
+        @apply opacity-100;
+    }
+    .basket-guide-wire,
+    .basket-guide-flow {
+        fill: none;
+        stroke: var(--color-boni-pink);
+        stroke-linecap: round;
+    }
+    .basket-guide-wire {
+        stroke-width: 1.25;
+        opacity: 0.45;
+    }
+    /* short bright dashes travelling towards the basket */
+    .basket-guide-flow {
+        stroke-width: 1.5;
+        stroke-dasharray: 6 18;
+        filter: drop-shadow(0 0 2px rgb(255 152 224 / 0.95));
+        animation: guide-flow 0.7s linear infinite;
+    }
+    .basket-guide-port {
+        fill: #fff;
+        stroke: var(--color-boni-pink);
+        stroke-width: 1.25;
+    }
+    .basket-guide-port.is-end {
+        transform-box: fill-box;
+        transform-origin: center;
+        animation: guide-port 1.2s ease-in-out infinite;
+    }
+    /* over the basket: the cable "connects" — solid, a bit brighter, faster flow */
+    .basket-guide.is-over .basket-guide-wire {
+        opacity: 0.9;
+    }
+    .basket-guide.is-over .basket-guide-flow {
+        animation-duration: 0.35s;
+    }
+    .basket-guide.is-over .basket-guide-port {
+        fill: var(--color-boni-pink);
+    }
+    @keyframes guide-flow {
+        to { stroke-dashoffset: -24; }
+    }
+    @keyframes guide-port {
+        0%, 100% { scale: 1; }
+        50% { scale: 1.4; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .basket-guide-flow, .basket-guide-port { animation: none; }
+    }
+
     .basket-counter {
         @apply absolute bottom-1 left-2 z-40 max-w-none font-pixel text-sm text-boni-blue sm:text-base;
     }
